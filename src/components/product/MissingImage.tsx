@@ -14,17 +14,14 @@ interface MissingImageProps {
 export function MissingImage({ locale = 'uz', className = '', compact = false }: MissingImageProps) {
   return (
     <div
-      className={`w-full h-full flex flex-col items-center justify-center gap-2 bg-secondary/80 ${
+      className={`relative overflow-hidden w-full h-full flex flex-col items-center justify-center gap-2 bg-secondary/80 ${
         compact ? 'p-2' : 'p-4'
       } ${className}`}
     >
-      {/* Subtle woven-fabric texture built with repeating gradients */}
+      {/* Brand ring motif stands in for the missing photography */}
       <div
-        className="absolute inset-0 opacity-[0.5]"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(0deg, rgba(40,53,147,0.08) 0 1px, transparent 1px 6px), repeating-linear-gradient(90deg, rgba(40,53,147,0.06) 0 1px, transparent 1px 6px)',
-        }}
+        aria-hidden="true"
+        className={`pattern-rings ${compact ? 'pattern-sm' : ''} absolute inset-0 pointer-events-none`}
       />
       <div className="relative flex flex-col items-center gap-1.5 text-center">
         <ImageOff className={`${compact ? 'w-5 h-5' : 'w-8 h-8'} text-muted/70 stroke-[1.5]`} />

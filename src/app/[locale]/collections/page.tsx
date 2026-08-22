@@ -3,6 +3,7 @@ import { Footer } from '@/components/layout/Footer';
 import { storefrontService } from '@/services/storefront';
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { PageHero } from '@/components/layout/PageHero';
 
 interface CollectionsPageProps {
   params: Promise<{ locale: string }>;
@@ -16,21 +17,17 @@ export default async function CollectionsPage({ params }: CollectionsPageProps) 
     <div className="min-h-screen bg-background flex flex-col">
       <Header locale={locale} />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 py-12 w-full space-y-8">
-        <div>
-          <div className="inline-flex items-center gap-1.5 bg-accent-light text-accent px-3 py-1 rounded-full text-xs font-bold mb-2">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{locale === 'ru' ? 'Подборки' : 'To‘plamlar'}</span>
-          </div>
-          <h1 className="text-3xl font-black text-heading tracking-tight">
-            {locale === 'ru' ? 'Подборки тканей' : 'Mato to‘plamlari'}
-          </h1>
-          <p className="text-xs text-muted mt-1 font-medium">
-            {locale === 'ru'
+      <main className="flex-1 max-w-7xl mx-auto px-4 py-8 sm:py-12 w-full space-y-8">
+        <PageHero
+          icon={Sparkles}
+          kicker={locale === 'ru' ? 'Подборки' : 'To‘plamlar'}
+          title={locale === 'ru' ? 'Подборки тканей' : 'Mato to‘plamlari'}
+          subtitle={
+            locale === 'ru'
               ? 'Готовые подборки материалов для быстрого выбора'
-              : 'Tez tanlash uchun tayyor materiallar to‘plamlari'}
-          </p>
-        </div>
+              : 'Tez tanlash uchun tayyor materiallar to‘plamlari'
+          }
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {collections.map((col) => (

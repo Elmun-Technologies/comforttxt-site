@@ -22,10 +22,12 @@ export const storefrontConfig = {
   taglineRu: 'Мебельные материалы и профессиональная фурнитура',
 
   // ── Logo ──────────────────────────────────────────────────────────────────
-  // The approved artwork can be added at this path later. Until then the UI
-  // uses the controlled typographic lockup below instead of an invented mark.
+  // Approved Comfort Textile badge (circular sofa emblem, corporate blue).
+  // `image` is used on light surfaces, `imageDark` on dark/navy surfaces.
+  // The typographic wordmark stays as the accessible text lockup beside it.
   logo: {
-    image: '', // e.g. '/images/comfort-textile-logo.svg' — empty = wordmark
+    image: '/images/brand/comfort-textile-logo.png',
+    imageDark: '/images/brand/comfort-textile-logo-white.png',
     alt: brandIdentity.name,
     wordmark: {
       primary: 'COMFORT',
@@ -38,15 +40,14 @@ export const storefrontConfig = {
   // available. The layout does not change — only the asset path.
   heroImage: '/images/hero-material.jpg',
 
-  // ── Decorative textile patterns ───────────────────────────────────────────
-  // Brand-aligned weave/twill textures rendered from inline SVGs (no remote
-  // fetch). Used as subtle background accents across the storefront. Replace
-  // these paths with approved guidebook patterns when delivered.
+  // ── Decorative brand patterns ─────────────────────────────────────────────
+  // The approved guidebook ring motif, rebuilt as seamless transparent SVG
+  // tiles (no remote fetch) in the corporate blue / cream. Used as subtle
+  // background accents across the storefront via the `.pattern-*` utilities
+  // in `globals.css`.
   patterns: {
-    weave: '/images/patterns/weave.svg',
-    twill: '/images/patterns/twill.svg',
-    dots: '/images/patterns/dots.svg',
-    weaveDark: '/images/patterns/weave-dark.svg',
+    rings: '/images/patterns/rings.svg',
+    ringsDark: '/images/patterns/rings-dark.svg',
   },
 
   // ── Public contact information ────────────────────────────────────────────

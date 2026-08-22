@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" fill="none">
+  <!--
+    Comfort Textile brand ring motif — transparent overlay tile.
+    Staggered (brick) grid of interlocking open rings taken from the brand
+    guidebook pattern: 60px column pitch, alternate columns offset by 30px.
+    Drawn in the corporate blue #283593 at low opacity so it can sit on top
+    of any light brand surface. Seamless at 120x120.
+  -->
+  <g fill="none" stroke="#283593" stroke-opacity="0.09" stroke-width="11">
+    <!-- even columns: x = 0, 60(no), 120 -->
+    <circle cx="0" cy="0" r="24"/>
+    <circle cx="0" cy="60" r="24"/>
+    <circle cx="0" cy="120" r="24"/>
+    <circle cx="120" cy="0" r="24"/>
+    <circle cx="120" cy="60" r="24"/>
+    <circle cx="120" cy="120" r="24"/>
+    <!-- odd columns offset by half a step: x = 60 -->
+    <circle cx="60" cy="-30" r="24"/>
+    <circle cx="60" cy="30" r="24"/>
+    <circle cx="60" cy="90" r="24"/>
+    <circle cx="60" cy="150" r="24"/>
+  </g>
+</svg>

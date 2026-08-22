@@ -21,8 +21,12 @@ export function AccountClient({ locale, currentUser, initialOrders = [] }: Accou
 
   return (
     <div className="space-y-8">
-      <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-border shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
+      <div className="brand-wash relative overflow-hidden bg-surface p-6 sm:p-8 rounded-3xl border border-border shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div
+          aria-hidden="true"
+          className="pattern-rings pattern-fade absolute inset-0 pointer-events-none"
+        />
+        <div className="relative flex items-center gap-4">
           <div className="w-16 h-16 bg-accent-light text-accent rounded-2xl flex items-center justify-center font-black text-xl">
             <User className="w-8 h-8" />
           </div>
@@ -47,7 +51,7 @@ export function AccountClient({ locale, currentUser, initialOrders = [] }: Accou
 
         <Link
           href={`/${locale}/wholesale`}
-          className="px-4 py-2.5 bg-accent hover:bg-accent-hover text-surface text-xs font-bold rounded-xl transition inline-flex items-center gap-1.5"
+          className="relative px-4 py-2.5 bg-accent hover:bg-accent-hover text-surface text-xs font-bold rounded-xl transition inline-flex items-center gap-1.5"
         >
           <ShieldCheck className="w-4 h-4" />
           <span>{locale === 'ru' ? 'Оптовые условия (B2B)' : 'Ulgurji shartlar (B2B)'}</span>

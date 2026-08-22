@@ -109,7 +109,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
       {/* Header Banner */}
       <div className="relative bg-charcoal-900 text-surface rounded-3xl p-8 lg:p-12 shadow-xl border border-charcoal-800 overflow-hidden">
         {/* Decorative weave overlay */}
-        <div aria-hidden="true" className="pattern-weave-dark absolute inset-0 pointer-events-none" />
+        <div aria-hidden="true" className="pattern-rings-dark pattern-fade absolute inset-0 pointer-events-none" />
         <div className="relative space-y-4 max-w-2xl">
           <span className="inline-flex items-center gap-1.5 bg-brand-400/10 text-cream-400 border border-brand-400/50 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-4 h-4" />
@@ -151,8 +151,12 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
       {/* Registration Form & How it works */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         {/* Form */}
-        <div className="bg-surface p-8 rounded-3xl border border-border shadow-xs space-y-6">
-          <div>
+        <div className="brand-wash relative overflow-hidden bg-surface p-8 rounded-3xl border border-border shadow-xs space-y-6">
+          <div
+            aria-hidden="true"
+            className="pattern-rings pattern-sm pattern-fade absolute inset-0 pointer-events-none opacity-70"
+          />
+          <div className="relative">
             <h2 className="text-xl font-bold text-heading">
               {locale === 'ru' ? 'Заявка на оптовые условия' : 'Ulgurji shartlar uchun ariza'}
             </h2>
@@ -164,7 +168,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
           </div>
 
           {success ? (
-            <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200 text-center space-y-3">
+            <div className="relative bg-emerald-50 p-6 rounded-2xl border border-emerald-200 text-center space-y-3">
               <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
               <h3 className="text-lg font-bold text-emerald-900">
                 {locale === 'ru' ? 'Заявка принята!' : 'Ariza qabul qilindi!'}
@@ -176,7 +180,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleRegisterSubmit} className="space-y-4">
+            <form onSubmit={handleRegisterSubmit} className="relative space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-bold text-heading">
                   {locale === 'ru' ? 'Компания или цех' : 'Kompaniya yoki sex'} *

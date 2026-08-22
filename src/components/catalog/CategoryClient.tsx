@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CategoryFilterSidebar } from '@/components/catalog/CategoryFilterSidebar';
-import { SlidersHorizontal, PackageX, X, RotateCcw } from 'lucide-react';
+import { SlidersHorizontal, PackageX, X, RotateCcw, LayoutGrid } from 'lucide-react';
+import { PageHero } from '@/components/layout/PageHero';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface CategoryClientProps {
   locale: string;
@@ -94,16 +96,17 @@ export function CategoryClient({
 
   return (
     <>
-      <div className="mb-6 space-y-1">
-        <h1 className="text-2xl sm:text-3xl font-black text-heading tracking-tight capitalize">
-          {categoryName || category.replace(/-/g, ' ')}
-        </h1>
-        <p className="text-xs text-muted font-medium">
-          {locale === 'ru'
+      <PageHero
+        className="mb-6"
+        icon={LayoutGrid}
+        kicker={locale === 'ru' ? 'Категория' : 'Kategoriya'}
+        title={categoryName || category.replace(/-/g, ' ')}
+        subtitle={
+          locale === 'ru'
             ? `Найдено ${products.length} позиций`
-            : `${products.length} ta mahsulot topildi`}
-        </p>
-      </div>
+            : `${products.length} ta mahsulot topildi`
+        }
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         <div className="hidden lg:block lg:col-span-1">
@@ -154,24 +157,25 @@ export function CategoryClient({
           )}
 
           {products.length === 0 ? (
-            <div className="bg-surface rounded-2xl p-12 text-center border border-border shadow-xs my-8 space-y-4">
-              <PackageX className="w-16 h-16 text-muted mx-auto stroke-1" />
-              <h3 className="text-lg font-bold text-heading">
-                {locale === 'ru' ? 'Товары не найдены' : 'Mahsulotlar topilmadi'}
-              </h3>
-              <p className="text-xs text-muted max-w-sm mx-auto">
-                {locale === 'ru'
+            <EmptyState
+              className="my-8"
+              icon={PackageX}
+              title={locale === 'ru' ? 'Товары не найдены' : 'Mahsulotlar topilmadi'}
+              description={
+                locale === 'ru'
                   ? 'Измените параметры поиска или сбросьте фильтры.'
-                  : 'Qidiruv parametrlarini o‘zgartiring yoki filterlarni tozalang.'}
-              </p>
-              <button
-                onClick={clearAll}
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-accent hover:bg-accent-hover text-surface font-bold text-xs rounded-xl shadow transition"
-              >
-                <RotateCcw className="w-4 h-4" />
-                <span>{locale === 'ru' ? 'Сбросить фильтры' : 'Filterlarni tozalash'}</span>
-              </button>
-            </div>
+                  : 'Qidiruv parametrlarini o‘zgartiring yoki filterlarni tozalang.'
+              }
+              action={
+                <button
+                  onClick={clearAll}
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-accent hover:bg-accent-hover text-surface font-bold text-xs rounded-xl shadow transition"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>{locale === 'ru' ? 'Сбросить фильтры' : 'Filterlarni tozalash'}</span>
+                </button>
+              }
+            />
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
               {products.map((product) => (

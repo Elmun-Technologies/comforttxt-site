@@ -115,9 +115,15 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
     <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Left 2 cols: Checkout Steps */}
       <div className="lg:col-span-2 space-y-6">
-        <h1 className="text-2xl font-black text-heading tracking-tight">
-          {locale === 'ru' ? 'Оформление Заказа' : 'Buyurtmani Rasmiylashtirish'}
-        </h1>
+        <div className="brand-wash relative overflow-hidden rounded-2xl border border-border bg-surface px-5 py-4 shadow-xs">
+          <div
+            aria-hidden="true"
+            className="pattern-rings pattern-sm pattern-fade absolute inset-0 pointer-events-none"
+          />
+          <h1 className="relative text-2xl font-black text-heading tracking-tight">
+            {locale === 'ru' ? 'Оформление заказа' : 'Buyurtmani rasmiylashtirish'}
+          </h1>
+        </div>
 
         {errorMessage && (
           <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-xs font-semibold flex items-center gap-2">

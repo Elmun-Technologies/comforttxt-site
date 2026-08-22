@@ -64,18 +64,24 @@ export function SampleBoxClient({ fabrics, locale }: SampleBoxProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-10">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="w-16 h-16 bg-accent-light text-accent rounded-2xl flex items-center justify-center mx-auto shadow-md">
-          <Package className="w-8 h-8" />
+      <div className="brand-wash relative overflow-hidden rounded-3xl border border-border bg-surface px-6 py-10 text-center shadow-xs">
+        <div
+          aria-hidden="true"
+          className="pattern-rings pattern-fade-y absolute inset-0 pointer-events-none opacity-70"
+        />
+        <div className="relative space-y-3">
+          <div className="w-16 h-16 bg-accent-light text-accent border border-accent/20 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+            <Package className="w-8 h-8" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-heading tracking-tight">
+            {locale === 'ru' ? 'Sample Box — образцы тканей' : 'Sample Box — mato namunalari'}
+          </h1>
+          <p className="text-xs sm:text-sm text-muted max-w-xl mx-auto">
+            {locale === 'ru'
+              ? 'Реальные цвет и фактура ткани — до того, как принимать решение о заказе.'
+              : 'Matoning haqiqiy rangi va fakturasi — buyurtma qilishdan oldin.'}
+          </p>
         </div>
-        <h1 className="text-3xl font-black text-heading tracking-tight">
-          {locale === 'ru' ? 'Sample Box — образцы тканей' : 'Sample Box — mato namunalari'}
-        </h1>
-        <p className="text-xs sm:text-sm text-muted max-w-xl mx-auto">
-          {locale === 'ru'
-            ? 'Реальные цвет и фактура ткани — до того, как принимать решение о заказе.'
-            : 'Matoning haqiqiy rangi va fakturasi — buyurtma qilishdan oldin.'}
-        </p>
       </div>
 
       {/* What / Who / What you get / How it works */}

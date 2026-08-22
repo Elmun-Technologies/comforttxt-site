@@ -17,7 +17,7 @@ export function Footer({ locale }: FooterProps) {
   );
 
   return (
-    <footer className="pattern-weave-dark bg-charcoal-950 text-surface/70 border-t border-charcoal-800">
+    <footer className="pattern-rings-dark bg-charcoal-950 text-surface/70 border-t border-charcoal-800">
       {/* Service Highlights — neutral, category-based */}
       <div className="border-b border-charcoal-800/80 bg-charcoal-900/60 py-8 px-4">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

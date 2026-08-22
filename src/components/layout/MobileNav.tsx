@@ -67,9 +67,15 @@ export function MobileNav({
           <div className="fixed inset-0 bg-heading/60 backdrop-blur-sm" onClick={onClose} />
           <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-surface shadow-2xl flex flex-col z-50">
             {/* Header */}
-            <div className="p-4 border-b border-border flex justify-between items-center bg-charcoal-900 text-surface">
-              <BrandLogo locale={locale} size="footer" />
-              <button onClick={onClose} className="p-1 text-muted hover:text-surface">
+            <div className="relative overflow-hidden p-4 border-b border-border flex justify-between items-center bg-charcoal-900 text-surface">
+              <div
+                aria-hidden="true"
+                className="pattern-rings-dark pattern-sm pattern-fade absolute inset-0 pointer-events-none"
+              />
+              <div className="relative">
+                <BrandLogo locale={locale} size="footer" />
+              </div>
+              <button onClick={onClose} className="relative p-1 text-surface/60 hover:text-surface transition">
                 <X className="w-5 h-5" />
               </button>
             </div>

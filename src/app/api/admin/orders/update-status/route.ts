@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, type TransactionClient } from '@/lib/db';
 import { requireStaff } from '@/lib/auth/rbac';
-import { OrderStatus, MovementType } from '@prisma/client';
+import { OrderStatus, MovementType } from '@/lib/enums';
 
 const ALLOWED_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
   NEW: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: { code: 'NOT_FOUND', message: 'Order not found' } }, { status: 404 });
     }
 
-    const currentStatus = currentOrder.orderStatus;
+    const currentStatus = currentOrder.orderStatus as OrderStatus;
     const targetStatus = orderStatus as OrderStatus;
 
     if (currentStatus !== targetStatus && !ALLOWED_TRANSITIONS[currentStatus]?.includes(targetStatus) && admin.role !== 'SUPER_ADMIN') {
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    const updatedOrder = await db.$transaction(async (tx) => {
+    const updatedOrder = await db.$transaction(async (tx: TransactionClient) => {
       // Handle Inventory state changes
       if (targetStatus === OrderStatus.CANCELLED && currentStatus !== OrderStatus.CANCELLED) {
         // Release reservations

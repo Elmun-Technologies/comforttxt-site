@@ -56,26 +56,43 @@
     text-wrap: balance;
   }
 
-  /* Decorative textile patterns — repeatable, subtle brand-blue textures.
-     Apply alongside a background-color; the SVGs are transparent tiles. */
-  .pattern-weave {
-    background-image: url('/images/patterns/weave.svg');
-    background-size: 20px 20px;
+  /* ── Brand ring motif ────────────────────────────────────────────────────
+     The approved guidebook pattern, as seamless transparent SVG tiles.
+     Apply alongside a background-color; the tiles carry no fill of their own.
+       .pattern-rings       → corporate blue rings, for light surfaces
+       .pattern-rings-dark  → cream rings, for navy / charcoal surfaces
+     Add .pattern-lg / .pattern-sm to change the tile scale, and
+     .pattern-fade to feather the motif out toward the left (matching the
+     guidebook's half-plain / half-patterned layout). */
+  .pattern-rings {
+    background-image: url('/images/patterns/rings.svg');
+    background-size: 120px 120px;
+    background-repeat: repeat;
   }
 
-  .pattern-twill {
-    background-image: url('/images/patterns/twill.svg');
-    background-size: 32px 16px;
+  .pattern-rings-dark {
+    background-image: url('/images/patterns/rings-dark.svg');
+    background-size: 120px 120px;
+    background-repeat: repeat;
   }
 
-  .pattern-dots {
-    background-image: url('/images/patterns/dots.svg');
-    background-size: 16px 16px;
+  .pattern-sm {
+    background-size: 72px 72px;
   }
 
-  .pattern-weave-dark {
-    background-image: url('/images/patterns/weave-dark.svg');
-    background-size: 20px 20px;
+  .pattern-lg {
+    background-size: 180px 180px;
+  }
+
+  /* Guidebook-style wash: plain on the left, motif emerging to the right. */
+  .pattern-fade {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 55%, #000 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 55%, #000 100%);
+  }
+
+  .pattern-fade-y {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
   }
 }
 

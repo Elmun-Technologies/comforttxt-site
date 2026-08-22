@@ -10,9 +10,11 @@ import {
   TrendingUp,
   Save,
   Edit2,
+  ShieldCheck,
 } from 'lucide-react';
 import { formatPrice, formatUnit } from '@/lib/formatters';
 import { storefrontConfig } from '@/config/storefront';
+import { PageHero } from '@/components/layout/PageHero';
 
 interface AdminDashboardClientProps {
   orders: any[];
@@ -122,20 +124,21 @@ export function AdminDashboardClient({
   return (
     <div className="space-y-8">
       {/* Title */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-heading tracking-tight">
-            {locale === 'ru'
-              ? `Панель администратора ${storefrontConfig.name}`
-              : `${storefrontConfig.name} admin paneli`}
-          </h1>
-          <p className="text-xs text-muted mt-1">
-            {locale === 'ru'
-              ? 'Управление заказами, товарами, оптовыми B2B клиентами и CMS'
-              : 'Buyurtmalar, mahsulotlar zaxirasi va B2B so\'rovlarni boshqarish'}
-          </p>
-        </div>
-      </div>
+      <PageHero
+        tone="dark"
+        icon={ShieldCheck}
+        kicker="Admin"
+        title={
+          locale === 'ru'
+            ? `Панель администратора ${storefrontConfig.name}`
+            : `${storefrontConfig.name} admin paneli`
+        }
+        subtitle={
+          locale === 'ru'
+            ? 'Управление заказами, товарами, оптовыми B2B клиентами и CMS'
+            : 'Buyurtmalar, mahsulotlar zaxirasi va B2B so‘rovlarni boshqarish'
+        }
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
