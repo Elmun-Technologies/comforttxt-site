@@ -32,34 +32,34 @@ export default async function HomePage({ params }: HomePageProps) {
 
   const fabricTypes = [
     {
-      nameUz: 'Velyur (Velvet)',
-      nameRu: 'Велюр (Velvet)',
-      descUz: 'Yumshoq baxmal faktura, Pet Friendly va Easy Clean tozalanishi',
-      descRu: 'Мягкий бархатный ворс, эффект Easy Clean и защита от когтей',
+      nameUz: 'Velyur matolar',
+      nameRu: 'Велюровые ткани',
+      descUz: 'Yumshoq baxmal to‘qima va keng ranglar palitrasi',
+      descRu: 'Мягкая бархатистая текстура и богатая палитра оттенков',
       image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop',
       href: `/${locale}/catalog/mebel-matolari?sub=velyur`,
     },
     {
-      nameUz: 'Bukle (Boucle)',
-      nameRu: 'Букле (Boucle)',
-      descUz: 'Skandinav uslubidagi nozik tugunchali zamonaviy hajm',
-      descRu: 'Скандинавский тренд с выразительной фактурой узелков',
+      nameUz: 'Bukle matolar',
+      nameRu: 'Ткани букле',
+      descUz: 'Zamonaviy hajm va nozik tugunchali faktura',
+      descRu: 'Выразительная фактура узелков для современной мебели',
       image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop',
       href: `/${locale}/catalog/mebel-matolari?sub=bukle`,
     },
     {
-      nameUz: 'Shenill (Chenille)',
-      nameRu: 'Шенилл (Chenille)',
-      descUz: 'Klassik va neoklassik mebellar uchun qalin baxmalsimon to‘qima',
-      descRu: 'Плотная ворсистая нить для классической и неоклассической мебели',
+      nameUz: 'Shenill matolar',
+      nameRu: 'Шенилловые ткани',
+      descUz: 'Klassik va zamonaviy mebellar uchun zich to‘qima',
+      descRu: 'Плотная ворсистая нить для мягкой мебели',
       image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop',
       href: `/${locale}/catalog/mebel-matolari?sub=shenill`,
     },
     {
-      nameUz: 'Rogojka (Matting)',
-      nameRu: 'Рогожка (Matting)',
-      descUz: 'Yuqori Martindale chidamliligi va havo o‘tkazuvchan tabiiy to‘qima',
-      descRu: 'Высокая прочность Мартиндейла и натуральная фактура плетения',
+      nameUz: 'Rogojka to‘qimalar',
+      nameRu: 'Рогожка и рогожки',
+      descUz: 'Tabiiy ko‘rinishdagi pishiq va amaliy to‘qima',
+      descRu: 'Практичная натуральная фактура плетения',
       image: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop',
       href: `/${locale}/catalog/mebel-matolari?sub=rogojka`,
     },
@@ -155,20 +155,20 @@ export default async function HomePage({ params }: HomePageProps) {
                   <div className="aspect-[4/3] sm:aspect-square relative overflow-hidden">
                     <img
                       src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=1000&auto=format&fit=crop"
-                      alt="Comfort TXT Premium Materials"
+                      alt="Comfort TXT Mebel Matolari"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-charcoal-950/20 to-transparent flex items-end p-6">
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/85 via-charcoal-950/20 to-transparent flex items-end p-6">
                       <div className="text-surface space-y-1.5">
                         <div className="inline-flex items-center gap-1.5 bg-accent text-surface text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md">
                           <Sparkles className="w-3 h-3" />
-                          LUNA Collection
+                          {locale === 'ru' ? 'Коллекция тканей' : 'Mato to‘plami'}
                         </div>
                         <h2 className="text-lg sm:text-xl font-black">
-                          {locale === 'ru' ? 'Премиальный велюр Easy Clean' : 'Easy Clean baxmal velyur matolari'}
+                          {locale === 'ru' ? 'Мебельные ткани и материалы' : 'Mebel matolari va materiallar'}
                         </h2>
                         <p className="text-xs text-surface/80 font-medium">
-                          {locale === 'ru' ? '50 000 циклов Мартиндейла • Водоотталкивающий' : '50 000 Martindale chidamlilik • Suv yuqtirmas'}
+                          {locale === 'ru' ? 'Фактура, плотность и богатая палитра оттенков' : 'Faktura, zichlik va ranglarni katalogda ko‘ring'}
                         </p>
                       </div>
                     </div>
@@ -225,7 +225,7 @@ export default async function HomePage({ params }: HomePageProps) {
                   </p>
                 </div>
                 <div className="pt-2 text-[10px] font-bold text-accent group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                  <span>{locale === 'ru' ? 'Смотреть' : 'Ko‘rish'}</span>
+                  <span>{locale === 'ru' ? 'Ko‘rish' : 'Ko‘rish'}</span>
                   <ArrowRight className="w-3 h-3" />
                 </div>
               </Link>
@@ -270,15 +270,15 @@ export default async function HomePage({ params }: HomePageProps) {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
             <div className="max-w-2xl space-y-2">
               <span className="text-accent text-xs font-black uppercase tracking-widest">
-                {locale === 'ru' ? 'Текстура и Практичность' : 'Faktura va Chidamlilik'}
+                {locale === 'ru' ? 'Текстура и Назначение' : 'Faktura va To‘qima'}
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-heading tracking-tight">
                 {locale === 'ru' ? 'Ткань — это не только цвет' : 'Mato faqat rang emas'}
               </h2>
               <p className="text-xs sm:text-sm text-muted font-medium leading-relaxed">
                 {locale === 'ru'
-                  ? 'Каждая фактура решает конкретную задачу: от износостойкого велюра до уютного букле и прочного шенилла.'
-                  : 'Har bir to‘qima o‘ziga xos xususiyatga ega: baxmal yumshoqlik, tirnalishga chidamlilik yoki Skandinaviya uslubidagi hajm.'}
+                  ? 'Каждая фактура решает конкретную задачу мебели: мягкий велюр, объемное букле, плотный шенилл или практичная рогожка.'
+                  : 'Har bir to‘qima o‘z vazifasiga ega: mayin velyur, zamonaviy bukle, pishiq shenill yoki tabiiy rogojka to‘qimasi.'}
               </p>
             </div>
 

@@ -255,16 +255,39 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
 
               {/* No matches */}
               {!loading && filteredProducts.length === 0 && filteredCategories.length === 0 && (
-                <div className="py-12 text-center text-muted text-sm space-y-2">
+                <div className="py-10 text-center text-muted space-y-4 px-4">
                   <Package className="w-12 h-12 mx-auto text-muted/50 stroke-1" />
-                  <p className="font-bold text-heading">
-                    {locale === 'ru' ? 'Ничего не найдено' : 'Hech narsa topilmadi'}
-                  </p>
-                  <p className="text-xs text-muted">
-                    {locale === 'ru'
-                      ? 'Попробуйте ввести другой артикул (например: LUNA-01, ST2536, F30D) или общее название'
-                      : 'Boshqa artikul (masalan: LUNA-01, ST2536, F30D) yoki umumiy nom kiriting'}
-                  </p>
+                  <div>
+                    <h3 className="font-bold text-heading text-base">
+                      {locale === 'ru' ? 'Товар не найден' : 'Mahsulot topilmadi'}
+                    </h3>
+                    <p className="text-xs text-muted max-w-sm mx-auto mt-1 leading-relaxed">
+                      {locale === 'ru'
+                        ? 'Проверьте правильность артикула (SKU) или воспользуйтесь каталогом материалов.'
+                        : 'Artikul (SKU) to‘g‘riligini tekshiring yoki materiallar katalogidan foydalaning.'}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        router.push(`/${locale}/catalog`);
+                      }}
+                      className="px-4 py-2 bg-accent text-surface text-xs font-bold rounded-xl shadow-xs hover:bg-accent-hover transition"
+                    >
+                      {locale === 'ru' ? 'Перейти в каталог' : 'Katalogni ko‘rish'}
+                    </button>
+                    <a
+                      href={storefrontConfig.telegramChannelUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl hover:bg-blue-100 transition"
+                    >
+                      {locale === 'ru' ? 'Спросить у менеджера' : 'Menejerdan so‘rash'}
+                    </a>
+                  </div>
                 </div>
               )}
             </div>

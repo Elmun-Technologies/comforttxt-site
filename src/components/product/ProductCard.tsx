@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Heart, Scale, ShoppingBag, Zap, Check } from 'lucide-react';
+import { Heart, Scale, ShoppingBag, Zap, Check, ImageOff } from 'lucide-react';
 import { StorefrontProduct } from '@/services/storefront/types';
 import { formatPrice, formatStockStatus, formatUnit } from '@/lib/formatters';
 import { useCartStore } from '@/store/useCartStore';
@@ -20,10 +20,11 @@ export function ProductCard({ product, locale }: ProductCardProps) {
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
   const [quickOrderOpen, setQuickOrderOpen] = useState(false);
   const [addedToast, setAddedToast] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const variants = product.variants || [];
   const selectedVariant = variants[selectedVariantIdx] || variants[0];
-  const mainImage = selectedVariant?.images?.[0] || product.primaryImage || 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop';
+  const mainImage = selectedVariant?.images?.[0] || product.primaryImage;
 
   const addItem = useCartStore((s) => s.addItem);
   const { toggleFavorite, isFavorite } = useFavoritesStore();
@@ -53,7 +54,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
       productTitle: locale === 'ru' ? product.titleRu : product.titleUz,
       sku: selectedVariant.sku,
       variantName: locale === 'ru' ? (selectedVariant.nameRu || selectedVariant.colorNameRu || '') : (selectedVariant.nameUz || selectedVariant.colorNameUz || ''),
-      image: mainImage,
+      image: mainImage || '',
       price: selectedVariant.price,
       wholesalePrice: selectedVariant.wholesalePrice || selectedVariant.price,
       unitType: product.unitType,
@@ -81,14 +82,24 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         {/* Visual Zone */}
         <div className="relative aspect-square bg-secondary/50 overflow-hidden">
           <Link href={`/${locale}/product/${product.slug}`} className="block w-full h-full">
-            <img
-              src={mainImage}
-              alt={locale === 'ru' ? product.titleRu : product.titleUz}
-              className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
-                isFabric ? 'object-cover' : 'object-contain p-3'
-              }`}
-              loading="lazy"
-            />
+            {mainImage && !imageError ? (
+              <img
+                src={mainImage}
+                alt={locale === 'ru' ? product.titleRu : product.titleUz}
+                onError={() => setImageError(true)}
+                className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
+                  isFabric ? 'object-cover' : 'object-contain p-3'
+                }`}
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-secondary text-muted/60 p-4 text-center">
+                <ImageOff className="w-8 h-8 mb-1 stroke-1" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted">
+                  {locale === 'ru' ? 'Изображение подгружается' : 'Rasm yuklanmoqda'}
+                </span>
+              </div>
+            )}
           </Link>
 
           {/* Badges */}
@@ -141,7 +152,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                     specValueUz: s.valueUz || s.specValueUz || '',
                     specValueRu: s.valueRu || s.specValueRu || '',
                   })),
-                  image: mainImage,
+                  image: mainImage || '',
                 });
               }}
               className={`p-2 rounded-xl backdrop-blur-md shadow-xs transition ${
@@ -182,7 +193,10 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                 {variants.slice(0, maxVisibleSwatches).map((v: any, idx: number) => (
                   <button
                     key={v.id || v.sku}
-                    onClick={() => setSelectedVariantIdx(idx)}
+                    onClick={() => {
+                      setSelectedVariantIdx(idx);
+                      setImageError(false);
+                    }}
                     className={`w-4 h-4 rounded-full border border-border transition-all ${
                       selectedVariantIdx === idx
                         ? 'ring-2 ring-accent ring-offset-1 scale-110 shadow-xs'
@@ -222,19 +236,11 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               )}
             </div>
 
-            {/* CTA Buttons */}
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={handleQuickOrder}
-                className="inline-flex items-center justify-center gap-1 py-2 px-2 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-xl transition active:scale-98"
-              >
-                <Zap className="w-3.5 h-3.5 text-amber-500" />
-                <span>{locale === 'ru' ? '1-Клик' : '1-Klik'}</span>
-              </button>
-
+            {/* CTA Buttons - Primary Savatchaga, Secondary 1-Klik */}
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleAddToCart}
-                className={`inline-flex items-center justify-center gap-1.5 py-2 px-2 text-surface text-xs font-black rounded-xl transition shadow-xs active:scale-98 ${
+                className={`flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 text-surface text-xs font-black rounded-xl transition shadow-xs active:scale-98 ${
                   addedToast ? 'bg-emerald-700' : 'bg-accent hover:bg-accent-hover'
                 }`}
               >
@@ -249,6 +255,15 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                     <span>{locale === 'ru' ? 'В корзину' : 'Savatchaga'}</span>
                   </>
                 )}
+              </button>
+
+              <button
+                onClick={handleQuickOrder}
+                className="inline-flex items-center justify-center gap-1 py-2.5 px-3 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-xl transition active:scale-98 border border-border"
+                title={locale === 'ru' ? 'Купить в 1 клик' : '1-Klikda buyurtma'}
+              >
+                <Zap className="w-3.5 h-3.5 text-amber-500 fill-current" />
+                <span className="hidden sm:inline">{locale === 'ru' ? '1-Клик' : '1-Klik'}</span>
               </button>
             </div>
           </div>

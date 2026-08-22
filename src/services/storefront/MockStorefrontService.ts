@@ -693,15 +693,37 @@ export class MockStorefrontService implements IStorefrontService {
         p.variants.some((v) => v.sku.toLowerCase().includes(q))
     );
 
-    const matchedCollections = MOCK_COLLECTIONS.filter((c) =>
-      c.name.toLowerCase().includes(q)
+    // Exact and prefix SKU matches must rank highest
+    matchedProducts.sort((a, b) => {
+      const aExactSku = a.variants.some((v) => v.sku.toLowerCase() === q);
+      const bExactSku = b.variants.some((v) => v.sku.toLowerCase() === q);
+      if (aExactSku && !bExactSku) return -1;
+      if (!aExactSku && bExactSku) return 1;
+
+      const aPrefixSku = a.variants.some((v) => v.sku.toLowerCase().startsWith(q));
+      const bPrefixSku = b.variants.some((v) => v.sku.toLowerCase().startsWith(q));
+      if (aPrefixSku && !bPrefixSku) return -1;
+      if (!aPrefixSku && bPrefixSku) return 1;
+
+      return 0;
+    });
+
+    const isExactSkuQuery = matchedProducts.some((p) =>
+      p.variants.some((v) => v.sku.toLowerCase() === q)
     );
 
-    const matchedCategories = MOCK_CATEGORIES.filter(
-      (c) =>
-        c.nameUz.toLowerCase().includes(q) ||
-        c.nameRu.toLowerCase().includes(q)
-    );
+    // If exact SKU is found, keep categories minimal so exact product is clear
+    const matchedCategories = isExactSkuQuery
+      ? []
+      : MOCK_CATEGORIES.filter(
+          (c) =>
+            c.nameUz.toLowerCase().includes(q) ||
+            c.nameRu.toLowerCase().includes(q)
+        );
+
+    const matchedCollections = isExactSkuQuery
+      ? []
+      : MOCK_COLLECTIONS.filter((c) => c.name.toLowerCase().includes(q));
 
     return {
       products: matchedProducts,
