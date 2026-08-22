@@ -42,6 +42,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <CategoryClient
           locale={locale}
           category={categorySlug}
+          categoryName={locale === 'ru' ? currentCategory.nameRu : currentCategory.nameUz}
           searchParams={resolvedSearchParams}
           initialProducts={products}
           categories={allCategories}

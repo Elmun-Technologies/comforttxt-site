@@ -97,5 +97,27 @@ npm run build
 
 ---
 
+
+## 🧪 ShopFlow Tayyorgarlik (Development Simulation)
+
+`MockStorefrontService` ShopFlow masofaviy xizmatining kechikishi va xatolarini simulyatsiya qilishni qo'llab-quvvatlaydi (faqat mock rejimda):
+
+```bash
+# Har bir so'rovga 1.5 soniya sun'iy kechikish qo'shish (skeleton holatini tekshirish uchun)
+NEXT_PUBLIC_MOCK_LATENCY_MS=1500 npm run dev
+
+# 30% ehtimollik bilan xato simulyatsiyasi (error boundary / retry UX ni tekshirish uchun)
+NEXT_PUBLIC_MOCK_FAIL_RATE=0.3 npm run dev
+```
+
+ShopFlow-ga ulanish uchun `.env` da `NEXT_PUBLIC_DATA_SOURCE=shopflow` va `SHOPFLOW_API_URL` ni o'rnating.
+
+## 🧹 Kontent va Demo Ma'lumotlar (Phase 3.1)
+
+- Barcha mijozga ko'rinadigan kontakt ma'lumotlari bitta manbadan keladi: `src/config/storefront.ts` (`storefrontConfig`). Tasdiqlanmagan qiymatlar bo'sh — UI ularni avtomatik yashiradi. Ishlab chiqarishga chiqishdan oldin real ma'lumotlarni kiriting.
+- Mock mahsulotlar (`MockStorefrontService`) — faqat development uchun neytral fixture ma'lumotlar: soxta brendlar, kolleksiyalar, chegirmalar, mijozlar va buyurtmalar yo'q.
+- B2B sahifada demo-rejim/test akkaunt mavjud emas.
+- Vaqtinchalik vizual aktivlar: `public/images/` (kategoriya teksturalari va hero). Real Comfort TXT suratlari kelganda `storefrontConfig.heroImage` va `public/images/comfort-txt-logo.svg` orqali almashtiriladi.
+
 ## 📄 Litsenziya
 Comfort TXT © 2026. Barcha huquqlar himoyalangan.

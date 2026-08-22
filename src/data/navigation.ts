@@ -1,5 +1,4 @@
 export const topUtilityLinks = [
-  { labelUz: "Yetkazib berish", labelRu: "Доставка", href: "/catalog" },
   { labelUz: "Ulgurji mijozlar uchun", labelRu: "Оптовым покупателям", href: "/wholesale" },
   { labelUz: "Mato Namunalari", labelRu: "Образцы (Sample Box)", href: "/sample-box" },
 ];

@@ -25,8 +25,10 @@ const config: Config = {
         charcoal: {
           50: '#F5F5F0',
           100: '#E6E4DD',
+          700: '#3A3632',
           800: '#292524',
           900: '#1C1917',
+          950: '#141210',
         },
       },
       borderRadius: {
@@ -36,8 +38,17 @@ const config: Config = {
         '3xl': '24px',
       },
       fontFamily: {
-        sans: ['var(--font-outfit)', 'var(--font-inter)', 'system-ui', 'sans-serif'],
-        mono: ['monospace'],
+        sans: [
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',

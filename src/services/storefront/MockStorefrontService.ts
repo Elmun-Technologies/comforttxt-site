@@ -18,16 +18,29 @@ import {
   StorefrontCustomerOrder,
 } from './types';
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * MOCK (DEVELOPMENT-ONLY) STOREFRONT DATA
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Everything in this file is DEMO FIXTURE data used to exercise the UI until
+ * ShopFlow integration. It is intentionally NEUTRAL:
+ *   - no real-looking product claims (Martindale cycles, Easy Clean, densities)
+ *   - no invented brands, collections, customers, orders or discounts
+ *   - no fake contact/business details (those live in `storefrontConfig`)
+ * ShopFlow will replace all of this data in production.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 export const MOCK_CATEGORIES: StorefrontCategory[] = [
   {
     id: 'cat-fabrics',
     slug: 'mebel-matolari',
     nameUz: 'Mebel matolari',
     nameRu: 'Мебельные ткани',
-    descriptionUz: 'Keng assortimentdagi baxmal velyur, bukle, shenill, rogojka va zamsh matolari',
-    descriptionRu: 'Широкий ассортимент велюра, букле, шенилла, рогожки и замши',
+    descriptionUz: 'Velyur, bukle, shenill, rogojka, mikrofibra va eko-charm matolari',
+    descriptionRu: 'Велюр, букле, шенилл, рогожка, микрофибра и эко-кожа',
     iconName: 'Palette',
-    image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop',
+    image: '/images/categories/fabrics.jpg',
     productCount: 24,
     subcategories: [
       { slug: 'velyur', nameUz: 'Velyur matolar', nameRu: 'Велюровые ткани' },
@@ -46,7 +59,7 @@ export const MOCK_CATEGORIES: StorefrontCategory[] = [
     descriptionUz: 'ST, EL, HR markali har xil zichlik va qalinlikdagi mebel paralonlari',
     descriptionRu: 'Поролон различной плотности и толщины марок ST, EL, HR',
     iconName: 'Layers',
-    image: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop',
+    image: '/images/categories/foam.jpg',
     productCount: 16,
     subcategories: [
       { slug: 'st-standart', nameUz: 'ST Standart', nameRu: 'ST Стандарт' },
@@ -59,10 +72,10 @@ export const MOCK_CATEGORIES: StorefrontCategory[] = [
     slug: 'mexanizmlar',
     nameUz: 'Transformatsiya mexanizmlari',
     nameRu: 'Механизмы трансформации',
-    descriptionUz: 'Divan, krovat va stullar uchun yuklama ko‘taruvchi po‘lat mexanizmlar',
-    descriptionRu: 'Надежные стальные механизмы для диванов, кроватей и стульев',
+    descriptionUz: 'Divan, krovat va stullar uchun transformatsiya mexanizmlari va gaz-liftlar',
+    descriptionRu: 'Механизмы трансформации и газ-лифты для диванов, кроватей и стульев',
     iconName: 'Settings',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop',
+    image: '/images/categories/mechanisms.jpg',
     productCount: 12,
     subcategories: [
       { slug: 'delfin', nameUz: 'Delfin mexanizmi', nameRu: 'Механизм Дельфин' },
@@ -79,7 +92,7 @@ export const MOCK_CATEGORIES: StorefrontCategory[] = [
     descriptionUz: 'Mebel oyoqlari, petlyalar, tortma yo‘naltirgichlari va aksessuarlar',
     descriptionRu: 'Мебельные ножки, петли, направляющие для ящиков и аксессуары',
     iconName: 'Wrench',
-    image: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop',
+    image: '/images/categories/hardware.jpg',
     productCount: 30,
     subcategories: [
       { slug: 'oyoqlar', nameUz: 'Mebel oyoqlari', nameRu: 'Мебельные ножки' },
@@ -92,115 +105,107 @@ export const MOCK_CATEGORIES: StorefrontCategory[] = [
     slug: 'sarf-materiallar-va-instrumentlar',
     nameUz: 'Asboblar va Sarf materiallari',
     nameRu: 'Инструменты и Расходники',
-    descriptionUz: 'Pnevmatik steplerlar, Akfix yelimlar, zımba skobalar va montaj anjomlari',
-    descriptionRu: 'Пневмостеплеры, клей Akfix, скобы и монтажные принадлежности',
+    descriptionUz: 'Pnevmatik steplerlar, yelimlar, skobalar va montaj anjomlari',
+    descriptionRu: 'Пневмостеплеры, клей, скобы и монтажные принадлежности',
     iconName: 'Hammer',
-    image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop',
+    image: '/images/categories/tools.jpg',
     productCount: 18,
     subcategories: [
       { slug: 'pnevmatik', nameUz: 'Pnevmatik steplerlar', nameRu: 'Пневмостеплеры' },
-      { slug: 'yelim', nameUz: 'Mebel yelimlar (Akfix)', nameRu: 'Мебельный клей (Akfix)' },
-      { slug: 'skoba', nameUz: 'Zımba skobalar', nameRu: 'Скобы забивные' },
+      { slug: 'yelim', nameUz: 'Mebel yelimlari', nameRu: 'Мебельный клей' },
+      { slug: 'skoba', nameUz: 'Skobalar', nameRu: 'Скобы' },
     ],
   },
 ];
 
 export const MOCK_COLLECTIONS: StorefrontCollection[] = [
   {
-    id: 'col-luna',
-    slug: 'luna-collection',
-    name: 'LUNA Premium Velvet',
-    descriptionUz: 'Suv yuqtirmaydigan va tirnashga chidamli (Pet Friendly) baxmal matolar',
-    descriptionRu: 'Водоотталкивающий и износостойкий премиальный велюр Easy Clean',
-    image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop',
+    id: 'col-velyur',
+    slug: 'velyur-kolleksiyasi',
+    name: 'Velyur matolar to‘plami',
+    descriptionUz: 'Yumshoq baxmal fakturali velyur matolar tanlovi',
+    descriptionRu: 'Подборка велюровых тканей с мягкой бархатистой фактурой',
+    image: '/images/categories/fabrics.jpg',
     productCount: 6,
   },
   {
-    id: 'col-royal',
-    slug: 'royal-chenille',
-    name: 'ROYAL Chenille Line',
-    descriptionUz: 'Klassik va zamonaviy yumshoq mebellar uchun oliy navli shenill',
-    descriptionRu: 'Высококачественный шенилл для классической и современной мебели',
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop',
+    id: 'col-shenill',
+    slug: 'shenill-kolleksiyasi',
+    name: 'Shenill matolar to‘plami',
+    descriptionUz: 'Qalin va hajmli to‘qimali shenill matolar tanlovi',
+    descriptionRu: 'Подборка шенилловых тканей с плотной объемной структурой',
+    image: '/images/categories/fabrics.jpg',
     productCount: 4,
   },
   {
-    id: 'col-nordic',
-    slug: 'nordic-boucle',
-    name: 'NORDIC Cozy Boucle',
-    descriptionUz: 'Skandinaviya uslubidagi xushbichim bukle matolar to‘plami',
-    descriptionRu: 'Коллекция уютного фактурного букле в скандинавском стиле',
-    image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop',
+    id: 'col-bukle',
+    slug: 'bukle-kolleksiyasi',
+    name: 'Bukle matolar to‘plami',
+    descriptionUz: 'Tugunchali fakturaga ega bukle matolar tanlovi',
+    descriptionRu: 'Подборка букле с выразительной узелковой фактурой',
+    image: '/images/categories/fabrics.jpg',
     productCount: 5,
   },
   {
-    id: 'col-industrial',
-    slug: 'pro-production-kit',
-    name: 'PRO Furniture Workshop Kit',
-    descriptionUz: 'Sex va ustaxonalar uchun eng talabgir sarf materiallari to‘plami',
-    descriptionRu: 'Набор самых востребованных расходников для мебельных цехов',
-    image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop',
+    id: 'col-ustaxona',
+    slug: 'ustaxona-to-plami',
+    name: 'Ustaxona to‘plami',
+    descriptionUz: 'Mebel sexlari uchun talabgir sarf materiallari tanlovi',
+    descriptionRu: 'Набор востребованных расходных материалов для мебельных цехов',
+    image: '/images/categories/tools.jpg',
     productCount: 8,
   },
 ];
 
 export const MOCK_PRODUCTS: StorefrontProduct[] = [
   {
-    id: 'prod-luna-velur',
-    slug: 'luna-premium-velur',
-    titleUz: 'Luna Premium Velur Matosi',
-    titleRu: 'Велюр Luna Premium',
-    descriptionUz: 'LUNA velur matosi o‘zining baxmal yumshoqligi va yuqori chidamliligi (50 000 Martindale) bilan ajralib turadi. Easy Clean va Pet Friendly xususiyatlariga ega bo‘lib, tozalanishi juda oson.',
-    descriptionRu: 'Велюр LUNA отличается высокой износостойкостью (50 000 циклов Мартиндейла). Обладает водоотталкивающим эффектом Easy Clean и защитой от когтей Pet Friendly.',
+    id: 'prod-velyur-01',
+    slug: 'velyur-mato-premium',
+    titleUz: 'Velyur mato (baxmal faktura)',
+    titleRu: 'Велюровая ткань (бархатистая фактура)',
+    descriptionUz:
+      'Yumshoq baxmal fakturali velyur mato. Ranglar palitrasini ko‘rib, mijozingizga mos variantni tanlang.',
+    descriptionRu:
+      'Велюровая ткань с мягкой бархатистой фактурой. Выберите подходящий оттенок из палитры.',
     categorySlug: 'mebel-matolari',
     categoryNameUz: 'Mebel matolari',
     categoryNameRu: 'Мебельные ткани',
-    collectionSlug: 'luna-collection',
-    collectionName: 'LUNA Premium Velvet',
-    brand: 'Comfort Textile',
+    collectionSlug: 'velyur-kolleksiyasi',
+    collectionName: 'Velyur matolar to‘plami',
     unitType: 'meter',
     minQtyStep: 0.5,
-    primaryImage: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop',
-    images: [
-      'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop',
-    ],
+    primaryImage: '/images/categories/fabrics.jpg',
+    images: ['/images/categories/fabrics.jpg'],
     isFeatured: true,
     isPopular: true,
     isNew: true,
-    crossSellProductIds: ['prod-akfix-glue', 'prod-foam-st2536', 'prod-pneumatic-stapler-8016'],
+    crossSellProductIds: ['prod-yelim-sprey', 'prod-paralon-st2536', 'prod-pnevmatik-8016'],
     specs: [
-      { key: 'martindale', labelUz: 'Ishqalanishga chidamlilik', labelRu: 'Износостойкость', valueUz: '50 000 sikl', valueRu: '50 000 циклов' },
-      { key: 'width', labelUz: 'Eni (Enlik)', labelRu: 'Ширина', valueUz: '142 sm', valueRu: '142 см' },
-      { key: 'density', labelUz: 'Zichlik', labelRu: 'Плотность', valueUz: '380 g/m²', valueRu: '380 г/м²' },
-      { key: 'composition', labelUz: 'Tarkibi', labelRu: 'Состав', valueUz: '100% Poliester', valueRu: '100% Полиэстер' },
       { key: 'texture', labelUz: 'Faktura turi', labelRu: 'Текстура', valueUz: 'Velyur', valueRu: 'Велюр' },
     ],
     variants: [
       {
-        id: 'var-luna-01',
+        id: 'var-velyur-01',
         sku: 'LUNA-01',
-        nameUz: 'Luna 01 (Sutli Krem)',
-        nameRu: 'Luna 01 (Молочный)',
+        nameUz: 'Sutli krem',
+        nameRu: 'Молочный',
         colorHex: '#F5F5DC',
         colorNameUz: 'Sutli krem',
         colorNameRu: 'Молочный',
         price: 68000,
-        oldPrice: 75000,
         wholesalePrice: 52000,
         hasWholesale: true,
         stockStatus: 'IN_STOCK',
         quantityStep: 0.5,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/fabrics.jpg'],
         isAvailable: true,
       },
       {
-        id: 'var-luna-04',
+        id: 'var-velyur-04',
         sku: 'LUNA-04',
-        nameUz: 'Luna 04 (Klassik Bej)',
-        nameRu: 'Luna 04 (Бежевый)',
+        nameUz: 'Klassik bej',
+        nameRu: 'Бежевый',
         colorHex: '#D2B48C',
         colorNameUz: 'Klassik bej',
         colorNameRu: 'Бежевый',
@@ -210,14 +215,14 @@ export const MOCK_PRODUCTS: StorefrontProduct[] = [
         stockStatus: 'IN_STOCK',
         quantityStep: 0.5,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/fabrics.jpg'],
         isAvailable: true,
       },
       {
-        id: 'var-luna-05',
+        id: 'var-velyur-05',
         sku: 'LUNA-05',
-        nameUz: 'Luna 05 (Zumrad Yashil)',
-        nameRu: 'Luna 05 (Изумрудный)',
+        nameUz: 'Zumrad yashil',
+        nameRu: 'Изумрудный',
         colorHex: '#004B49',
         colorNameUz: 'Zumrad yashil',
         colorNameRu: 'Изумрудный',
@@ -227,14 +232,14 @@ export const MOCK_PRODUCTS: StorefrontProduct[] = [
         stockStatus: 'IN_STOCK',
         quantityStep: 0.5,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/fabrics.jpg'],
         isAvailable: true,
       },
       {
-        id: 'var-luna-12',
+        id: 'var-velyur-12',
         sku: 'LUNA-12',
-        nameUz: 'Luna 12 (Grafit Kulrang)',
-        nameRu: 'Luna 12 (Графит)',
+        nameUz: 'Grafit kulrang',
+        nameRu: 'Графитовый',
         colorHex: '#383E42',
         colorNameUz: 'Grafit kulrang',
         colorNameRu: 'Графитовый',
@@ -244,44 +249,169 @@ export const MOCK_PRODUCTS: StorefrontProduct[] = [
         stockStatus: 'LOW_STOCK',
         quantityStep: 0.5,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/fabrics.jpg'],
+        isAvailable: true,
+      },
+      {
+        id: 'var-velyur-18',
+        sku: 'LUNA-18',
+        nameUz: 'Antrasit',
+        nameRu: 'Антрацит',
+        colorHex: '#2E2E30',
+        colorNameUz: 'Antrasit',
+        colorNameRu: 'Антрацит',
+        price: 68000,
+        wholesalePrice: 52000,
+        hasWholesale: true,
+        stockStatus: 'ON_ORDER',
+        quantityStep: 0.5,
+        minQuantity: 1.0,
+        images: ['/images/categories/fabrics.jpg'],
+        isAvailable: true,
+      },
+      {
+        id: 'var-velyur-21',
+        sku: 'LUNA-21',
+        nameUz: 'Och kulrang',
+        nameRu: 'Светло-серый',
+        colorHex: '#B8B8B4',
+        colorNameUz: 'Och kulrang',
+        colorNameRu: 'Светло-серый',
+        price: 68000,
+        wholesalePrice: 52000,
+        hasWholesale: true,
+        stockStatus: 'IN_STOCK',
+        quantityStep: 0.5,
+        minQuantity: 1.0,
+        images: ['/images/categories/fabrics.jpg'],
+        isAvailable: true,
+      },
+      {
+        id: 'var-velyur-25',
+        sku: 'LUNA-25',
+        nameUz: 'Qum rang',
+        nameRu: 'Песочный',
+        colorHex: '#C9B79A',
+        colorNameUz: 'Qum rang',
+        colorNameRu: 'Песочный',
+        price: 68000,
+        wholesalePrice: 52000,
+        hasWholesale: true,
+        stockStatus: 'IN_STOCK',
+        quantityStep: 0.5,
+        minQuantity: 1.0,
+        images: ['/images/categories/fabrics.jpg'],
         isAvailable: true,
       },
     ],
   },
   {
-    id: 'prod-royal-shenill',
-    slug: 'royal-shenill-mebel',
-    titleUz: 'Royal Shenill Mebel Matosi',
-    titleRu: 'Шенилл Royal Mebel',
-    descriptionUz: 'Hashamatli hajmdor fakturaga ega Royal Shenill matosi mebellarga oliyjanob ko‘rinish bag‘ishlaydi. Qalin va chidamli to‘qima.',
-    descriptionRu: 'Шенилл Royal придаст вашей мебели роскошный фактурный вид. Плотная износостойкая ткань.',
+    id: 'prod-bukle-01',
+    slug: 'bukle-mato-cozy',
+    titleUz: 'Bukle mato (tugunchali faktura)',
+    titleRu: 'Букле (узелковая фактура)',
+    descriptionUz:
+      'Tugunchali fakturaga ega bukle mato. Zamonaviy yumshoq mebellar uchun tanlov.',
+    descriptionRu:
+      'Букле с выразительной узелковой фактурой для современной мягкой мебели.',
     categorySlug: 'mebel-matolari',
     categoryNameUz: 'Mebel matolari',
     categoryNameRu: 'Мебельные ткани',
-    collectionSlug: 'royal-chenille',
-    collectionName: 'ROYAL Chenille Line',
-    brand: 'Royal Line',
+    collectionSlug: 'bukle-kolleksiyasi',
+    collectionName: 'Bukle matolar to‘plami',
     unitType: 'meter',
     minQtyStep: 0.5,
-    primaryImage: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop',
-    images: ['https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop'],
+    primaryImage: '/images/categories/fabrics.jpg',
+    images: ['/images/categories/fabrics.jpg'],
     isFeatured: true,
-    isPopular: false,
-    isNew: false,
-    crossSellProductIds: ['prod-akfix-glue', 'prod-foam-el2842'],
+    isNew: true,
+    crossSellProductIds: ['prod-yelim-sprey', 'prod-paralon-el2842'],
     specs: [
-      { key: 'martindale', labelUz: 'Ishqalanishga chidamlilik', labelRu: 'Износостойкость', valueUz: '45 000 sikl', valueRu: '45 000 циклов' },
-      { key: 'width', labelUz: 'Eni', labelRu: 'Ширина', valueUz: '140 sm', valueRu: '140 см' },
-      { key: 'density', labelUz: 'Zichlik', labelRu: 'Плотность', valueUz: '420 g/m²', valueRu: '420 г/м²' },
+      { key: 'texture', labelUz: 'Faktura turi', labelRu: 'Текстура', valueUz: 'Bukle', valueRu: 'Букле' },
+    ],
+    variants: [
+      {
+        id: 'var-bukle-01',
+        sku: 'BOUCLE-01',
+        nameUz: 'Oq qor',
+        nameRu: 'Белоснежный',
+        colorHex: '#FAFAFA',
+        colorNameUz: 'Oq qor',
+        colorNameRu: 'Белоснежный',
+        price: 95000,
+        wholesalePrice: 75000,
+        hasWholesale: true,
+        stockStatus: 'IN_STOCK',
+        quantityStep: 0.5,
+        minQuantity: 1.0,
+        images: ['/images/categories/fabrics.jpg'],
+        isAvailable: true,
+      },
+      {
+        id: 'var-bukle-03',
+        sku: 'BOUCLE-03',
+        nameUz: 'Kulrang',
+        nameRu: 'Серый',
+        colorHex: '#9CA3AF',
+        colorNameUz: 'Kulrang',
+        colorNameRu: 'Серый',
+        price: 95000,
+        wholesalePrice: 75000,
+        hasWholesale: true,
+        stockStatus: 'IN_STOCK',
+        quantityStep: 0.5,
+        minQuantity: 1.0,
+        images: ['/images/categories/fabrics.jpg'],
+        isAvailable: true,
+      },
+      {
+        id: 'var-bukle-07',
+        sku: 'BOUCLE-07',
+        nameUz: 'Sutli',
+        nameRu: 'Молочный',
+        colorHex: '#F3EDE2',
+        colorNameUz: 'Sutli',
+        colorNameRu: 'Молочный',
+        price: 95000,
+        wholesalePrice: 75000,
+        hasWholesale: true,
+        stockStatus: 'OUT_OF_STOCK',
+        quantityStep: 0.5,
+        minQuantity: 1.0,
+        images: ['/images/categories/fabrics.jpg'],
+        isAvailable: false,
+      },
+    ],
+  },
+  {
+    id: 'prod-shenill-01',
+    slug: 'shenill-mato-royal',
+    titleUz: 'Shenill mato (qalin to‘qima)',
+    titleRu: 'Шенилл (плотная структура)',
+    descriptionUz:
+      'Qalin va hajmli to‘qimali shenill mato. Klassik va zamonaviy mebellar uchun.',
+    descriptionRu:
+      'Шенилл с плотной объемной структурой для классической и современной мебели.',
+    categorySlug: 'mebel-matolari',
+    categoryNameUz: 'Mebel matolari',
+    categoryNameRu: 'Мебельные ткани',
+    collectionSlug: 'shenill-kolleksiyasi',
+    collectionName: 'Shenill matolar to‘plami',
+    unitType: 'meter',
+    minQtyStep: 0.5,
+    primaryImage: '/images/categories/fabrics.jpg',
+    images: ['/images/categories/fabrics.jpg'],
+    isFeatured: true,
+    crossSellProductIds: ['prod-yelim-sprey', 'prod-paralon-el2842'],
+    specs: [
       { key: 'texture', labelUz: 'Faktura turi', labelRu: 'Текстура', valueUz: 'Shenill', valueRu: 'Шенилл' },
     ],
     variants: [
       {
-        id: 'var-royal-10',
+        id: 'var-shenill-10',
         sku: 'ROYAL-10',
-        nameUz: 'Royal 10 (Oltinsimon Bej)',
-        nameRu: 'Royal 10 (Золотисто-бежевый)',
+        nameUz: 'Oltinsimon bej',
+        nameRu: 'Золотисто-бежевый',
         colorHex: '#D4AF37',
         colorNameUz: 'Oltinsimon bej',
         colorNameRu: 'Золотисто-бежевый',
@@ -291,14 +421,14 @@ export const MOCK_PRODUCTS: StorefrontProduct[] = [
         stockStatus: 'IN_STOCK',
         quantityStep: 0.5,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/fabrics.jpg'],
         isAvailable: true,
       },
       {
-        id: 'var-royal-18',
+        id: 'var-shenill-18',
         sku: 'ROYAL-18',
-        nameUz: 'Royal 18 (To‘q Ko‘k)',
-        nameRu: 'Royal 18 (Темно-синий)',
+        nameUz: 'To‘q ko‘k',
+        nameRu: 'Темно-синий',
         colorHex: '#1B2A4A',
         colorNameUz: 'To‘q ko‘k',
         colorNameRu: 'Темно-синий',
@@ -308,176 +438,170 @@ export const MOCK_PRODUCTS: StorefrontProduct[] = [
         stockStatus: 'IN_STOCK',
         quantityStep: 0.5,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/fabrics.jpg'],
         isAvailable: true,
       },
     ],
   },
   {
-    id: 'prod-foam-st2536',
+    id: 'prod-paralon-st2536',
     slug: 'paralon-st-2536',
-    titleUz: 'Paralon ST-2536 Standart List (200x100 sm)',
-    titleRu: 'Поролон ST-2536 Стандарт (200x100 см)',
-    descriptionUz: 'ST-2536 markali mebel paraloni divan suyanchig‘i, stullar va yumshoq mebel elementlari uchun eng maqbul standart zichlikka ega.',
-    descriptionRu: 'Поролон марки ST-2536 идеален для спинок диванов, стульев и подлокотников. Стандартная плотность и упругость.',
+    titleUz: 'Paralon ST-2536 (200x100 sm)',
+    titleRu: 'Поролон ST-2536 (200x100 см)',
+    descriptionUz:
+      'ST markali mebel paraloni. Divan, stul va yumshoq mebel elementlari uchun standart tanlov.',
+    descriptionRu:
+      'Поролон марки ST для спинок диванов, стульев и элементов мягкой мебели.',
     categorySlug: 'paralon',
     categoryNameUz: 'Paralon',
     categoryNameRu: 'Поролон',
-    brand: 'Comfort Foam',
     unitType: 'sheet',
     minQtyStep: 1,
-    primaryImage: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop',
-    images: ['https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop'],
-    isFeatured: false,
+    primaryImage: '/images/categories/foam.jpg',
+    images: ['/images/categories/foam.jpg'],
     isPopular: true,
-    isNew: false,
-    crossSellProductIds: ['prod-akfix-glue', 'prod-luna-velur'],
+    crossSellProductIds: ['prod-yelim-sprey', 'prod-velyur-01'],
     specs: [
       { key: 'foam_type', labelUz: 'Marka', labelRu: 'Марка ППУ', valueUz: 'ST 2536', valueRu: 'ST 2536' },
-      { key: 'density', labelUz: 'Zichlik', labelRu: 'Плотность', valueUz: '25 kg/m³', valueRu: '25 кг/м³' },
-      { key: 'hardness', labelUz: 'Qattiqlik', labelRu: 'Жесткость', valueUz: '3.6 kPa', valueRu: '3.6 кПа' },
       { key: 'size', labelUz: 'List o‘lchami', labelRu: 'Размер листа', valueUz: '200 x 100 sm', valueRu: '200 x 100 см' },
     ],
     variants: [
       {
         id: 'var-st2536-50',
         sku: 'ST2536-50',
-        nameUz: 'ST-2536 Qalinligi 50mm',
-        nameRu: 'ST-2536 Толщина 50мм',
+        nameUz: 'Qalinligi 50 mm',
+        nameRu: 'Толщина 50 мм',
         price: 110000,
         wholesalePrice: 88000,
         hasWholesale: true,
         stockStatus: 'IN_STOCK',
         quantityStep: 1.0,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/foam.jpg'],
         isAvailable: true,
       },
       {
         id: 'var-st2536-100',
         sku: 'ST2536-100',
-        nameUz: 'ST-2536 Qalinligi 100mm',
-        nameRu: 'ST-2536 Толщина 100мм',
+        nameUz: 'Qalinligi 100 mm',
+        nameRu: 'Толщина 100 мм',
         price: 215000,
         wholesalePrice: 175000,
         hasWholesale: true,
         stockStatus: 'IN_STOCK',
         quantityStep: 1.0,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/foam.jpg'],
         isAvailable: true,
       },
     ],
   },
   {
-    id: 'prod-foam-el2842',
-    slug: 'paralon-el-2842-qattiq',
-    titleUz: 'Paralon EL-2842 Yuqori Qattiqlik (200x100 sm)',
-    titleRu: 'Поролон EL-2842 Повышенной Жесткости (200x100 см)',
-    descriptionUz: 'EL-2842 yuqori qattiqlikdagi paralon divan va matras o‘rindiqlari uchun uzoq muddat o‘tirmaslik va yuklamani ko‘tarish uchun mo‘ljallangan.',
-    descriptionRu: 'Поролон повышенной жесткости EL-2842 для сидений диванов и ортопедических матрасов.',
+    id: 'prod-paralon-el2842',
+    slug: 'paralon-el-2842',
+    titleUz: 'Paralon EL-2842 (200x100 sm)',
+    titleRu: 'Поролон EL-2842 (200x100 см)',
+    descriptionUz:
+      'EL markali yuqori qattiqlikdagi mebel paraloni. O‘rindiq va yuklama ko‘taradigan elementlar uchun.',
+    descriptionRu:
+      'Поролон марки EL повышенной жесткости для сидений и нагружаемых элементов.',
     categorySlug: 'paralon',
     categoryNameUz: 'Paralon',
     categoryNameRu: 'Поролон',
-    brand: 'Comfort Foam',
     unitType: 'sheet',
     minQtyStep: 1,
-    primaryImage: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop',
-    images: ['https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop'],
+    primaryImage: '/images/categories/foam.jpg',
+    images: ['/images/categories/foam.jpg'],
     isFeatured: true,
     isPopular: true,
-    isNew: false,
     specs: [
       { key: 'foam_type', labelUz: 'Marka', labelRu: 'Марка ППУ', valueUz: 'EL 2842', valueRu: 'EL 2842' },
-      { key: 'density', labelUz: 'Zichlik', labelRu: 'Плотность', valueUz: '28 kg/m³', valueRu: '28 кг/м³' },
-      { key: 'hardness', labelUz: 'Qattiqlik', labelRu: 'Жесткость', valueUz: '4.2 kPa', valueRu: '4.2 кПа' },
+      { key: 'size', labelUz: 'List o‘lchami', labelRu: 'Размер листа', valueUz: '200 x 100 sm', valueRu: '200 x 100 см' },
     ],
     variants: [
       {
         id: 'var-el2842-80',
         sku: 'EL2842-80',
-        nameUz: 'EL-2842 Qalinligi 80mm',
-        nameRu: 'EL-2842 Толщина 80мм',
+        nameUz: 'Qalinligi 80 mm',
+        nameRu: 'Толщина 80 мм',
         price: 195000,
         wholesalePrice: 160000,
         hasWholesale: true,
         stockStatus: 'IN_STOCK',
         quantityStep: 1.0,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/foam.jpg'],
         isAvailable: true,
       },
     ],
   },
   {
-    id: 'prod-pneumatic-stapler-f30d',
-    slug: 'pnevmatik-stepler-f30d',
-    titleUz: 'Pnevmatik Mix Qoqqich F30D (Pneumatic Brad Nailer)',
+    id: 'prod-pnevmatik-f30d',
+    slug: 'pnevmatik-mix-qoqqich-f30d',
+    titleUz: 'Pnevmatik mix qoqqich F30D',
     titleRu: 'Пневмопистолет гвоздезабивной F30D',
-    descriptionUz: 'Professional mebel karkaslari, moldinglar va orqa faneralarni mixlash uchun yuqori bosimli qulay pnevmatik asbob.',
-    descriptionRu: 'Профессиональный гвоздезабивной пневмопистолет F30D для мебельных каркасов и молдингов.',
+    descriptionUz:
+      'Mebel karkaslari va faneralarni mixlash uchun pnevmatik asbob. Xususiyatlarini menejer bilan tasdiqlang.',
+    descriptionRu:
+      'Пневматический гвоздезабивной пистолет для мебельных каркасов. Уточните характеристики у менеджера.',
     categorySlug: 'sarf-materiallar-va-instrumentlar',
     categoryNameUz: 'Asboblar va Sarf materiallari',
     categoryNameRu: 'Инструменты и Расходники',
-    brand: 'ProTool',
     unitType: 'pcs',
     minQtyStep: 1,
-    primaryImage: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop',
-    images: ['https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop'],
+    primaryImage: '/images/categories/tools.jpg',
+    images: ['/images/categories/tools.jpg'],
     isFeatured: true,
     isPopular: true,
     isNew: true,
-    crossSellProductIds: ['prod-pneumatic-stapler-8016', 'prod-akfix-glue'],
+    crossSellProductIds: ['prod-pnevmatik-8016', 'prod-yelim-sprey'],
     specs: [
-      { key: 'power_type', labelUz: 'Quvvat turi', labelRu: 'Тип питания', valueUz: 'Pnevmatik (Havo bosimi)', valueRu: 'Пневматический' },
-      { key: 'pressure', labelUz: 'Ishchi bosim', labelRu: 'Рабочее давление', valueUz: '4 - 7 bar', valueRu: '4 - 7 бар' },
-      { key: 'capacity', labelUz: 'Magazin sig‘imi', labelRu: 'Емкость магазина', valueUz: '100 ta mix (10-30 mm)', valueRu: '100 гвоздей (10-30 мм)' },
+      { key: 'power_type', labelUz: 'Quvvat turi', labelRu: 'Тип питания', valueUz: 'Pnevmatik', valueRu: 'Пневматический' },
     ],
     variants: [
       {
         id: 'var-f30d',
         sku: 'F30D',
-        nameUz: 'Pnevmatik Mix Qoqqich F30D Pro',
-        nameRu: 'Пневмопистолет F30D Pro',
+        nameUz: 'Pnevmatik mix qoqqich F30D',
+        nameRu: 'Пневмопистолет F30D',
         price: 320000,
         wholesalePrice: 260000,
         hasWholesale: true,
         stockStatus: 'IN_STOCK',
         quantityStep: 1.0,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/tools.jpg'],
         isAvailable: true,
       },
     ],
   },
   {
-    id: 'prod-pneumatic-stapler-8016',
+    id: 'prod-pnevmatik-8016',
     slug: 'pnevmatik-stepler-8016',
-    titleUz: 'Pnevmatik Stepler 8016 (Mato va Paralon uchun)',
-    titleRu: 'Пневмостеплер 8016 для обивки мебели',
-    descriptionUz: 'Mebel qoplash (obivka) sexlarida eng ko‘p ishlatiladigan universal pnevmatik stepler. Tip 80 skobalar bilan ishlaydi.',
-    descriptionRu: 'Самый популярный обивочный пневмостеплер 8016 для крепления ткани, поролона и картона к каркасу.',
+    titleUz: 'Pnevmatik stepler 8016',
+    titleRu: 'Пневмостеплер 8016',
+    descriptionUz:
+      'Mebel qoplash ishlarida ishlatiladigan pnevmatik stepler. Xususiyatlarini menejer bilan tasdiqlang.',
+    descriptionRu:
+      'Пневмостеплер для обивки мебели. Уточните характеристики у менеджера.',
     categorySlug: 'sarf-materiallar-va-instrumentlar',
     categoryNameUz: 'Asboblar va Sarf materiallari',
     categoryNameRu: 'Инструменты и Расходники',
-    brand: 'ProTool',
     unitType: 'pcs',
     minQtyStep: 1,
-    primaryImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop',
-    images: ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop'],
+    primaryImage: '/images/categories/tools.jpg',
+    images: ['/images/categories/tools.jpg'],
     isFeatured: true,
     isPopular: true,
-    isNew: false,
-    crossSellProductIds: ['prod-pneumatic-stapler-f30d', 'prod-akfix-glue'],
+    crossSellProductIds: ['prod-pnevmatik-f30d', 'prod-yelim-sprey'],
     specs: [
       { key: 'power_type', labelUz: 'Quvvat turi', labelRu: 'Тип питания', valueUz: 'Pnevmatik', valueRu: 'Пневматический' },
-      { key: 'staple_type', labelUz: 'Skoba turi', labelRu: 'Тип скобы', valueUz: 'Tip 80 (6-16 mm)', valueRu: 'Тип 80 (6-16 мм)' },
     ],
     variants: [
       {
         id: 'var-8016',
         sku: '8016',
-        nameUz: 'Pnevmostepler 8016 Universal',
+        nameUz: 'Pnevmostepler 8016',
         nameRu: 'Пневмостеплер 8016',
         price: 245000,
         wholesalePrice: 195000,
@@ -485,93 +609,109 @@ export const MOCK_PRODUCTS: StorefrontProduct[] = [
         stockStatus: 'IN_STOCK',
         quantityStep: 1.0,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/tools.jpg'],
         isAvailable: true,
       },
     ],
   },
   {
-    id: 'prod-akfix-glue',
-    slug: 'akfix-sprey-yelim-paralon-mato',
-    titleUz: 'Akfix Mebel Sprey Yelim (Paralon va Mato uchun)',
-    titleRu: 'Клей-спрей Akfix для поролона и тканей',
-    descriptionUz: 'Tez quriydigan va hid chiqarmaydigan yuqori yopishish quvvatiga ega mebel sprey yelimi.',
-    descriptionRu: 'Быстросохнущий контактный клей-спрей Akfix для склеивания поролона, ткани, дерева и пластика.',
+    id: 'prod-yelim-sprey',
+    slug: 'mebel-sprey-yelim',
+    titleUz: 'Mebel sprey yelim',
+    titleRu: 'Клей-спрей мебельный',
+    descriptionUz:
+      'Paralon va mato yopishtirish uchun sprey yelim. Xususiyatlarini menejer bilan tasdiqlang.',
+    descriptionRu:
+      'Клей-спрей для склеивания поролона и тканей. Уточните характеристики у менеджера.',
     categorySlug: 'sarf-materiallar-va-instrumentlar',
     categoryNameUz: 'Asboblar va Sarf materiallari',
     categoryNameRu: 'Инструменты и Расходники',
-    brand: 'Akfix',
     unitType: 'pcs',
     minQtyStep: 1,
-    primaryImage: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop',
-    images: ['https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop'],
+    primaryImage: '/images/categories/tools.jpg',
+    images: ['/images/categories/tools.jpg'],
     isFeatured: true,
     isPopular: true,
-    isNew: false,
     specs: [
       { key: 'volume', labelUz: 'Hajmi', labelRu: 'Объем', valueUz: '500 ml', valueRu: '500 мл' },
-      { key: 'drying_time', labelUz: 'Qurish vaqti', labelRu: 'Время схватывания', valueUz: '1-3 daqiqa', valueRu: '1-3 мин' },
     ],
     variants: [
       {
-        id: 'var-akfix-500',
+        id: 'var-yelim-500',
         sku: 'AKFIX-500',
-        nameUz: 'Akfix Sprey Yelim 500ml',
-        nameRu: 'Клей Akfix 500мл',
+        nameUz: 'Sprey yelim 500 ml',
+        nameRu: 'Клей-спрей 500 мл',
         price: 48000,
         wholesalePrice: 38000,
         hasWholesale: true,
         stockStatus: 'IN_STOCK',
         quantityStep: 1.0,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/tools.jpg'],
         isAvailable: true,
       },
     ],
   },
   {
-    id: 'prod-mechanism-dolphin',
-    slug: 'delfin-mexanizmi-po-lat',
-    titleUz: 'Delfin Transformatsiya Mexanizmi (Po‘lat, Mustahkam)',
-    titleRu: 'Механизм трансформации Дельфин (Стальной)',
-    descriptionUz: 'Burchakli divanlar uchun qulay va uzoq xizmat qiluvchi qalin po‘latli Delfin yig‘ish mexanizmi.',
-    descriptionRu: 'Надежный механизм трансформации Дельфин из толстостенной стали для угловых диванов.',
+    id: 'prod-mexanizm-delfin',
+    slug: 'delfin-transformatsiya-mexanizmi',
+    titleUz: 'Delfin transformatsiya mexanizmi',
+    titleRu: 'Механизм трансформации «Дельфин»',
+    descriptionUz:
+      'Burchakli divanlar uchun transformatsiya mexanizmi. O‘lcham va yuklamani menejer bilan tasdiqlang.',
+    descriptionRu:
+      'Механизм трансформации для угловых диванов. Уточните размеры и нагрузку у менеджера.',
     categorySlug: 'mexanizmlar',
     categoryNameUz: 'Transformatsiya mexanizmlari',
     categoryNameRu: 'Механизмы трансформации',
-    brand: 'ProMechanisms',
     unitType: 'pcs',
     minQtyStep: 1,
-    primaryImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop',
-    images: ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop'],
-    isFeatured: false,
+    primaryImage: '/images/categories/mechanisms.jpg',
+    images: ['/images/categories/mechanisms.jpg'],
     isPopular: true,
-    isNew: false,
     specs: [
-      { key: 'material', labelUz: 'Material', labelRu: 'Материал', valueUz: 'Qotirilgan po‘lat', valueRu: 'Легированная сталь' },
-      { key: 'load_capacity', labelUz: 'Yuk ko‘tarish quvvati', labelRu: 'Нагрузка', valueUz: '200 kg gacha', valueRu: 'до 200 кг' },
+      { key: 'mechanism_type', labelUz: 'Mexanizm turi', labelRu: 'Тип механизма', valueUz: 'Delfin', valueRu: 'Дельфин' },
     ],
     variants: [
       {
         id: 'var-delfin-pair',
         sku: 'DELFIN-01',
-        nameUz: 'Delfin Mexanizm Juft (O‘ng + Chap)',
-        nameRu: 'Механизм Дельфин (Комплект)',
+        nameUz: 'Komplekt (o‘ng + chap)',
+        nameRu: 'Комплект (правый + левый)',
         price: 180000,
         wholesalePrice: 145000,
         hasWholesale: true,
         stockStatus: 'IN_STOCK',
         quantityStep: 1.0,
         minQuantity: 1.0,
-        images: ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop'],
+        images: ['/images/categories/mechanisms.jpg'],
         isAvailable: true,
       },
     ],
   },
 ];
 
+// ── Development simulation knobs ─────────────────────────────────────────────
+// Simulates ShopFlow remote latency & failures in development.
+//   NEXT_PUBLIC_MOCK_LATENCY_MS=1500  → 1.5s delay per request
+//   NEXT_PUBLIC_MOCK_FAIL_RATE=0.3    → 30% of requests fail
+const MOCK_LATENCY_MS = Number(process.env.NEXT_PUBLIC_MOCK_LATENCY_MS || 0);
+const MOCK_FAIL_RATE = Number(process.env.NEXT_PUBLIC_MOCK_FAIL_RATE || 0);
+
+function delay(ms = MOCK_LATENCY_MS): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function maybeFail(): void {
+  if (MOCK_FAIL_RATE > 0 && Math.random() < MOCK_FAIL_RATE) {
+    throw new Error('MOCK_SERVICE_FAILURE');
+  }
+}
+
 export class MockStorefrontService implements IStorefrontService {
   async getHomepage(locale = 'uz'): Promise<HomepageData> {
+    await delay();
+    maybeFail();
     return {
       heroCategories: MOCK_CATEGORIES,
       popularProducts: MOCK_PRODUCTS.filter((p) => p.isPopular).slice(0, 4),
@@ -582,14 +722,20 @@ export class MockStorefrontService implements IStorefrontService {
   }
 
   async getCategories(locale = 'uz'): Promise<StorefrontCategory[]> {
+    await delay();
+    maybeFail();
     return MOCK_CATEGORIES;
   }
 
   async getCategory(slug: string, locale = 'uz'): Promise<StorefrontCategory | null> {
+    await delay();
+    maybeFail();
     return MOCK_CATEGORIES.find((c) => c.slug === slug) || null;
   }
 
   async getProducts(filter?: StorefrontProductFilter, locale = 'uz'): Promise<StorefrontProduct[]> {
+    await delay();
+    maybeFail();
     let result = [...MOCK_PRODUCTS];
 
     if (!filter) return result;
@@ -665,10 +811,14 @@ export class MockStorefrontService implements IStorefrontService {
   }
 
   async getProduct(slug: string, locale = 'uz'): Promise<StorefrontProduct | null> {
+    await delay();
+    maybeFail();
     return MOCK_PRODUCTS.find((p) => p.slug === slug) || null;
   }
 
   async getRelatedProducts(productId: string, locale = 'uz'): Promise<StorefrontProduct[]> {
+    await delay();
+    maybeFail();
     const current = MOCK_PRODUCTS.find((p) => p.id === productId);
     if (!current) return MOCK_PRODUCTS.slice(0, 3);
 
@@ -680,18 +830,37 @@ export class MockStorefrontService implements IStorefrontService {
     return MOCK_PRODUCTS.filter((p) => p.id !== productId && p.categorySlug === current.categorySlug).slice(0, 3);
   }
 
+  /**
+   * Universal search with SKU-first ranking.
+   * An EXACT SKU match (case-insensitive) is always ranked before
+   * approximate text matches, so typing "F30D" surfaces the exact product first.
+   */
   async searchProducts(query: string, locale = 'uz'): Promise<StorefrontSearchResult> {
+    await delay();
+    maybeFail();
     const q = (query || '').trim().toLowerCase();
     if (!q) {
       return { products: [], collections: [], categories: [], totalMatches: 0 };
     }
 
-    const matchedProducts = MOCK_PRODUCTS.filter(
-      (p) =>
-        p.titleUz.toLowerCase().includes(q) ||
-        p.titleRu.toLowerCase().includes(q) ||
-        p.variants.some((v) => v.sku.toLowerCase().includes(q))
+    const exactSkuMatches = MOCK_PRODUCTS.filter((p) =>
+      p.variants.some((v) => v.sku.toLowerCase() === q)
     );
+
+    const textMatches = MOCK_PRODUCTS.filter(
+      (p) =>
+        (p.titleUz.toLowerCase().includes(q) || p.titleRu.toLowerCase().includes(q)) &&
+        !exactSkuMatches.includes(p)
+    );
+
+    const skuPartialMatches = MOCK_PRODUCTS.filter(
+      (p) =>
+        p.variants.some((v) => v.sku.toLowerCase().includes(q)) &&
+        !exactSkuMatches.includes(p) &&
+        !textMatches.includes(p)
+    );
+
+    const matchedProducts = [...exactSkuMatches, ...textMatches, ...skuPartialMatches];
 
     const matchedCollections = MOCK_COLLECTIONS.filter((c) =>
       c.name.toLowerCase().includes(q)
@@ -712,10 +881,14 @@ export class MockStorefrontService implements IStorefrontService {
   }
 
   async getCollections(locale = 'uz'): Promise<StorefrontCollection[]> {
+    await delay();
+    maybeFail();
     return MOCK_COLLECTIONS;
   }
 
   async getCartPricing(items: StorefrontCartItemInput[], isB2B = false): Promise<StorefrontCartPricing> {
+    await delay();
+    maybeFail();
     let subtotal = 0;
     for (const item of items) {
       const priceToUse = (isB2B && item.wholesalePrice) ? item.wholesalePrice : item.price;
@@ -725,7 +898,7 @@ export class MockStorefrontService implements IStorefrontService {
     return {
       subtotal,
       discountAmount: 0,
-      deliveryAmount: 0, // Managed by logistics / free for threshold
+      deliveryAmount: 0, // Delivery cost is confirmed by the manager after order
       total: subtotal,
       isB2B,
       currency: 'UZS',
@@ -733,6 +906,8 @@ export class MockStorefrontService implements IStorefrontService {
   }
 
   async submitOrder(input: StorefrontOrderInput): Promise<StorefrontOrderResult> {
+    await delay();
+    maybeFail();
     const todayStr = new Date().toISOString().slice(2, 10).replace(/-/g, '');
     const randomSuffix = Math.floor(10000 + Math.random() * 90000);
     const orderNumber = `CT-${todayStr}-${randomSuffix}`;
@@ -749,92 +924,50 @@ export class MockStorefrontService implements IStorefrontService {
   }
 
   async submitQuickOrder(input: StorefrontLeadInput): Promise<StorefrontLeadResult> {
+    await delay();
+    maybeFail();
     return {
       success: true,
       referenceId: `QO-${Math.floor(1000 + Math.random() * 9000)}`,
-      message: 'Tezkor buyurtmangiz qabul qilindi. Operatorimiz 5-10 daqiqa ichida qo‘ng‘iroq qiladi.',
+      message: 'Tezkor buyurtmangiz qabul qilindi. Operatorimiz tez orada qo‘ng‘iroq qiladi.',
     };
   }
 
   async submitSampleRequest(input: StorefrontLeadInput): Promise<StorefrontLeadResult> {
+    await delay();
+    maybeFail();
     return {
       success: true,
       referenceId: `SB-${Math.floor(1000 + Math.random() * 9000)}`,
-      message: 'Sample Box so‘rovingiz qabul qilindi. Tez orada namunalarni tayyorlaymiz.',
+      message: 'Namunalar so‘rovingiz qabul qilindi. Menejerimiz tez orada bog‘lanadi.',
     };
   }
 
   async submitWholesaleRequest(input: StorefrontLeadInput): Promise<StorefrontLeadResult> {
+    await delay();
+    maybeFail();
     return {
       success: true,
       referenceId: `B2B-${Math.floor(1000 + Math.random() * 9000)}`,
-      message: 'Ulgurji hamkorlik arizangiz qabul qilindi. B2B menejerimiz taklif bilan bog‘lanadi.',
+      message: 'Ulgurji hamkorlik arizangiz qabul qilindi. Menejerimiz tez orada bog‘lanadi.',
     };
   }
 
+  /**
+   * No fake customer data. Returns null until ShopFlow provides real accounts.
+   */
   async getCustomer(id: string): Promise<StorefrontCustomer | null> {
-    return {
-      id: 'demo-customer-01',
-      name: 'Otabek Rixsiyev',
-      phone: '+998 (93) 987-65-43',
-      email: 'otabek.mebel@gmail.com',
-      companyName: 'Sharq Mebel MCHJ',
-      isB2B: true,
-      b2bApproved: true,
-      b2bDiscountPercent: 15,
-    };
+    await delay();
+    maybeFail();
+    return null;
   }
 
+  /**
+   * No fake order history. Returns an empty list until ShopFlow provides real orders.
+   */
   async getCustomerOrders(customerId: string): Promise<StorefrontCustomerOrder[]> {
-    return [
-      {
-        id: 'demo-ord-1',
-        orderNumber: 'CT-260820-84912',
-        createdAt: '2026-08-20T10:30:00Z',
-        status: 'DELIVERED',
-        total: 2600000,
-        itemCount: 2,
-        items: [
-          {
-            sku: 'LUNA-01',
-            productTitle: 'Luna Premium Velur Matosi',
-            variantName: 'Sutli krem',
-            quantity: 50,
-            unitType: 'meter',
-            unitPrice: 52000,
-            lineTotal: 2600000,
-            image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop',
-          },
-        ],
-      },
-      {
-        id: 'demo-ord-2',
-        orderNumber: 'CT-260815-19402',
-        createdAt: '2026-08-15T14:15:00Z',
-        status: 'PROCESSING',
-        total: 1540000,
-        itemCount: 3,
-        items: [
-          {
-            sku: 'ST2536-50',
-            productTitle: 'Paralon ST-2536 Standart List',
-            quantity: 10,
-            unitType: 'sheet',
-            unitPrice: 88000,
-            lineTotal: 880000,
-            image: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop',
-          },
-          {
-            sku: 'F30D',
-            productTitle: 'Pnevmatik Mix Qoqqich F30D',
-            quantity: 2,
-            unitType: 'pcs',
-            unitPrice: 330000,
-            lineTotal: 660000,
-            image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop',
-          },
-        ],
-      },
-    ];
+    await delay();
+    maybeFail();
+    return [];
   }
 }

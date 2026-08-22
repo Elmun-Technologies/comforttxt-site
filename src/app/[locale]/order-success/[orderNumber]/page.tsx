@@ -31,8 +31,8 @@ export default async function OrderSuccessPage({ params }: OrderSuccessPageProps
             </h1>
             <p className="text-xs sm:text-sm text-muted max-w-lg mx-auto font-medium leading-relaxed">
               {locale === 'ru'
-                ? `Ваш заказ № ${orderNumber} успешно принят в обработку. Наш менеджер свяжется с вами в течение 10–15 минут для подтверждения деталей доставки.`
-                : `Sizning № ${orderNumber} raqamli buyurtmangiz muvaffaqiyatli qabul qilindi. Menejerimiz 10–15 daqiqa ichida yetkazish tafsilotlarini tasdiqlash uchun bog‘lanadi.`}
+                ? `Ваш заказ № ${orderNumber} принят в обработку. Менеджер свяжется с вами для подтверждения позиций и условий доставки.`
+                : `№ ${orderNumber} raqamli buyurtmangiz qabul qilindi. Menejer pozitsiyalar va yetkazish shartlarini tasdiqlash uchun siz bilan bog‘lanadi.`}
             </p>
           </div>
 
@@ -57,24 +57,28 @@ export default async function OrderSuccessPage({ params }: OrderSuccessPageProps
             </div>
           </div>
 
-          {/* Contact Support */}
+          {/* Contact Support — only confirmed contact channels */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href={`tel:${storefrontConfig.phoneRaw}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface hover:bg-secondary border border-border text-heading text-xs font-bold rounded-xl transition shadow-xs"
-            >
-              <PhoneCall className="w-4 h-4 text-accent" />
-              <span>{storefrontConfig.phone}</span>
-            </a>
-            <a
-              href={storefrontConfig.telegramChannelUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold rounded-xl transition shadow-xs"
-            >
-              <span>{locale === 'ru' ? 'Написать в Telegram' : 'Telegram orqali bog‘lanish'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
+            {storefrontConfig.phone && (
+              <a
+                href={`tel:${storefrontConfig.phoneRaw}`}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface hover:bg-secondary border border-border text-heading text-xs font-bold rounded-xl transition shadow-xs"
+              >
+                <PhoneCall className="w-4 h-4 text-accent" />
+                <span>{storefrontConfig.phone}</span>
+              </a>
+            )}
+            {storefrontConfig.telegramChannelUrl && (
+              <a
+                href={storefrontConfig.telegramChannelUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold rounded-xl transition shadow-xs"
+              >
+                <span>{locale === 'ru' ? 'Написать в Telegram' : 'Telegram orqali bog‘lanish'}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            )}
           </div>
 
           <div className="pt-4 border-t border-border">

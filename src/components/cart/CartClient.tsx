@@ -5,6 +5,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { formatPrice, formatUnit } from '@/lib/formatters';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import { MissingImage } from '@/components/product/MissingImage';
 
 interface CartClientProps {
   locale: string;
@@ -70,11 +71,17 @@ export function CartClient({ locale }: CartClientProps) {
 
                 return (
                   <div key={item.variantId} className="p-4 flex items-center gap-4 sm:gap-6">
-                    <img
-                      src={item.image}
-                      alt=""
-                      className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-border flex-shrink-0"
-                    />
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-border flex-shrink-0 overflow-hidden bg-secondary">
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <MissingImage locale={locale} compact />
+                      )}
+                    </div>
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-start justify-between gap-2">
                         <h3 className="text-sm font-bold text-heading line-clamp-1">

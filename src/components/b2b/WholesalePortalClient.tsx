@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuthStore } from '@/store/useAuthStore';
 import {
   ShieldCheck,
   Building2,
@@ -10,45 +9,42 @@ import {
   CheckCircle2,
   Loader2,
   RefreshCw,
-  Zap,
   ArrowRight,
+  Hammer,
+  Factory,
+  Layers,
+  PenTool,
+  MapPin,
+  ClipboardList,
+  PackageCheck,
 } from 'lucide-react';
-import Link from 'next/link';
 
 interface WholesaleProps {
   locale: string;
 }
 
+/**
+ * B2B / Wholesale page — customer-facing only.
+ * No demo accounts, no fake tiers, no artificial pricing toggles.
+ * The form submits a real partnership request handled by the manager.
+ */
 export function WholesalePortalClient({ locale }: WholesaleProps) {
-  const { user, login, logout, isB2B } = useAuthStore();
-  const b2bActive = isB2B();
-
   const [companyName, setCompanyName] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [phone, setPhone] = useState('+998 ');
-  const [region, setRegion] = useState('Toshkent shahri');
-  const [monthlyVolume, setMonthlyVolume] = useState('300 - 500 metr / list');
+  const [region, setRegion] = useState('');
+  const [monthlyVolume, setMonthlyVolume] = useState('');
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  const handleDemoB2BLogin = () => {
-    login({
-      id: 'b2b-demo-id',
-      email: 'b2b@mebelfabrika.uz',
-      name: 'Otabek Rixsiyev',
-      phone: '+998939876543',
-      role: 'wholesale_customer',
-      companyName: 'Sharq Mebel MCHJ',
-      b2bApproved: true,
-    });
-  };
+  const [error, setError] = useState(false);
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyName || !contactPerson || phone.length < 9) return;
 
     setLoading(true);
+    setError(false);
     try {
       const res = await fetch('/api/wholesale-request', {
         method: 'POST',
@@ -65,121 +61,102 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
 
       if (res.ok) {
         setSuccess(true);
+      } else {
+        setError(true);
       }
     } catch (err) {
       console.error(err);
+      setError(true);
     } finally {
       setLoading(false);
     }
   };
 
+  const segments = [
+    {
+      icon: Hammer,
+      titleUz: 'Mebel ustasi',
+      titleRu: 'Мебельный мастер',
+      descUz: 'Kerakli mahsulotlarni bir joydan topish — mato, paralon, mexanizm va sarf materiallari.',
+      descRu: 'Все необходимые материалы в одном месте — ткань, поролон, механизмы и расходники.',
+    },
+    {
+      icon: Layers,
+      titleUz: 'Sex',
+      titleRu: 'Цех',
+      descUz: 'Doimiy xarid va qayta buyurtma — artikullar bo‘yicha tezkor takroriy zakazlar.',
+      descRu: 'Постоянные закупки и повторные заказы по артикулам без лишних согласований.',
+    },
+    {
+      icon: Factory,
+      titleUz: 'Fabrika',
+      titleRu: 'Фабрика',
+      descUz: 'Katta hajmdagi ta’minot va alohida hamkorlik shartlari bo‘yicha murojaat.',
+      descRu: 'Крупнообъёмные поставки и отдельные условия сотрудничества.',
+    },
+    {
+      icon: PenTool,
+      titleUz: 'Dizayner',
+      titleRu: 'Дизайнер',
+      descUz: 'Faktura, rang va namunalar bilan ishlash — Sample Box orqali real matolarni ko‘rish.',
+      descRu: 'Работа с фактурами, цветами и образцами — реальные ткани через Sample Box.',
+    },
+  ];
+
   return (
     <div className="space-y-12">
       {/* Header Banner */}
-      <div className="bg-charcoal-900 text-surface rounded-3xl p-8 lg:p-12 shadow-xl border border-charcoal-800 flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="space-y-4 max-w-xl">
+      <div className="bg-charcoal-900 text-surface rounded-3xl p-8 lg:p-12 shadow-xl border border-charcoal-800">
+        <div className="space-y-4 max-w-2xl">
           <span className="inline-flex items-center gap-1.5 bg-accent/20 text-accent border border-accent/40 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-4 h-4" />
-            Comfort TXT B2B Portal
+            Comfort TXT B2B
           </span>
           <h1 className="text-3xl lg:text-4xl font-black leading-tight">
             {locale === 'ru'
-              ? 'Оптовые Условия для Мебельных Фабрик и Цехов'
-              : 'Mebel Sexlari va Fabrikalar Uchun Ulgurji Portal'}
+              ? 'Оптовые поставки для мебельных производств'
+              : 'Mebel ishlab chiqaruvchilar uchun ulgurji ta’minot'}
           </h1>
-          <p className="text-muted text-sm leading-relaxed">
-            Персональные скидки, поставка по договору счета-фактуры, выделенный менеджер и быстрый ре-ордер.
+          <p className="text-surface/70 text-sm leading-relaxed">
+            {locale === 'ru'
+              ? 'Матовая ткань, поролон, механизмы и расходники для постоянных закупок. Оставьте заявку — менеджер свяжется с вами и уточнит условия под ваш объём.'
+              : 'Doimiy xaridlar uchun mato, paralon, mexanizmlar va sarf materiallari. Ariza qoldiring — menejer bog‘lanib, hajmingizga mos shartlarni aniqlashtiradi.'}
           </p>
-        </div>
-
-        {/* Demo Login Switcher */}
-        <div className="bg-surface/10 backdrop-blur-md p-6 rounded-2xl border border-surface/20 text-center space-y-3 min-w-[280px]">
-          <div className="text-xs text-muted uppercase tracking-wider font-bold">
-            {locale === 'ru' ? 'Тестовый доступ B2B' : 'B2B Test Rejimi'}
-          </div>
-          {b2bActive ? (
-            <div className="space-y-2">
-              <div className="text-xs text-emerald-300 font-bold">
-                ✓ {user?.companyName} (B2B Hamkor)
-              </div>
-              <button
-                onClick={logout}
-                className="w-full py-2.5 bg-accent/80 hover:bg-accent text-surface text-xs font-bold rounded-xl transition"
-              >
-                {locale === 'ru' ? 'Выйти из B2B' : 'B2B Rejimdan Chiqish'}
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={handleDemoB2BLogin}
-              className="w-full py-3 bg-accent hover:bg-accent-hover text-surface text-xs font-black uppercase tracking-wider rounded-xl shadow-lg transition"
-            >
-              ⚡ {locale === 'ru' ? 'Войти как B2B Клиент' : 'B2B Sifatida Kirish'}
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Account Dashboard if B2B Active */}
-      {b2bActive && (
-        <div className="bg-surface rounded-3xl border border-emerald-300 p-8 shadow-lg space-y-6">
-          <div className="flex items-center justify-between border-b border-border pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-100 text-emerald-700 rounded-2xl">
-                <Building2 className="w-8 h-8" />
+      {/* Customer Segments */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {segments.map((seg, idx) => {
+          const Icon = seg.icon;
+          return (
+            <div key={idx} className="bg-surface p-5 rounded-2xl border border-border shadow-xs space-y-2.5">
+              <div className="p-2.5 bg-accent-light text-accent rounded-xl w-fit">
+                <Icon className="w-5 h-5" />
               </div>
-              <div>
-                <h2 className="text-xl font-bold text-heading">{user?.companyName}</h2>
-                <p className="text-xs text-emerald-700 font-bold">
-                  {locale === 'ru' ? 'Активный статус B2B партнера' : 'B2B Tasdiqlangan Hamkor Statusi'}
-                </p>
-              </div>
+              <h3 className="text-sm font-black text-heading">
+                {locale === 'ru' ? seg.titleRu : seg.titleUz}
+              </h3>
+              <p className="text-[11px] text-muted leading-relaxed">
+                {locale === 'ru' ? seg.descRu : seg.descUz}
+              </p>
             </div>
-            <div className="text-right">
-              <span className="text-sm font-black text-emerald-700 bg-emerald-100 px-3 py-1 rounded-lg">Tasdiqlangan B2B</span>
-              <div className="text-[11px] text-muted mt-1">{locale === 'ru' ? 'Спеццены применены' : 'Maxsus ulgurji narxlar'}</div>
-            </div>
-          </div>
+          );
+        })}
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-secondary p-4 rounded-2xl border border-border">
-              <div className="text-xs font-bold text-muted">{locale === 'ru' ? 'Персональный менеджер' : 'Shaxsiy menejer'}</div>
-              <div className="text-sm font-bold text-heading mt-1">Aziz Rahimov</div>
-              <div className="text-xs text-accent font-bold mt-1">+998 90 999 88 77</div>
-            </div>
-
-            <div className="bg-secondary p-4 rounded-2xl border border-border">
-              <div className="text-xs font-bold text-muted">{locale === 'ru' ? 'Условия оплаты' : 'To\'lov shartlari'}</div>
-              <div className="text-sm font-bold text-heading mt-1">Bank Transfer / Shartnoma</div>
-              <div className="text-xs text-muted mt-1">NDS bilansiz / NDS bilan</div>
-            </div>
-
-            <div className="bg-secondary p-4 rounded-2xl border border-border">
-              <div className="text-xs font-bold text-muted">{locale === 'ru' ? 'Быстрый повторный заказ' : '1-Klikda Qayta Buyurtma'}</div>
-              <Link
-                href={`/${locale}/catalog`}
-                className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-accent hover:underline"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>{locale === 'ru' ? 'Повторить прошлый заказ' : 'O\'tgan buyurtmani takrorlash'}</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Registration Form & Benefits */}
+      {/* Registration Form & How it works */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         {/* Form */}
         <div className="bg-surface p-8 rounded-3xl border border-border shadow-xs space-y-6">
           <div>
             <h2 className="text-xl font-bold text-heading">
-              {locale === 'ru' ? 'Регистрация Оптового Клиента' : 'Ulgurji Mijoz Sifatida Ro\'yxatdan O\'tish'}
+              {locale === 'ru' ? 'Заявка на оптовые условия' : 'Ulgurji shartlar uchun ariza'}
             </h2>
             <p className="text-xs text-muted mt-1 font-medium">
               {locale === 'ru'
-                ? 'Заполните форму для получения оптовых цен'
-                : 'Ulgurji narxlarga ega bo\'lish uchun shaklni to\'ldiring'}
+                ? 'Заполните форму — менеджер свяжется и уточнит детали'
+                : 'Shaklni to‘ldiring — menejer bog‘lanib tafsilotlarni aniqlashtiradi'}
             </p>
           </div>
 
@@ -191,15 +168,15 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
               </h3>
               <p className="text-xs text-emerald-800">
                 {locale === 'ru'
-                  ? 'Наш B2B менеджер свяжется с вами в течение 15 минут для активации оптового кабинета.'
-                  : 'B2B menejerimiz 15 daqiqa ichida siz bilan bog\'lanib ulgurji kabinetni faollashtiradi.'}
+                  ? 'Менеджер B2B-направления свяжется с вами для уточнения условий.'
+                  : 'B2B yo‘nalishi menejeri shartlarni aniqlashtirish uchun siz bilan bog‘lanadi.'}
               </p>
             </div>
           ) : (
             <form onSubmit={handleRegisterSubmit} className="space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-bold text-heading">
-                  {locale === 'ru' ? 'Название компании или цеха' : 'Kompaniya yoki Sex nomi'} *
+                  {locale === 'ru' ? 'Компания или цех' : 'Kompaniya yoki sex'} *
                 </label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-3 w-4 h-4 text-muted" />
@@ -208,7 +185,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
                     required
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    placeholder="Sharq Mebel MCHJ"
+                    placeholder={locale === 'ru' ? 'Название компании' : 'Kompaniya nomi'}
                     className="w-full pl-9 pr-3 py-2.5 bg-secondary border border-border rounded-xl text-sm focus:outline-none focus:border-accent"
                   />
                 </div>
@@ -217,7 +194,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-heading">
-                    {locale === 'ru' ? 'Контактное лицо' : 'Mas\'ul shaxs'} *
+                    {locale === 'ru' ? 'Контактное лицо' : 'Mas’ul shaxs'} *
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 w-4 h-4 text-muted" />
@@ -226,7 +203,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
                       required
                       value={contactPerson}
                       onChange={(e) => setContactPerson(e.target.value)}
-                      placeholder="Otabek Rixsiyev"
+                      placeholder={locale === 'ru' ? 'Имя' : 'Ism'}
                       className="w-full pl-9 pr-3 py-2.5 bg-secondary border border-border rounded-xl text-sm focus:outline-none focus:border-accent"
                     />
                   </div>
@@ -240,6 +217,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
                     <Phone className="absolute left-3 top-3 w-4 h-4 text-muted" />
                     <input
                       type="tel"
+                      inputMode="tel"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
@@ -253,26 +231,29 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-heading">
-                    {locale === 'ru' ? 'Регион' : 'Viloyat / Shahar'}
+                    {locale === 'ru' ? 'Регион' : 'Viloyat / shahar'}
                   </label>
-                  <input
-                    type="text"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                    placeholder="Toshkent shahri"
-                    className="w-full px-3.5 py-2.5 bg-secondary border border-border rounded-xl text-sm focus:outline-none focus:border-accent"
-                  />
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted" />
+                    <input
+                      type="text"
+                      value={region}
+                      onChange={(e) => setRegion(e.target.value)}
+                      placeholder="Toshkent"
+                      className="w-full pl-9 pr-3 py-2.5 bg-secondary border border-border rounded-xl text-sm focus:outline-none focus:border-accent"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-heading">
-                    {locale === 'ru' ? 'Объем закупок в месяц' : 'Oylik hajm'}
+                    {locale === 'ru' ? 'Объём закупок в месяц' : 'Oylik xarid hajmi'}
                   </label>
                   <input
                     type="text"
                     value={monthlyVolume}
                     onChange={(e) => setMonthlyVolume(e.target.value)}
-                    placeholder="500m mato / 100 list paralon"
+                    placeholder={locale === 'ru' ? 'например, 500 м ткани / 100 листов' : 'masalan, 500 m mato / 100 list'}
                     className="w-full px-3.5 py-2.5 bg-secondary border border-border rounded-xl text-sm focus:outline-none focus:border-accent"
                   />
                 </div>
@@ -280,27 +261,35 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-heading">
-                  {locale === 'ru' ? 'Дополнительные пожелания' : 'Qo\'shimcha ma\'lumot'}
+                  {locale === 'ru' ? 'Что вас интересует' : 'Qaysi mahsulotlar kerak'}
                 </label>
                 <textarea
                   rows={2}
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  placeholder={locale === 'ru' ? 'Интересующие коллекции...' : 'Qaysi mato turlari kerak...'}
+                  placeholder={locale === 'ru' ? 'Ткани, поролон, механизмы…' : 'Matolar, paralon, mexanizmlar…'}
                   className="w-full px-3.5 py-2.5 bg-secondary border border-border rounded-xl text-sm focus:outline-none focus:border-accent"
                 />
               </div>
 
+              {error && (
+                <p className="text-xs font-bold text-red-600 bg-red-50 border border-red-200 rounded-lg p-2.5">
+                  {locale === 'ru'
+                    ? 'Не удалось отправить заявку. Попробуйте ещё раз.'
+                    : 'Arizani yuborib bo‘lmadi. Qayta urinib ko‘ring.'}
+                </p>
+              )}
+
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-accent hover:bg-accent-hover text-surface font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-accent hover:bg-accent-hover text-surface font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    <span>{locale === 'ru' ? 'Отправить Заявку' : 'B2B So\'rovni Yuborish'}</span>
+                    <span>{locale === 'ru' ? 'Отправить заявку' : 'Arizani yuborish'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -309,37 +298,41 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
           )}
         </div>
 
-        {/* Benefits list */}
+        {/* How procurement works */}
         <div className="space-y-6">
           <h2 className="text-xl font-bold text-heading">
-            {locale === 'ru' ? 'Преимущества B2B Партнерства' : 'B2B Hamkorlik Afzalliklari'}
+            {locale === 'ru' ? 'Как строится закупка' : 'Xarid qanday tashkil etiladi'}
           </h2>
 
           <div className="space-y-4">
             <div className="p-4 bg-surface rounded-2xl border border-border shadow-xs flex items-start gap-4">
               <div className="p-2.5 bg-accent-light text-accent rounded-xl">
-                <Zap className="w-5 h-5" />
+                <ClipboardList className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-heading">
-                  {locale === 'ru' ? 'Оптовая цена до -25%' : 'Ulgurji narxlar va chegirmalar'}
+                  {locale === 'ru' ? 'Заказ по артикулам (SKU)' : 'Artikul (SKU) bo‘yicha buyurtma'}
                 </h4>
                 <p className="text-xs text-muted mt-0.5 font-medium">
-                  Velur, ST/EL paralon va mexanizmlar uchun maxsus ulgurji narxlar jadvali.
+                  {locale === 'ru'
+                    ? 'Постоянные позиции удобно заказывать по кодам — быстрый повторный заказ без долгих согласований.'
+                    : 'Doimiy pozitsiyalarni kodlar bo‘yicha buyurtma qilish qulay — uzoq kelishuvlarsiz tezkor qayta buyurtma.'}
                 </p>
               </div>
             </div>
 
             <div className="p-4 bg-surface rounded-2xl border border-border shadow-xs flex items-start gap-4">
               <div className="p-2.5 bg-emerald-100 text-emerald-700 rounded-xl">
-                <Building2 className="w-5 h-5" />
+                <PackageCheck className="w-5 h-5" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-heading">
-                  {locale === 'ru' ? 'Оплата по счету и НДС' : 'Shartnoma va Schet-Faktura'}
+                  {locale === 'ru' ? 'Подбор под вашу мебель' : 'Mebelingizga mos tanlov'}
                 </h4>
                 <p className="text-xs text-muted mt-0.5 font-medium">
-                  To'liq huquqiy shaffoflik va bank o'tkazmasi orqali to'lovlar.
+                  {locale === 'ru'
+                    ? 'Поможем подобрать ткань, поролон и механизмы под конкретную модель — с образцами до заказа.'
+                    : 'Muayyan model uchun mato, paralon va mexanizm tanlashda yordam beramiz — buyurtmadan oldin namunalar bilan.'}
                 </p>
               </div>
             </div>
@@ -350,10 +343,12 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-heading">
-                  {locale === 'ru' ? 'Быстрый Re-order' : 'Tezkor Qayta Buyurtma'}
+                  {locale === 'ru' ? 'Доставка и отгрузка' : 'Yetkazib berish va jo‘natish'}
                 </h4>
                 <p className="text-xs text-muted mt-0.5 font-medium">
-                  Sexingiz uchun doimiy xaridlarni 1-klikda qayta rasmiylashtiring.
+                  {locale === 'ru'
+                    ? 'Способ, сроки и условия доставки подтверждает менеджер под ваш заказ.'
+                    : 'Yetkazish usuli, muddati va shartlarini menejer buyurtmangizga mos tasdiqlaydi.'}
                 </p>
               </div>
             </div>

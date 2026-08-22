@@ -16,10 +16,10 @@ export const useFavoritesStore = create<FavoritesState>()(
         const current = get().productIds;
         if (current.includes(productId)) {
           set({ productIds: current.filter((id) => id !== productId) });
-          useToastStore.getState().addToast('Sevimlilardan o\'chirildi', 'info');
+          useToastStore.getState().addToast('Tanlanganlardan o\'chirildi', 'info');
         } else {
           set({ productIds: [...current, productId] });
-          useToastStore.getState().addToast('Sevimlilarga qo\'shildi', 'success');
+          useToastStore.getState().addToast('Tanlanganlarga qo\'shildi', 'success');
         }
       },
       isFavorite: (productId) => get().productIds.includes(productId),

@@ -13,7 +13,6 @@ import {
   Menu,
   User,
   ShieldCheck,
-  Package,
   Search,
   ChevronDown,
 } from 'lucide-react';
@@ -21,6 +20,7 @@ import { SearchOverlay } from '@/components/search/SearchOverlay';
 import { MegaMenu } from '@/components/layout/MegaMenu';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { CartDrawer } from '@/components/cart/CartDrawer';
+import { BrandLogo } from '@/components/layout/BrandLogo';
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useCompareStore } from '@/store/useCompareStore';
@@ -56,22 +56,28 @@ export function Header({ locale }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-xl border-b border-border shadow-[0_4px_30px_rgb(0,0,0,0.03)]">
-      {/* Top Utility Bar */}
+      {/* Top Utility Bar — shows only confirmed contact values */}
       <div className="bg-secondary/60 text-muted text-xs py-1.5 px-4 border-b border-border/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center gap-4">
-            <a
-              href={`tel:${storefrontConfig.phoneRaw}`}
-              className="inline-flex items-center gap-1.5 hover:text-heading transition font-bold text-[11px]"
-            >
-              <Phone className="w-3.5 h-3.5 text-accent" />
-              <span>{storefrontConfig.phone}</span>
-            </a>
-            <span className="hidden md:inline text-border">|</span>
-            <div className="hidden md:flex items-center gap-1.5 text-muted text-[11px]">
-              <Clock className="w-3.5 h-3.5" />
-              <span>{locale === 'ru' ? storefrontConfig.workingHoursRu : storefrontConfig.workingHoursUz}</span>
-            </div>
+            {storefrontConfig.phone && (
+              <a
+                href={`tel:${storefrontConfig.phoneRaw}`}
+                className="inline-flex items-center gap-1.5 hover:text-heading transition font-bold text-[11px]"
+              >
+                <Phone className="w-3.5 h-3.5 text-accent" />
+                <span>{storefrontConfig.phone}</span>
+              </a>
+            )}
+            {storefrontConfig.phone && storefrontConfig.workingHoursUz && (
+              <span className="hidden md:inline text-border">|</span>
+            )}
+            {storefrontConfig.workingHoursUz && (
+              <div className="hidden md:flex items-center gap-1.5 text-muted text-[11px]">
+                <Clock className="w-3.5 h-3.5" />
+                <span>{locale === 'ru' ? storefrontConfig.workingHoursRu || storefrontConfig.workingHoursUz : storefrontConfig.workingHoursUz}</span>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -134,19 +140,7 @@ export function Header({ locale }: HeaderProps) {
         </button>
 
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-          <div className="w-9 h-9 bg-accent rounded-xl flex items-center justify-center shadow-[0_2px_10px_rgba(197,160,89,0.3)]">
-            <Package className="w-5 h-5 text-surface" />
-          </div>
-          <div>
-            <div className="text-xl font-black text-heading tracking-tight leading-none">
-              COMFORT <span className="text-accent">TXT</span>
-            </div>
-            <div className="text-[10px] font-bold text-muted tracking-wider uppercase mt-0.5">
-              {locale === 'ru' ? 'Мебельные материалы' : 'Mebel materiallari'}
-            </div>
-          </div>
-        </Link>
+        <BrandLogo locale={locale} />
 
         {/* Persistent Search Bar (Desktop) */}
         <div className="hidden lg:block flex-1 max-w-xl px-4">
@@ -158,8 +152,8 @@ export function Header({ locale }: HeaderProps) {
               <Search className="w-4 h-4 text-accent" />
               <span className="text-body/70">
                 {locale === 'ru'
-                  ? 'Поиск ткани, поролона, SKU (LUNA-01, ST2536, F30D)...'
-                  : 'Mato, paralon, SKU (LUNA-01, ST2536, F30D) qidirish...'}
+                  ? 'Поиск ткани, поролона, артикула (SKU)...'
+                  : 'Mato, paralon, artikul (SKU) qidirish...'}
               </span>
             </span>
             <kbd className="px-2 py-0.5 bg-surface rounded border border-border text-[10px] font-mono font-bold text-muted">⌘K</kbd>

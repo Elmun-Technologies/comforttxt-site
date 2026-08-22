@@ -7,6 +7,7 @@ interface CatalogPageProps {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{
     category?: string;
+    collection?: string;
     sub?: string;
     sort?: string;
     minPrice?: string;
@@ -27,6 +28,7 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
   const products = await storefrontService.getProducts(
     {
       categorySlug: resolvedSearchParams.category,
+      collectionSlug: resolvedSearchParams.collection,
       subCategorySlug: resolvedSearchParams.sub,
       search: resolvedSearchParams.search,
       minPrice: resolvedSearchParams.minPrice ? parseFloat(resolvedSearchParams.minPrice) : undefined,

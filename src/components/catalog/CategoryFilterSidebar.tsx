@@ -102,7 +102,7 @@ export function CategoryFilterSidebar({
                   : 'text-body hover:bg-secondary'
               }`}
             >
-              {locale === 'ru' ? 'Bce категории' : 'Barcha kategoriyalar'}
+              {locale === 'ru' ? 'Все категории' : 'Barcha kategoriyalar'}
             </button>
             {categories.map((cat) => (
               <button

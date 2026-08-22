@@ -8,39 +8,37 @@
     "blog": "Mebelchilar uchun",
     "contact": "Aloqa",
     "cart": "Savatcha",
-    "favorites": "Saralanganlar",
+    "favorites": "Tanlanganlar",
     "compare": "Solishtirish",
     "login": "Kirish",
     "register": "Ro'yxatdan o'tish",
     "account": "Mening kabinetim",
-    "admin": "Admin Panel",
-    "phone": "+998 (71) 200-88-99",
-    "workHours": "Dush-Shan: 09:00 - 18:00"
+    "admin": "Admin Panel"
   },
   "search": {
     "placeholder": "Mato, paralon, SKU (masalan LUNA-01, ST2536) qidirish...",
-    "noResults": "Hech narsa topilmadi",
+    "noResults": "Mahsulot topilmadi",
     "popular": "Ommabop qidiruvlar",
     "resultsFor": "Qidiruv natijalari:"
   },
   "home": {
-    "heroTitle": "Comfort Textile — Professional Mebel Materiallari",
-    "heroSubtitle": "Ulgurji va chakana mebel matolari, paralon, transformatsiya mexanizmlari va sarf materiallari",
+    "heroTitle": "Mebel ishlab chiqarish uchun kerakli mahsulotlar — bir joyda",
+    "heroSubtitle": "Mato, paralon, transformatsiya mexanizmlari va sarf materiallari",
     "catalogBtn": "Katalogga o'tish",
     "sampleBtn": "Mato Namunasini Olish",
     "b2bBannerTitle": "Mebel Sexlari va Fabrikalar Uchun Ulgurji Shartlar",
-    "b2bBannerText": "Maxsus narxlar, shaxsiy menejer va shartnoma asosida yetkazib berish",
+    "b2bBannerText": "Mato, paralon, mexanizm va sarf materiallari bo‘yicha ulgurji shartlar",
     "b2bRegisterBtn": "B2B Hamkor bo'lish",
     "featuredTitle": "Ommabop Mahsulotlar",
     "categoriesTitle": "Mahsulot Kategoriyalari",
     "collectionsTitle": "Tavsiya Etilgan Kolleksiyalar",
     "whyUsTitle": "Nima Uchun Comfort TxT?",
     "why1Title": "Keng Assortiment",
-    "why1Text": "Omborda har doim 500+ turdagi mebel matolari va har xil zichlikdagi paralonlar mavjud",
+    "why1Text": "Mato, paralon va mexanizmlar keng assortimenti",
     "why2Title": "Ulgurji Narxlar",
-    "why2Text": "B2B mijozlar uchun maxsus narx navosi va moslashuvchan to'lov tizimi",
+    "why2Text": "B2B mijozlar uchun alohida shartlar va moslashuvchan to'lov",
     "why3Title": "Tezkor Yetkazib Berish",
-    "why3Text": "Toshkent va viloyatlarga belgilangan muddatda yetkazib berish"
+    "why3Text": "Yetkazib berish shartlarini menejer tasdiqlaydi"
   },
   "catalog": {
     "title": "Mahsulotlar Katalogi",
@@ -83,7 +81,7 @@
     "descTab": "Batafsil Ma'lumot",
     "relatedTitle": "O'xshash Mahsulotlar",
     "compareAdd": "Solishtirishga qo'shish",
-    "favoriteAdd": "Saralanganlarga saqlash"
+    "favoriteAdd": "Tanlanganlarga saqlash"
   },
   "cart": {
     "title": "Savatcha",
@@ -115,7 +113,7 @@
   },
   "b2b": {
     "title": "B2B Ulgurji Hamkorlik Portal",
-    "subtitle": "Mebel fabrikalari, sexlar va ustalar uchun maxsus ulgurji shartlar va qulay qayta buyurtma",
+    "subtitle": "Mebel fabrikalari, sexlar va ustalar uchun ulgurji shartlar va artikul bo‘yicha qayta buyurtma",
     "registerTitle": "Ulgurji Mijoz Sifatida Ro'yxatdan O'tish",
     "companyName": "Kompaniya yoki Sex nomi",
     "contactPerson": "Mas'ul shaxs",
@@ -130,7 +128,7 @@
   },
   "sampleBox": {
     "title": "Mato Namunalari (Sample Box) So'rash",
-    "subtitle": "Ish joyingizga mato namunalar to'plamini bepul yoki arzon yetkazib beramiz",
+    "subtitle": "Kerakli mato namunalarini tanlab, so‘rov qoldiring — menejer tarkib va berish usulini tasdiqlaydi",
     "selectFabrics": "Sizga kerakli mato turini tanlang",
     "requestBtn": "Namuna So'rovi Yuborish",
     "success": "Namuna so'rovingiz qabul qilindi! Menejer siz bilan bog'lanadi."
@@ -155,5 +153,11 @@
     "statusShipped": "Jo'natildi",
     "statusDelivered": "Yetkazildi",
     "statusCanceled": "Bekor qilindi"
+  },
+  "account": {},
+  "errors": {
+    "title": "Ma’lumotlarni yuklashda muammo yuz berdi. Qayta urinib ko‘ring.",
+    "subtitle": "Xizmat vaqtincha ishlamayapti. Iltimos, yana bir bor urinib ko‘ring.",
+    "retry": "Qayta urinish"
   }
 }

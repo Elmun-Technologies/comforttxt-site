@@ -4,6 +4,7 @@ import { Link, usePathname, useRouter } from '@/lib/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Home, Grid, Search, Heart, ShoppingBag, X, Phone, Globe, ShieldCheck } from 'lucide-react';
 import { useEffect } from 'react';
+import { storefrontConfig } from '@/config/storefront';
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -145,14 +146,16 @@ export function MobileNav({
                 </Link>
               </div>
 
-              {/* Phone info */}
-              <div className="p-3 bg-secondary rounded-xl text-xs space-y-1">
-                <div className="text-muted font-medium">{locale === 'ru' ? 'Телефон отдела продаж:' : 'Sotuv bo\'limi:'}</div>
-                <a href="tel:+998712008899" className="font-bold text-heading flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-accent" />
-                  <span>+998 (71) 200-88-99</span>
-                </a>
-              </div>
+              {/* Phone info — only if confirmed in storefrontConfig */}
+              {storefrontConfig.phone && (
+                <div className="p-3 bg-secondary rounded-xl text-xs space-y-1">
+                  <div className="text-muted font-medium">{locale === 'ru' ? 'Телефон:' : 'Telefon:'}</div>
+                  <a href={`tel:${storefrontConfig.phoneRaw}`} className="font-bold text-heading flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-accent" />
+                    <span>{storefrontConfig.phone}</span>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -195,7 +198,7 @@ export function MobileNav({
               className="relative flex flex-col items-center justify-center py-1.5 text-[10px] font-semibold text-muted"
             >
               <Heart className="w-5 h-5 mb-0.5" />
-              <span>{locale === 'ru' ? 'Избранное' : 'Saralangan'}</span>
+              <span>{locale === 'ru' ? 'Избранное' : 'Tanlanganlar'}</span>
               {favoriteCount > 0 && (
                 <span className="absolute top-1 right-3 bg-accent text-surface text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center">
                   {favoriteCount}

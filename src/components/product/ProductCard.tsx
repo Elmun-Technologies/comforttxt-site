@@ -10,6 +10,7 @@ import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useCompareStore } from '@/store/useCompareStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { QuickOrderModal } from '@/components/modals/QuickOrderModal';
+import { MissingImage } from '@/components/product/MissingImage';
 
 interface ProductCardProps {
   product: StorefrontProduct | any;
@@ -23,7 +24,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
 
   const variants = product.variants || [];
   const selectedVariant = variants[selectedVariantIdx] || variants[0];
-  const mainImage = selectedVariant?.images?.[0] || product.primaryImage || 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop';
+  const mainImage = selectedVariant?.images?.[0] || product.primaryImage || '';
 
   const addItem = useCartStore((s) => s.addItem);
   const { toggleFavorite, isFavorite } = useFavoritesStore();
@@ -81,14 +82,18 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         {/* Visual Zone */}
         <div className="relative aspect-square bg-secondary/50 overflow-hidden">
           <Link href={`/${locale}/product/${product.slug}`} className="block w-full h-full">
-            <img
-              src={mainImage}
-              alt={locale === 'ru' ? product.titleRu : product.titleUz}
-              className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
-                isFabric ? 'object-cover' : 'object-contain p-3'
-              }`}
-              loading="lazy"
-            />
+            {mainImage ? (
+              <img
+                src={mainImage}
+                alt={locale === 'ru' ? product.titleRu : product.titleUz}
+                className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
+                  isFabric ? 'object-cover' : 'object-contain p-3'
+                }`}
+                loading="lazy"
+              />
+            ) : (
+              <MissingImage locale={locale} />
+            )}
           </Link>
 
           {/* Badges */}
@@ -222,14 +227,14 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               )}
             </div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons — primary: Savatchaga, secondary: 1-Klik (icon on mobile) */}
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleQuickOrder}
                 className="inline-flex items-center justify-center gap-1 py-2 px-2 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-xl transition active:scale-98"
               >
                 <Zap className="w-3.5 h-3.5 text-amber-500" />
-                <span>{locale === 'ru' ? '1-Клик' : '1-Klik'}</span>
+                <span className="hidden sm:inline">{locale === 'ru' ? '1-Клик' : '1-Klik'}</span>
               </button>
 
               <button
@@ -241,12 +246,12 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                 {addedToast ? (
                   <>
                     <Check className="w-3.5 h-3.5 stroke-[3]" />
-                    <span>{locale === 'ru' ? 'Добавлено' : 'Qo‘shildi'}</span>
+                    <span className="hidden sm:inline">{locale === 'ru' ? 'Добавлено' : 'Qo‘shildi'}</span>
                   </>
                 ) : (
                   <>
                     <ShoppingBag className="w-3.5 h-3.5" />
-                    <span>{locale === 'ru' ? 'В корзину' : 'Savatchaga'}</span>
+                    <span className="truncate">{locale === 'ru' ? 'В корзину' : 'Savatchaga'}</span>
                   </>
                 )}
               </button>
