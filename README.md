@@ -50,6 +50,21 @@ tashqi so‘rov yo‘q, faqat `public/images/patterns/`:
 `.pattern-rings`, `.pattern-rings-dark`, o‘lcham uchun `.pattern-sm` / `.pattern-lg`,
 guidebookdagidek yarim-tekis ko‘rinish uchun `.pattern-fade` / `.pattern-fade-y`.
 
+### Umumiy brend komponentlari
+
+Har bir sahifada bir xil brend ko‘rinishi bo‘lishi uchun ikkita umumiy komponent bor —
+yangi sahifa qo‘shganda shularni ishlating, qo‘lda `<h1>` yozmang:
+
+| Komponent | Vazifasi |
+| --- | --- |
+| `src/components/layout/PageHero.tsx` | Sahifa sarlavhasi: kicker + title + subtitle, orqa fonda halqa motivi. `tone="dark"` to‘q variant uchun. O‘ng tomonga tugma/badge qo‘yish mumkin. |
+| `src/components/ui/EmptyState.tsx` | "Hech narsa yo‘q" holatlari: ikonka medalyoni, sarlavha, izoh va CTA — halqa motivi bilan. |
+
+Hozir brend motivi qo‘llangan joylar: bosh sahifa, katalog, kategoriya, kolleksiyalar,
+blog, savatcha, taqqoslash, tanlanganlar, shaxsiy kabinet, Sample Box, B2B portal,
+checkout, admin panel, buyurtma muvaffaqiyati, xatolik sahifasi, mobil menyu, footer
+va rasmi yo‘q mahsulot kartalari (`MissingImage`).
+
 ---
 
 ## ✨ Asosiy Xususiyatlar va Imkoniyatlar

@@ -17,12 +17,16 @@ export default async function OrderSuccessPage({ params }: OrderSuccessPageProps
       <Header locale={locale} />
 
       <main className="flex-1 max-w-3xl mx-auto px-4 py-12 w-full space-y-8">
-        <div className="bg-surface rounded-3xl border border-border p-8 md:p-12 text-center shadow-md space-y-6">
-          <div className="w-20 h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-xs">
+        <div className="brand-wash relative overflow-hidden bg-surface rounded-3xl border border-border p-8 md:p-12 text-center shadow-md space-y-6">
+          <div
+            aria-hidden="true"
+            className="pattern-rings pattern-fade-y absolute inset-0 pointer-events-none opacity-70"
+          />
+          <div className="relative w-20 h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-xs">
             <CheckCircle2 className="w-12 h-12 stroke-[2.5]" />
           </div>
 
-          <div className="space-y-2">
+          <div className="relative space-y-2">
             <span className="inline-block bg-accent-light text-accent text-xs font-mono font-black px-3 py-1 rounded-lg">
               № {orderNumber}
             </span>
@@ -37,7 +41,7 @@ export default async function OrderSuccessPage({ params }: OrderSuccessPageProps
           </div>
 
           {/* Next Steps Box */}
-          <div className="bg-secondary rounded-2xl p-5 border border-border text-left space-y-3">
+          <div className="relative bg-secondary rounded-2xl p-5 border border-border text-left space-y-3">
             <h3 className="text-xs font-black text-heading uppercase tracking-wider">
               {locale === 'ru' ? 'Что происходит дальше?' : 'Keyingi qadamlar:'}
             </h3>
@@ -58,7 +62,7 @@ export default async function OrderSuccessPage({ params }: OrderSuccessPageProps
           </div>
 
           {/* Contact Support — only confirmed contact channels */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="relative pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             {storefrontConfig.phone && (
               <a
                 href={`tel:${storefrontConfig.phoneRaw}`}
@@ -81,7 +85,7 @@ export default async function OrderSuccessPage({ params }: OrderSuccessPageProps
             )}
           </div>
 
-          <div className="pt-4 border-t border-border">
+          <div className="relative pt-4 border-t border-border">
             <Link
               href={`/${locale}/catalog`}
               className="inline-flex items-center gap-2 px-6 py-3.5 bg-accent hover:bg-accent-hover text-surface font-black text-xs rounded-xl shadow-md transition"

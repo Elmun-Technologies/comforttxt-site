@@ -6,6 +6,8 @@ import { formatPrice, formatUnit } from '@/lib/formatters';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { MissingImage } from '@/components/product/MissingImage';
+import { PageHero } from '@/components/layout/PageHero';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface CartClientProps {
   locale: string;
@@ -20,40 +22,48 @@ export function CartClient({ locale }: CartClientProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl sm:text-3xl font-black text-heading tracking-tight">
-          {locale === 'ru' ? 'Корзина Покупок' : 'Savatcha'}
-        </h1>
+      <PageHero
+        icon={ShoppingBag}
+        kicker={locale === 'ru' ? 'Заказ' : 'Buyurtma'}
+        title={locale === 'ru' ? 'Корзина покупок' : 'Savatcha'}
+        subtitle={
+          items.length > 0
+            ? locale === 'ru'
+              ? `${items.length} позиций к оформлению`
+              : `${items.length} ta pozitsiya rasmiylashtirishga tayyor`
+            : undefined
+        }
+      >
         {items.length > 0 && (
           <button
             onClick={clearCart}
-            className="text-xs text-muted hover:text-accent font-bold transition flex items-center gap-1"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 py-2 text-xs font-bold text-muted transition hover:border-accent/40 hover:text-accent"
           >
             <Trash2 className="w-4 h-4" />
             <span>{locale === 'ru' ? 'Очистить корзину' : 'Savatchani tozalash'}</span>
           </button>
         )}
-      </div>
+      </PageHero>
 
       {items.length === 0 ? (
-        <div className="bg-surface rounded-2xl p-12 text-center border border-border shadow-xs my-8 space-y-4 max-w-md mx-auto">
-          <ShoppingBag className="w-16 h-16 text-muted mx-auto stroke-1" />
-          <h2 className="text-xl font-bold text-heading">
-            {locale === 'ru' ? 'Ваша корзина пуста' : 'Savatchangiz bo\'sh'}
-          </h2>
-          <p className="text-xs text-muted">
-            {locale === 'ru'
+        <EmptyState
+          icon={ShoppingBag}
+          title={locale === 'ru' ? 'Ваша корзина пуста' : 'Savatchangiz bo‘sh'}
+          description={
+            locale === 'ru'
               ? 'Выберите товары из нашего каталога для дальнейшего оформления.'
-              : 'Buyurtma rasmiylashtirish uchun katalogimizdan mahsulotlarni tanlang.'}
-          </p>
-          <Link
-            href={`/${locale}/catalog`}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent text-surface font-bold text-xs rounded-xl shadow-xs transition"
-          >
-            <span>{locale === 'ru' ? 'В каталог' : 'Katalogga o\'tish'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
+              : 'Buyurtma rasmiylashtirish uchun katalogimizdan mahsulotlarni tanlang.'
+          }
+          action={
+            <Link
+              href={`/${locale}/catalog`}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-accent hover:bg-accent-hover text-surface font-bold text-xs rounded-xl shadow-xs transition"
+            >
+              <span>{locale === 'ru' ? 'В каталог' : 'Katalogga o‘tish'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-4">

@@ -5,6 +5,8 @@ import { formatPrice, formatUnit } from '@/lib/formatters';
 import Link from 'next/link';
 import { Scale, Trash2, ArrowRight } from 'lucide-react';
 import { MissingImage } from '@/components/product/MissingImage';
+import { PageHero } from '@/components/layout/PageHero';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 interface CompareClientProps {
   locale: string;
@@ -48,47 +50,46 @@ export function CompareClient({ locale }: CompareClientProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-heading tracking-tight">
-            {locale === 'ru' ? 'Сравнение товаров' : 'Mahsulotlarni solishtirish'}
-          </h1>
-          <p className="text-xs text-muted mt-1 font-medium">
-            {locale === 'ru'
-              ? `Сравнивается ${items.length} товаров`
-              : `${items.length} ta mahsulot solishtirilmoqda`}
-          </p>
-        </div>
+      <PageHero
+        icon={Scale}
+        kicker={locale === 'ru' ? 'Сравнение' : 'Solishtirish'}
+        title={locale === 'ru' ? 'Сравнение товаров' : 'Mahsulotlarni solishtirish'}
+        subtitle={
+          locale === 'ru'
+            ? `Сравнивается ${items.length} товаров`
+            : `${items.length} ta mahsulot solishtirilmoqda`
+        }
+      >
         {items.length > 0 && (
           <button
             onClick={clearCompare}
-            className="text-xs text-accent hover:underline flex items-center gap-1 font-bold"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface px-3.5 py-2 text-xs font-bold text-muted transition hover:border-accent/40 hover:text-accent"
           >
             <Trash2 className="w-4 h-4" />
             <span>{locale === 'ru' ? 'Очистить все' : 'Barchasini tozalash'}</span>
           </button>
         )}
-      </div>
+      </PageHero>
 
       {items.length === 0 ? (
-        <div className="bg-surface rounded-2xl p-12 text-center border border-border shadow-xs my-8 space-y-4 max-w-md mx-auto">
-          <Scale className="w-16 h-16 text-muted/40 mx-auto" />
-          <h3 className="text-lg font-bold text-heading">
-            {locale === 'ru' ? 'Список сравнения пуст' : 'Solishtirish ro‘yxati bo‘sh'}
-          </h3>
-          <p className="text-xs text-muted">
-            {locale === 'ru'
+        <EmptyState
+          icon={Scale}
+          title={locale === 'ru' ? 'Список сравнения пуст' : 'Solishtirish ro‘yxati bo‘sh'}
+          description={
+            locale === 'ru'
               ? 'Добавьте товары в сравнение с помощью иконки весов на карточках товаров.'
-              : 'Mahsulot kartasidagi tarozu belgisi orqali mahsulotlarni solishtirishga qo‘shing.'}
-          </p>
-          <Link
-            href={`/${locale}/catalog`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-accent-hover text-surface font-bold text-xs rounded-xl shadow transition"
-          >
-            <span>{locale === 'ru' ? 'В каталог' : 'Katalogga o‘tish'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
+              : 'Mahsulot kartasidagi tarozu belgisi orqali mahsulotlarni solishtirishga qo‘shing.'
+          }
+          action={
+            <Link
+              href={`/${locale}/catalog`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-accent-hover text-surface font-bold text-xs rounded-xl shadow transition"
+            >
+              <span>{locale === 'ru' ? 'В каталог' : 'Katalogga o‘tish'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          }
+        />
       ) : (
         <div className="bg-surface rounded-2xl border border-border overflow-x-auto shadow-xs p-4">
           <table className="w-full text-left border-collapse min-w-[640px]">
