@@ -55,6 +55,28 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Decorative textile patterns — repeatable, subtle brand-blue textures.
+     Apply alongside a background-color; the SVGs are transparent tiles. */
+  .pattern-weave {
+    background-image: url('/images/patterns/weave.svg');
+    background-size: 20px 20px;
+  }
+
+  .pattern-twill {
+    background-image: url('/images/patterns/twill.svg');
+    background-size: 32px 16px;
+  }
+
+  .pattern-dots {
+    background-image: url('/images/patterns/dots.svg');
+    background-size: 16px 16px;
+  }
+
+  .pattern-weave-dark {
+    background-image: url('/images/patterns/weave-dark.svg');
+    background-size: 20px 20px;
+  }
 }
 
 /* Brand-aligned, unobtrusive scrollbar */

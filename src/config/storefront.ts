@@ -38,6 +38,17 @@ export const storefrontConfig = {
   // available. The layout does not change — only the asset path.
   heroImage: '/images/hero-material.jpg',
 
+  // ── Decorative textile patterns ───────────────────────────────────────────
+  // Brand-aligned weave/twill textures rendered from inline SVGs (no remote
+  // fetch). Used as subtle background accents across the storefront. Replace
+  // these paths with approved guidebook patterns when delivered.
+  patterns: {
+    weave: '/images/patterns/weave.svg',
+    twill: '/images/patterns/twill.svg',
+    dots: '/images/patterns/dots.svg',
+    weaveDark: '/images/patterns/weave-dark.svg',
+  },
+
   // ── Public contact information ────────────────────────────────────────────
   // TODO: confirm before launch — do not invent these values.
   phone: '',
