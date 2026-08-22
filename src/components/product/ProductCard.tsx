@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Heart, Scale, ShoppingBag, Zap, Check } from 'lucide-react';
-import { Product } from '@/types';
+import { StorefrontProduct } from '@/services/storefront/types';
 import { formatPrice, formatStockStatus, formatUnit } from '@/lib/formatters';
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
@@ -12,7 +12,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { QuickOrderModal } from '@/components/modals/QuickOrderModal';
 
 interface ProductCardProps {
-  product: Product;
+  product: StorefrontProduct | any;
   locale: string;
 }
 
@@ -21,8 +21,9 @@ export function ProductCard({ product, locale }: ProductCardProps) {
   const [quickOrderOpen, setQuickOrderOpen] = useState(false);
   const [addedToast, setAddedToast] = useState(false);
 
-  const selectedVariant = product.variants[selectedVariantIdx] || product.variants[0];
-  const mainImage = selectedVariant?.images[0] || 'https://via.placeholder.com/400';
+  const variants = product.variants || [];
+  const selectedVariant = variants[selectedVariantIdx] || variants[0];
+  const mainImage = selectedVariant?.images?.[0] || product.primaryImage || 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop';
 
   const addItem = useCartStore((s) => s.addItem);
   const { toggleFavorite, isFavorite } = useFavoritesStore();
@@ -32,30 +33,32 @@ export function ProductCard({ product, locale }: ProductCardProps) {
   const b2bActive = isB2B();
   const favorite = isFavorite(product.id);
   const inCompare = isInCompare(product.id);
-  const stockInfo = formatStockStatus(selectedVariant?.stock ?? 0, locale);
-  const unitLabel = formatUnit(product.unitType, locale);
+  const stockInfo = formatStockStatus(selectedVariant?.stockStatus || selectedVariant?.stock || 'IN_STOCK', locale);
+  const unitLabel = formatUnit(product.unitType || 'meter', locale);
 
-  const currentPrice = b2bActive
-    ? selectedVariant?.wholesalePrice
-    : selectedVariant?.price;
+  const currentPrice = b2bActive && selectedVariant?.wholesalePrice
+    ? selectedVariant.wholesalePrice
+    : (selectedVariant?.price || 0);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!selectedVariant) return;
 
+    const step = selectedVariant.quantityStep || (product.unitType === 'meter' ? 0.5 : 1);
+
     addItem({
       variantId: selectedVariant.id,
       productId: product.id,
       productTitle: locale === 'ru' ? product.titleRu : product.titleUz,
       sku: selectedVariant.sku,
-      variantName: locale === 'ru' ? selectedVariant.nameRu : selectedVariant.nameUz,
+      variantName: locale === 'ru' ? (selectedVariant.nameRu || selectedVariant.colorNameRu || '') : (selectedVariant.nameUz || selectedVariant.colorNameUz || ''),
       image: mainImage,
       price: selectedVariant.price,
-      wholesalePrice: selectedVariant.wholesalePrice,
+      wholesalePrice: selectedVariant.wholesalePrice || selectedVariant.price,
       unitType: product.unitType,
-      minQtyStep: (selectedVariant as any)?.minQtyStep || (product.unitType === 'meter' ? 0.5 : 1),
-      quantity: (selectedVariant as any)?.minQtyStep || (product.unitType === 'meter' ? 0.5 : 1),
+      minQtyStep: step,
+      quantity: step,
     });
 
     setAddedToast(true);
@@ -68,51 +71,58 @@ export function ProductCard({ product, locale }: ProductCardProps) {
     setQuickOrderOpen(true);
   };
 
+  const isFabric = product.categorySlug === 'mebel-matolari';
+  const maxVisibleSwatches = 5;
+  const hasExtraSwatches = variants.length > maxVisibleSwatches;
+
   return (
     <>
-      <div className="group bg-surface rounded-xl border border-border hover:border-accent/40 hover:shadow-lg transition-all duration-200 flex flex-col justify-between overflow-hidden relative">
-        {/* Aspect Ratio Viewport */}
-        <div className="relative aspect-square bg-secondary overflow-hidden">
-          <Link href={`/${locale}/product/${product.slug}`}>
+      <div className="group bg-surface rounded-2xl border border-border hover:border-accent/50 hover:shadow-xl transition-all duration-250 flex flex-col justify-between overflow-hidden relative">
+        {/* Visual Zone */}
+        <div className="relative aspect-square bg-secondary/50 overflow-hidden">
+          <Link href={`/${locale}/product/${product.slug}`} className="block w-full h-full">
             <img
               src={mainImage}
-              alt={product.titleUz}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              alt={locale === 'ru' ? product.titleRu : product.titleUz}
+              className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
+                isFabric ? 'object-cover' : 'object-contain p-3'
+              }`}
+              loading="lazy"
             />
           </Link>
 
           {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${stockInfo.color}`}>
+          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border backdrop-blur-md shadow-xs ${stockInfo.color}`}>
               {stockInfo.label}
             </span>
             {b2bActive && (
-              <span className="bg-emerald-700 text-surface text-[10px] font-black px-2 py-0.5 rounded">
+              <span className="bg-emerald-800/90 text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
                 B2B {locale === 'ru' ? 'Опт' : 'Ulgurji'}
               </span>
             )}
             {product.isNew && (
-              <span className="bg-accent text-surface text-[10px] font-black px-2 py-0.5 rounded">
+              <span className="bg-accent text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
                 {locale === 'ru' ? 'Новинка' : 'Yangi'}
               </span>
             )}
           </div>
 
-          {/* Action Icons */}
-          <div className="absolute top-2 right-2 flex flex-col gap-1 z-10">
+          {/* Floating Actions */}
+          <div className="absolute top-2.5 right-2.5 flex flex-col gap-1.5 z-10">
             <button
               onClick={(e) => {
                 e.preventDefault();
                 toggleFavorite(product.id);
               }}
-              className={`p-2 rounded-full backdrop-blur-sm transition ${
+              className={`p-2 rounded-xl backdrop-blur-md shadow-xs transition ${
                 favorite
-                  ? 'bg-accent/10 text-accent border border-accent/20'
-                  : 'bg-surface/80 text-muted hover:text-accent hover:bg-surface'
+                  ? 'bg-accent/20 text-accent border border-accent/40'
+                  : 'bg-surface/85 text-muted hover:text-accent hover:bg-surface border border-border/60'
               }`}
-              title="Favorite"
+              title={locale === 'ru' ? 'В избранное' : 'Tanlanganlarga qo‘shish'}
             >
-              <Heart className="w-3.5 h-3.5 fill-current" />
+              <Heart className={`w-3.5 h-3.5 ${favorite ? 'fill-accent' : ''}`} />
             </button>
 
             <button
@@ -123,107 +133,120 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                   slug: product.slug,
                   titleUz: product.titleUz,
                   titleRu: product.titleRu,
-                  categoryName: locale === 'ru' ? product.categoryNameRu : product.categoryNameUz,
+                  categoryName: locale === 'ru' ? (product.categoryNameRu || '') : (product.categoryNameUz || ''),
                   unitType: product.unitType,
                   price: selectedVariant?.price || 0,
-                  specs: product.specs || [],
+                  specs: (product.specs || []).map((s: any) => ({
+                    specKey: s.key || s.specKey,
+                    specValueUz: s.valueUz || s.specValueUz || '',
+                    specValueRu: s.valueRu || s.specValueRu || '',
+                  })),
                   image: mainImage,
                 });
               }}
-              className={`p-2 rounded-full backdrop-blur-sm transition ${
+              className={`p-2 rounded-xl backdrop-blur-md shadow-xs transition ${
                 inCompare
-                  ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
-                  : 'bg-surface/80 text-muted hover:text-amber-600 hover:bg-surface'
+                  ? 'bg-amber-500/20 text-amber-600 border border-amber-500/40'
+                  : 'bg-surface/85 text-muted hover:text-amber-600 hover:bg-surface border border-border/60'
               }`}
-              title="Compare"
+              title={locale === 'ru' ? 'Сравнить' : 'Taqqoslash'}
             >
               <Scale className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Info Body */}
+        {/* Content Body */}
         <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
           <div>
-            {/* Category & SKU */}
-            <div className="flex items-center justify-between text-[11px] text-muted mb-1">
-              <span className="truncate font-semibold">
-                {locale === 'ru' ? product.categoryNameRu : product.categoryNameUz}
+            {/* Category / Collection Tag & SKU */}
+            <div className="flex items-center justify-between text-[11px] text-muted mb-1.5">
+              <span className="truncate font-semibold uppercase tracking-wider text-[10px]">
+                {product.collectionName || (locale === 'ru' ? product.categoryNameRu : product.categoryNameUz)}
               </span>
-              <span className="font-mono bg-secondary border border-border px-1.5 py-0.5 rounded text-body font-bold text-[10px]">
+              <span className="font-mono bg-secondary border border-border/80 px-1.5 py-0.5 rounded text-heading font-bold text-[10px]">
                 {selectedVariant?.sku}
               </span>
             </div>
 
-            {/* Title */}
+            {/* Product Title */}
             <Link href={`/${locale}/product/${product.slug}`}>
-              <h3 className="text-xs font-bold text-heading line-clamp-2 hover:text-accent transition leading-snug">
+              <h3 className="text-xs sm:text-sm font-black text-heading line-clamp-2 hover:text-accent transition leading-snug">
                 {locale === 'ru' ? product.titleRu : product.titleUz}
               </h3>
             </Link>
 
-            {/* Tactile Color Swatches (if variants > 1) */}
-            {product.variants.length > 1 && (
-              <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                {product.variants.map((v, idx) => (
+            {/* Tactile Color Swatches */}
+            {variants.length > 1 && (
+              <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
+                {variants.slice(0, maxVisibleSwatches).map((v: any, idx: number) => (
                   <button
-                    key={v.id}
+                    key={v.id || v.sku}
                     onClick={() => setSelectedVariantIdx(idx)}
-                    className={`w-4 h-4 rounded-full border border-border transition ${
+                    className={`w-4 h-4 rounded-full border border-border transition-all ${
                       selectedVariantIdx === idx
-                        ? 'ring-2 ring-accent ring-offset-1 scale-110'
-                        : 'hover:scale-105'
+                        ? 'ring-2 ring-accent ring-offset-1 scale-110 shadow-xs'
+                        : 'hover:scale-105 opacity-85 hover:opacity-100'
                     }`}
-                    style={{ backgroundColor: v.colorHex || '#ccc' }}
-                    title={v.colorName || v.sku}
+                    style={{ backgroundColor: v.colorHex || '#d1d5db' }}
+                    title={locale === 'ru' ? (v.colorNameRu || v.nameRu || v.sku) : (v.colorNameUz || v.nameUz || v.sku)}
                   />
                 ))}
+                {hasExtraSwatches && (
+                  <Link
+                    href={`/${locale}/product/${product.slug}`}
+                    className="text-[10px] font-bold text-muted hover:text-accent pl-0.5 transition"
+                  >
+                    +{variants.length - maxVisibleSwatches} {locale === 'ru' ? 'цв.' : 'rang'}
+                  </Link>
+                )}
               </div>
             )}
           </div>
 
-          {/* Pricing & CTA */}
-          <div className="pt-2 border-t border-border">
-            <div className="flex items-baseline justify-between mb-2">
+          {/* Pricing & Actions */}
+          <div className="pt-2.5 border-t border-border/80 space-y-2.5">
+            <div className="flex items-baseline justify-between">
               <div>
-                <span className="text-sm font-black text-accent">
-                  {formatPrice(currentPrice || 0, locale)}
+                <span className="text-base font-black text-heading">
+                  {formatPrice(currentPrice, locale)}
                 </span>
-                <span className="text-[11px] text-muted font-medium ml-1">
+                <span className="text-xs text-muted font-medium ml-1">
                   / {unitLabel}
                 </span>
               </div>
               {selectedVariant?.wholesalePrice && !b2bActive && (
-                <div className="text-[10px] text-muted text-right">
-                  B2B: <span className="font-bold text-emerald-700">{formatPrice(selectedVariant.wholesalePrice, locale)}</span>
-                </div>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200" title="Ulgurji mijozlar uchun">
+                  B2B {formatPrice(selectedVariant.wholesalePrice, locale)}
+                </span>
               )}
             </div>
 
-            {/* Action buttons */}
+            {/* CTA Buttons */}
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleQuickOrder}
-                className="inline-flex items-center justify-center gap-1 py-1.5 px-2 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-lg transition"
+                className="inline-flex items-center justify-center gap-1 py-2 px-2 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-xl transition active:scale-98"
               >
-                <Zap className="w-3 h-3 text-amber-600" />
-                <span>1-Klik</span>
+                <Zap className="w-3.5 h-3.5 text-amber-500" />
+                <span>{locale === 'ru' ? '1-Клик' : '1-Klik'}</span>
               </button>
+
               <button
                 onClick={handleAddToCart}
-                className={`inline-flex items-center justify-center gap-1 py-1.5 px-2 text-surface text-xs font-bold rounded-lg transition ${
+                className={`inline-flex items-center justify-center gap-1.5 py-2 px-2 text-surface text-xs font-black rounded-xl transition shadow-xs active:scale-98 ${
                   addedToast ? 'bg-emerald-700' : 'bg-accent hover:bg-accent-hover'
                 }`}
               >
                 {addedToast ? (
                   <>
-                    <Check className="w-3 h-3" />
-                    <span>Qo'shildi</span>
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                    <span>{locale === 'ru' ? 'Добавлено' : 'Qo‘shildi'}</span>
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="w-3 h-3" />
-                    <span>Savatchaga</span>
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <span>{locale === 'ru' ? 'В корзину' : 'Savatchaga'}</span>
                   </>
                 )}
               </button>
@@ -237,9 +260,9 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         onClose={() => setQuickOrderOpen(false)}
         productTitle={locale === 'ru' ? product.titleRu : product.titleUz}
         sku={selectedVariant?.sku || ''}
-        price={currentPrice || 0}
+        price={currentPrice}
         unitType={product.unitType}
-        minQtyStep={(selectedVariant as any)?.minQtyStep || (product.unitType === 'meter' ? 0.5 : 1)}
+        minQtyStep={selectedVariant?.quantityStep || (product.unitType === 'meter' ? 0.5 : 1)}
         locale={locale}
       />
     </>

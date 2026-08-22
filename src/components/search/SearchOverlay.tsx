@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, X, Package, Tag, ArrowRight, Loader2 } from 'lucide-react';
+import { Search, X, Package, Tag, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { formatPrice } from '@/lib/formatters';
 
 interface SearchOverlayProps {
@@ -16,7 +16,11 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const [results, setResults] = useState<{ products: any[]; categories: any[] }>({ products: [], categories: [] });
+  const [results, setResults] = useState<{ products: any[]; categories: any[]; collections?: any[] }>({
+    products: [],
+    categories: [],
+    collections: [],
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -26,7 +30,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
     } else {
       document.body.style.overflow = '';
       setQuery('');
-      setResults({ products: [], categories: [] });
+      setResults({ products: [], categories: [], collections: [] });
     }
     return () => {
       document.body.style.overflow = '';
@@ -47,7 +51,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
 
   useEffect(() => {
     if (q.length < 2) {
-      setResults({ products: [], categories: [] });
+      setResults({ products: [], categories: [], collections: [] });
       return;
     }
 
@@ -64,15 +68,16 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
       } finally {
         setLoading(false);
       }
-    }, 300);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, [q]);
 
   if (!isOpen) return null;
 
-  const filteredProducts = results.products;
-  const filteredCategories = results.categories;
+  const filteredProducts = results.products || [];
+  const filteredCategories = results.categories || [];
+  const filteredCollections = results.collections || [];
 
   const handleSelectProduct = (slug: string) => {
     onClose();
@@ -84,6 +89,11 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
     router.push(`/${locale}/catalog/${slug}`);
   };
 
+  const handleSelectCollection = (slug: string) => {
+    onClose();
+    router.push(`/${locale}/catalog?collection=${slug}`);
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -93,13 +103,13 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-heading/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="min-h-screen px-4 pt-12 pb-20 text-center sm:p-0 flex flex-col items-center">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-heading/70 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="min-h-screen px-3 sm:px-4 pt-4 sm:pt-12 pb-20 text-center flex flex-col items-center">
         {/* Main Search Panel */}
-        <div className="relative w-full max-w-3xl bg-surface rounded-2xl shadow-2xl border border-border overflow-hidden mt-8 text-left">
+        <div className="relative w-full max-w-3xl bg-surface rounded-2xl shadow-2xl border border-border overflow-hidden text-left my-auto sm:my-8">
           {/* Header Input Form */}
-          <form onSubmit={handleFormSubmit} className="p-4 border-b border-border flex items-center gap-3">
-            <Search className="w-5 h-5 text-muted flex-shrink-0" />
+          <form onSubmit={handleFormSubmit} className="p-3.5 sm:p-4 border-b border-border flex items-center gap-3">
+            <Search className="w-5 h-5 text-accent flex-shrink-0" />
             <input
               ref={inputRef}
               type="text"
@@ -107,15 +117,15 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
               onChange={(e) => setQuery(e.target.value)}
               placeholder={
                 locale === 'ru'
-                  ? 'Поиск ткани, поролона, SKU (например LUNA-01, ST2536, F30D)...'
-                  : 'Mato, paralon, SKU (masalan LUNA-01, ST2536, F30D) qidirish...'
+                  ? 'Поиск по названию или точному SKU (LUNA-01, ST2536, F30D)...'
+                  : 'Nomi yoki aniq SKU bo‘yicha qidirish (LUNA-01, ST2536, F30D)...'
               }
-              className="w-full text-base font-medium text-heading placeholder:text-muted bg-transparent focus:outline-none"
+              className="w-full text-sm sm:text-base font-semibold text-heading placeholder:text-muted/80 bg-transparent focus:outline-none"
             />
             <button
               type="button"
               onClick={onClose}
-              className="p-1 text-muted hover:text-heading rounded-lg hover:bg-secondary transition"
+              className="p-1.5 text-muted hover:text-heading rounded-xl hover:bg-secondary transition"
             >
               <X className="w-5 h-5" />
             </button>
@@ -123,16 +133,16 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
 
           {/* Quick Suggestions when empty */}
           {q.length < 2 && (
-            <div className="p-6 space-y-4">
-              <span className="text-xs font-semibold text-muted uppercase tracking-wider block">
-                {locale === 'ru' ? 'Популярные запросы:' : 'Ommabop qidiruvlar:'}
+            <div className="p-5 sm:p-6 space-y-4">
+              <span className="text-[11px] font-bold text-muted uppercase tracking-wider block">
+                {locale === 'ru' ? 'Быстрый поиск по артикулу и категории:' : 'Artikul va kategoriya bo‘yicha tezkor qidiruv:'}
               </span>
               <div className="flex flex-wrap gap-2">
-                {['LUNA-01', 'ST-2536', 'F30D', 'Akfix 705', 'Velur', 'Paralon', 'Gaz-lift'].map((tag) => (
+                {['LUNA-01', 'ST2536-50', 'F30D', 'AKFIX-500', '8016', 'Velyur', 'Paralon', 'Delfin'].map((tag) => (
                   <button
                     key={tag}
                     onClick={() => setQuery(tag)}
-                    className="px-3 py-1.5 bg-secondary hover:bg-border text-heading text-xs font-semibold rounded-lg transition"
+                    className="px-3 py-1.5 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-xl transition"
                   >
                     {tag}
                   </button>
@@ -143,99 +153,134 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
 
           {/* Search Results Display */}
           {q.length >= 2 && (
-            <div className="max-h-[60vh] overflow-y-auto p-4 space-y-4">
+            <div className="max-h-[65vh] overflow-y-auto p-4 space-y-4 divide-y divide-border">
               {loading && (
                 <div className="py-12 flex justify-center text-muted">
-                  <Loader2 className="w-8 h-8 animate-spin" />
-                </div>
-              )}
-              
-              {!loading && filteredCategories.length > 0 && (
-                <div className="border-b border-border pb-3">
-                  <span className="text-xs font-semibold text-muted uppercase tracking-wider block mb-2 px-2">
-                    {locale === 'ru' ? 'Категории' : 'Kategoriyalar'}
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {filteredCategories.map((cat) => (
-                      <button
-                        key={cat.id}
-                        onClick={() => handleSelectCategory(cat.slug)}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold bg-accent-light text-accent hover:bg-accent/20 px-3 py-1.5 rounded-lg transition"
-                      >
-                        <Tag className="w-3.5 h-3.5" />
-                        {locale === 'ru' ? cat.nameRu : cat.nameUz}
-                      </button>
-                    ))}
-                  </div>
+                  <Loader2 className="w-8 h-8 animate-spin text-accent" />
                 </div>
               )}
 
-              {/* Product matches */}
-              {!loading && filteredProducts.length > 0 ? (
-                <div className="space-y-2">
-                  <span className="text-xs font-semibold text-muted uppercase tracking-wider block mb-1 px-2">
-                    {locale === 'ru' ? 'Товары' : 'Mahsulotlar'}
+              {/* Categorized Matches: Categories & Collections */}
+              {!loading && (filteredCategories.length > 0 || filteredCollections.length > 0) && (
+                <div className="pb-3 space-y-3">
+                  {filteredCategories.length > 0 && (
+                    <div>
+                      <span className="text-[10px] font-black text-muted uppercase tracking-wider block mb-2 px-1">
+                        {locale === 'ru' ? 'Категории' : 'Kategoriyalar'}
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {filteredCategories.map((cat) => (
+                          <button
+                            key={cat.id}
+                            onClick={() => handleSelectCategory(cat.slug)}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold bg-secondary hover:bg-accent-light hover:text-accent border border-border px-3 py-1.5 rounded-xl transition"
+                          >
+                            <Tag className="w-3.5 h-3.5 text-accent" />
+                            {locale === 'ru' ? cat.nameRu : cat.nameUz}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {filteredCollections.length > 0 && (
+                    <div>
+                      <span className="text-[10px] font-black text-muted uppercase tracking-wider block mb-2 px-1">
+                        {locale === 'ru' ? 'Коллекции' : 'Kolleksiyalar'}
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {filteredCollections.map((col) => (
+                          <button
+                            key={col.id}
+                            onClick={() => handleSelectCollection(col.slug)}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold bg-secondary hover:bg-accent-light hover:text-accent border border-border px-3 py-1.5 rounded-xl transition"
+                          >
+                            <Sparkles className="w-3.5 h-3.5 text-accent" />
+                            {col.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Product Matches */}
+              {!loading && filteredProducts.length > 0 && (
+                <div className="pt-3 space-y-2">
+                  <span className="text-[10px] font-black text-muted uppercase tracking-wider block mb-1 px-1">
+                    {locale === 'ru' ? 'Товары и Артикулы (SKU)' : 'Mahsulotlar va Artikul (SKU)'}
                   </span>
                   {filteredProducts.map((product) => {
                     const firstVar = product.variants?.[0];
-                    const imgUrl = firstVar?.images?.[0]?.url || product.images?.[0]?.url || 'https://via.placeholder.com/60';
+                    const imgUrl = firstVar?.images?.[0] || product.primaryImage || 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop';
 
                     return (
                       <div
                         key={product.id}
                         onClick={() => handleSelectProduct(product.slug)}
-                        className="flex items-center gap-4 p-3 hover:bg-secondary rounded-xl cursor-pointer border border-transparent hover:border-border transition"
+                        className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 hover:bg-secondary rounded-xl cursor-pointer border border-transparent hover:border-border transition"
                       >
                         <img
                           src={imgUrl}
                           alt={product.titleUz}
-                          className="w-14 h-14 object-cover rounded-lg border border-border flex-shrink-0"
+                          className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-xl border border-border flex-shrink-0"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <h4 className="text-sm font-bold text-heading truncate">
+                            <h4 className="text-xs sm:text-sm font-bold text-heading truncate">
                               {locale === 'ru' ? product.titleRu : product.titleUz}
                             </h4>
                             {firstVar?.sku && (
-                              <span className="text-[11px] font-mono font-bold bg-secondary text-body px-1.5 py-0.5 rounded border border-border">
+                              <span className="text-[10px] font-mono font-bold bg-surface text-heading px-1.5 py-0.5 rounded border border-border flex-shrink-0">
                                 {firstVar.sku}
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-muted truncate mt-0.5">
-                            {product.category ? (locale === 'ru' ? product.category.nameRu : product.category.nameUz) : ''}
-                            {product.brand?.name && ` • ${product.brand.name}`}
+                          <p className="text-[11px] text-muted truncate mt-0.5 font-medium">
+                            {locale === 'ru' ? product.categoryNameRu : product.categoryNameUz}
+                            {product.brand && ` • ${product.brand}`}
                           </p>
                         </div>
                         {firstVar?.price && (
-                          <div className="text-right font-extrabold text-accent text-xs">
-                            {formatPrice(firstVar.price.retailPrice, locale)} / {product.unitType}
+                          <div className="text-right font-black text-accent text-xs sm:text-sm flex-shrink-0">
+                            {formatPrice(firstVar.price, locale)}
                           </div>
                         )}
                       </div>
                     );
                   })}
                 </div>
-              ) : (
-                !loading && filteredCategories.length === 0 && (
-                  <div className="py-12 text-center text-muted text-sm space-y-2">
-                    <Package className="w-10 h-10 mx-auto text-muted/50 stroke-1" />
-                    <p>{locale === 'ru' ? 'Товары не найдены' : 'Mahsulotlar topilmadi'}</p>
-                  </div>
-                )
+              )}
+
+              {/* No matches */}
+              {!loading && filteredProducts.length === 0 && filteredCategories.length === 0 && (
+                <div className="py-12 text-center text-muted text-sm space-y-2">
+                  <Package className="w-12 h-12 mx-auto text-muted/50 stroke-1" />
+                  <p className="font-bold text-heading">
+                    {locale === 'ru' ? 'Ничего не найдено' : 'Hech narsa topilmadi'}
+                  </p>
+                  <p className="text-xs text-muted">
+                    {locale === 'ru'
+                      ? 'Попробуйте ввести другой артикул (например: LUNA-01, ST2536, F30D) или общее название'
+                      : 'Boshqa artikul (masalan: LUNA-01, ST2536, F30D) yoki umumiy nom kiriting'}
+                  </p>
+                </div>
               )}
             </div>
           )}
 
-          {/* Footer keyboard hint */}
-          <div className="p-3 bg-secondary border-t border-border flex justify-between items-center text-[11px] text-muted">
-            <span>Press <kbd className="px-1.5 py-0.5 bg-surface rounded border border-border font-mono font-bold">Esc</kbd> to close</span>
+          {/* Footer Bar */}
+          <div className="p-3.5 bg-secondary border-t border-border flex justify-between items-center text-xs text-muted">
+            <span className="hidden sm:inline">
+              <kbd className="px-1.5 py-0.5 bg-surface rounded border border-border font-mono font-bold text-[10px]">Esc</kbd> yopish
+            </span>
             <button
               onClick={handleFormSubmit}
-              className="inline-flex items-center gap-1 font-bold text-accent hover:underline"
+              className="inline-flex items-center gap-1.5 font-black text-accent hover:underline ml-auto"
             >
-              <span>{locale === 'ru' ? 'Bce результаты' : 'Barcha natijalar'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>{locale === 'ru' ? 'Смотреть все результаты в каталоге' : 'Katalogda barcha natijalarni ko‘rish'}</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>

@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { getCurrentUser } from '@/lib/auth/rbac';
+import { storefrontService } from '@/services/storefront';
 import { normalizeUzPhone, isValidUzPhone } from '@/lib/utils/phone';
-import { extractUtmParams } from '@/lib/utils/utm';
-import { WholesaleStatus, CustomerType } from '@prisma/client';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const currentUser = await getCurrentUser();
 
     const {
       name,
@@ -30,25 +26,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: { code: 'INVALID_PHONE_FORMAT', message: 'Valid Uzbekistan phone number is required' } }, { status: 400 });
     }
 
-    const utmParams = extractUtmParams(body);
-
-    const wholesaleReq = await db.wholesaleRequest.create({
-      data: {
-        userId: currentUser?.id || null,
-        name: name.trim(),
-        phone: normalizedPhone,
-        companyName: companyName.trim(),
-        businessType: businessType && Object.values(CustomerType).includes(businessType) ? businessType : CustomerType.MANUFACTURER,
-        region: region.trim(),
-        city: city.trim(),
-        monthlyPurchaseRange: monthlyPurchaseRange ? monthlyPurchaseRange.trim() : null,
-        notes: notes ? notes.trim() : null,
-        status: WholesaleStatus.NEW,
-        ...utmParams,
-      },
+    const result = await storefrontService.submitWholesaleRequest({
+      type: 'WHOLESALE_REQUEST',
+      name: name.trim(),
+      phone: normalizedPhone,
+      companyName: companyName.trim(),
+      businessType,
+      region: region.trim(),
+      city: city.trim(),
+      notes: notes ? (monthlyPurchaseRange ? `[Hajm: ${monthlyPurchaseRange}] ${notes.trim()}` : notes.trim()) : monthlyPurchaseRange,
     });
 
-    return NextResponse.json({ success: true, id: wholesaleReq.id });
+    return NextResponse.json({ success: result.success, id: result.referenceId, message: result.message });
   } catch (error: any) {
     console.error('Wholesale request error:', error);
     return NextResponse.json({ error: { code: 'INTERNAL_ERROR', message: 'Failed to create wholesale request' } }, { status: 500 });

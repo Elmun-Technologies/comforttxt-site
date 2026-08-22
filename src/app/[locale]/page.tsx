@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { db } from '@/lib/db';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ProductCard } from '@/components/product/ProductCard';
+import { storefrontService } from '@/services/storefront';
+import { storefrontConfig } from '@/config/storefront';
 import {
   Palette,
   Layers,
@@ -13,6 +14,10 @@ import {
   ArrowRight,
   ShieldCheck,
   Package,
+  Truck,
+  PhoneCall,
+  Search,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -21,245 +26,433 @@ interface HomePageProps {
 
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
+  const homepageData = await storefrontService.getHomepage(locale);
 
-  // Fetch real products from DB
-  const dbProducts = await db.product.findMany({
-    where: { isActive: true },
-    include: {
-      category: true,
-      variants: {
-        where: { isActive: true },
-        include: { price: true, inventory: true, images: true },
-      },
-      images: true,
-    },
-    take: 12,
-  });
+  const { heroCategories, popularProducts, newArrivals, featuredFabrics, collections } = homepageData;
 
-  // Map DB products to UI ProductCard domain structure
-  const formattedProducts = dbProducts.map((p) => {
-    const mainVar = p.variants[0];
-    const image = mainVar?.images[0]?.url || p.images[0]?.url || 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop';
-    
-    return {
-      id: p.id,
-      titleUz: p.titleUz,
-      titleRu: p.titleRu,
-      slug: p.slug,
-      descriptionUz: p.descriptionUz,
-      descriptionRu: p.descriptionRu,
-      categorySlug: p.category.slug,
-      unitType: p.unitType.toLowerCase(),
-      isFeatured: p.isFeatured,
-      isBestSeller: p.isPopular,
-      variants: p.variants.map((v) => ({
-        id: v.id,
-        sku: v.sku,
-        nameUz: v.nameUz || p.titleUz,
-        nameRu: v.nameRu || p.titleRu,
-        colorHex: v.colorHex || '#000000',
-        colorName: locale === 'ru' ? (v.colorNameRu || 'Цвет') : (v.colorNameUz || 'Rang'),
-        price: v.price?.retailPrice || 0,
-        wholesalePrice: v.price?.wholesalePrice || v.price?.retailPrice || 0,
-        stock: Number(v.inventory?.onHand || 0),
-        images: v.images.length > 0 ? v.images.map((img) => img.url) : [image],
-      })),
-    };
-  });
-
-  const popularProducts = formattedProducts.filter((p) => p.isBestSeller).length > 0
-    ? formattedProducts.filter((p) => p.isBestSeller)
-    : formattedProducts.slice(0, 4);
-
-  const categories = [
+  const fabricTypes = [
     {
-      slug: 'mebel-matolari',
-      title: locale === 'ru' ? 'Мебельные Ткани' : 'Mebel Matolari',
-      desc: locale === 'ru' ? 'Велюр, букле, шенилл, рогожка, эко-кожа' : 'Velyur, bukle, shenill, rogojka, eko-charm',
-      icon: Palette,
+      nameUz: 'Velyur (Velvet)',
+      nameRu: 'Велюр (Velvet)',
+      descUz: 'Yumshoq baxmal faktura, Pet Friendly va Easy Clean tozalanishi',
+      descRu: 'Мягкий бархатный ворс, эффект Easy Clean и защита от когтей',
       image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop',
+      href: `/${locale}/catalog/mebel-matolari?sub=velyur`,
     },
     {
-      slug: 'paralon',
-      title: locale === 'ru' ? 'Поролон (ППУ)' : 'Paralon (Porolon)',
-      desc: locale === 'ru' ? 'Марки ST, EL, HR любой толщины' : 'ST, EL, HR markali paralonlar',
-      icon: Layers,
-      image: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop',
+      nameUz: 'Bukle (Boucle)',
+      nameRu: 'Букле (Boucle)',
+      descUz: 'Skandinav uslubidagi nozik tugunchali zamonaviy hajm',
+      descRu: 'Скандинавский тренд с выразительной фактурой узелков',
+      image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop',
+      href: `/${locale}/catalog/mebel-matolari?sub=bukle`,
     },
     {
-      slug: 'mexanizmlar',
-      title: locale === 'ru' ? 'Механизмы Трансформации' : 'Mexanizmlar',
-      desc: locale === 'ru' ? 'Газ-лифты, дельфин, аккордеон' : 'Gaz-liftlar va transformatsiyalar',
-      icon: Settings,
-      image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop',
+      nameUz: 'Shenill (Chenille)',
+      nameRu: 'Шенилл (Chenille)',
+      descUz: 'Klassik va neoklassik mebellar uchun qalin baxmalsimon to‘qima',
+      descRu: 'Плотная ворсистая нить для классической и неоклассической мебели',
+      image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop',
+      href: `/${locale}/catalog/mebel-matolari?sub=shenill`,
     },
     {
-      slug: 'sarf-materiallar-va-instrumentlar',
-      title: locale === 'ru' ? 'Клей и Инструменты' : 'Yelim va Asboblar',
-      desc: locale === 'ru' ? 'Клей Akfix, скобы, пневмостеплеры' : 'Akfix sprey yelim, skoba va steplerlar',
-      icon: Hammer,
-      image: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=800&auto=format&fit=crop',
-    },
-  ];
-
-  const fabricsEditorial = [
-    { title: 'Velyur', desc: 'Yumshoq baxmal tekstura', image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop' },
-    { title: 'Bukle', desc: 'Halqali bo\'rtma faktura', image: 'https://images.unsplash.com/photo-1540518614846-7ede433c517a?w=800&auto=format&fit=crop' },
-    { title: 'Shenill', desc: 'Zich va issiq tekstura', image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop' },
-    { title: 'Rogojka', desc: 'Tabiiy pishiq to\'qima', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop' },
-  ];
-
-  const knowledgePosts = [
-    {
-      slug: 'st-vs-el-paralon-taqqoslash',
-      titleUz: 'ST vs EL Paralon: Divan va Matras uchun qaysi birini tanlash kerak?',
-      titleRu: 'ST vs EL Поролон: Что выбрать для дивана и матраса?',
-      excerptUz: '50 000 sikl nimani anglatadi? Oliy navli matoni qanday tanlash kerak.',
-      excerptRu: 'Что означают 50 000 циклов? Руководство по выбору ткани.',
-      readTime: '4 min',
-    },
-    {
-      slug: 'martindale-testi-nima',
-      titleUz: 'Martindale testi nima va mebel matosining chidamliligi qanday o\'lchanadi?',
-      titleRu: 'Что такое тест Мартиндейла и как измеряется износостойкость ткани?',
-      excerptUz: '20 000 yoki 50 000 sikl nimani anglatadi? Uy va jamoat joylari uchun mato tanlash sirlari.',
-      excerptRu: 'Что означают 20 000 или 50 000 циклов? Секреты выбора ткани для дома и HoReCa.',
-      readTime: '6 min',
+      nameUz: 'Rogojka (Matting)',
+      nameRu: 'Рогожка (Matting)',
+      descUz: 'Yuqori Martindale chidamliligi va havo o‘tkazuvchan tabiiy to‘qima',
+      descRu: 'Высокая прочность Мартиндейла и натуральная фактура плетения',
+      image: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop',
+      href: `/${locale}/catalog/mebel-matolari?sub=rogojka`,
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header locale={locale} />
 
-      {/* HERO SECTION */}
-      <section className="relative bg-background pt-12 pb-24 lg:pt-20 lg:pb-32 overflow-hidden animate-fade-in-up">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent/5 to-transparent pointer-events-none rounded-l-full blur-3xl opacity-50"></div>
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
-          <div className="lg:col-span-6 space-y-8 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 bg-surface border border-accent/20 px-4 py-2 rounded-full text-accent text-xs font-semibold tracking-widest uppercase shadow-sm">
-              <Sparkles className="w-4 h-4" />
-              <span>Premium Mebel Materiallari</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight leading-[1.1] text-heading text-balance">
-              Mebelingiz uchun <br className="hidden lg:block"/>
-              <span className="text-accent italic font-serif tracking-normal">mukammallik</span> asosi.
-            </h1>
-
-            <p className="text-muted text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
-              Oliy navli matolar, mustahkam paralonlar va ishonchli mexanizmlar. Dizaynerlar va professional ustalar tanlovi.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
-              <Link
-                href={`/${locale}/catalog`}
-                className="px-8 py-4 bg-heading hover:bg-body text-surface font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center gap-3 group"
-              >
-                <span>Katalogni ko'rish</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href={`/${locale}/sample-box`}
-                className="px-8 py-4 bg-transparent hover:bg-secondary text-heading font-medium rounded-full border border-border transition-colors"
-              >
-                Sample Box
-              </Link>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6 relative animate-zoom-in">
-            <div className="relative mx-auto aspect-[4/5] max-w-md w-full rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-surface">
-              <img
-                src="https://images.unsplash.com/photo-1540518614846-7ede433c517a?w=800&auto=format&fit=crop"
-                alt="Luxury Fabric"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-heading/40 to-transparent"></div>
-              <div className="absolute bottom-6 left-6 right-6 glass-card p-4 rounded-2xl flex items-center gap-4">
-                <div className="p-3 bg-surface text-accent rounded-xl shadow-sm">
-                  <ShieldCheck className="w-6 h-6" />
+      <main className="flex-1 space-y-16 pb-20">
+        {/* ======================================================== */}
+        {/* 1. COMMERCE-DRIVEN HERO */}
+        {/* ======================================================== */}
+        <section className="relative overflow-hidden bg-gradient-to-b from-secondary/60 via-background to-background pt-8 pb-12 sm:pt-12 sm:pb-16 border-b border-border/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              {/* Left Column (60%): Direct value proposition & Actions */}
+              <div className="lg:col-span-7 space-y-6">
+                <div className="inline-flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full border border-border text-xs font-bold text-heading shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                  <span>{locale === 'ru' ? '20 лет опыта в сфере мебельных материалов' : 'Mebel materiallari sohasida 20 yillik tajriba'}</span>
                 </div>
-                <div>
-                  <div className="text-[10px] font-semibold uppercase tracking-widest text-muted">
-                    Kafolatlangan Sifat
+
+                <div className="space-y-3">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-heading tracking-tight leading-[1.12]">
+                    {locale === 'ru'
+                      ? 'Все материалы для производства мебели — в одном месте'
+                      : 'Mebel ishlab chiqarish uchun kerakli mahsulotlar — bir joyda'}
+                  </h1>
+                  <p className="text-sm sm:text-base text-muted font-medium max-w-xl leading-relaxed">
+                    {locale === 'ru'
+                      ? 'Ткани, поролон, механизмы трансформации, фурнитура и профессиональные инструменты с быстрой доставкой по всему Узбекистану.'
+                      : 'Mato, paralon, mexanizm, furnitura va professional instrumentlar. O‘zbekiston bo‘ylab tezkor yetkazib berish.'}
+                  </p>
+                </div>
+
+                {/* Primary & Secondary Actions */}
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <Link
+                    href={`/${locale}/catalog`}
+                    className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-accent hover:bg-accent-hover text-surface font-black text-xs sm:text-sm rounded-xl shadow-md transition active:scale-98"
+                  >
+                    <span>{locale === 'ru' ? 'Смотреть каталог' : 'Katalogni ko‘rish'}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+
+                  <Link
+                    href={`/${locale}/wholesale`}
+                    className="inline-flex items-center gap-2 px-5 py-3.5 bg-surface hover:bg-secondary text-heading border border-border font-bold text-xs sm:text-sm rounded-xl transition shadow-xs"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-accent" />
+                    <span>{locale === 'ru' ? 'Для мебельных цехов (B2B)' : 'Mebelchilar uchun (B2B)'}</span>
+                  </Link>
+                </div>
+
+                {/* Quick Category Chips */}
+                <div className="pt-4 border-t border-border/70">
+                  <div className="text-[11px] font-bold text-muted uppercase tracking-wider mb-2">
+                    {locale === 'ru' ? 'Быстрый переход к разделам:' : 'Tezkor bo‘limlar:'}
                   </div>
-                  <div className="text-sm font-medium text-heading">100 000+ Sikl Martindale</div>
+                  <div className="flex flex-wrap gap-2">
+                    <Link
+                      href={`/${locale}/catalog/mebel-matolari`}
+                      className="px-3 py-1 bg-surface hover:bg-accent-light hover:text-accent hover:border-accent/40 border border-border rounded-lg text-xs font-semibold text-body transition"
+                    >
+                      {locale === 'ru' ? 'Мебельные ткани' : 'Mebel matolari'}
+                    </Link>
+                    <Link
+                      href={`/${locale}/catalog/paralon`}
+                      className="px-3 py-1 bg-surface hover:bg-accent-light hover:text-accent hover:border-accent/40 border border-border rounded-lg text-xs font-semibold text-body transition"
+                    >
+                      {locale === 'ru' ? 'Поролон (ST/EL/HR)' : 'Paralon (ST/EL/HR)'}
+                    </Link>
+                    <Link
+                      href={`/${locale}/catalog/mexanizmlar`}
+                      className="px-3 py-1 bg-surface hover:bg-accent-light hover:text-accent hover:border-accent/40 border border-border rounded-lg text-xs font-semibold text-body transition"
+                    >
+                      {locale === 'ru' ? 'Механизмы' : 'Mexanizmlar'}
+                    </Link>
+                    <Link
+                      href={`/${locale}/catalog/sarf-materiallar-va-instrumentlar`}
+                      className="px-3 py-1 bg-surface hover:bg-accent-light hover:text-accent hover:border-accent/40 border border-border rounded-lg text-xs font-semibold text-body transition"
+                    >
+                      {locale === 'ru' ? 'Инструменты и клей' : 'Asboblar va yelim'}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column (40%): Tactile Material Visual Zone */}
+              <div className="lg:col-span-5 relative">
+                <div className="relative rounded-3xl overflow-hidden border border-border/80 shadow-2xl bg-surface">
+                  <div className="aspect-[4/3] sm:aspect-square relative overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=1000&auto=format&fit=crop"
+                      alt="Comfort TXT Premium Materials"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-charcoal-950/20 to-transparent flex items-end p-6">
+                      <div className="text-surface space-y-1.5">
+                        <div className="inline-flex items-center gap-1.5 bg-accent text-surface text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md">
+                          <Sparkles className="w-3 h-3" />
+                          LUNA Collection
+                        </div>
+                        <h2 className="text-lg sm:text-xl font-black">
+                          {locale === 'ru' ? 'Премиальный велюр Easy Clean' : 'Easy Clean baxmal velyur matolari'}
+                        </h2>
+                        <p className="text-xs text-surface/80 font-medium">
+                          {locale === 'ru' ? '50 000 циклов Мартиндейла • Водоотталкивающий' : '50 000 Martindale chidamlilik • Suv yuqtirmas'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CATEGORY GRID */}
-      <section className="py-20 max-w-7xl mx-auto px-4 w-full relative">
-        <div className="mb-12 text-center max-w-2xl mx-auto space-y-4">
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">Kolleksiya</span>
-          <h2 className="text-3xl sm:text-4xl font-medium text-heading tracking-tight">
-            Nafislik va Sifat
-          </h2>
-          <p className="text-sm text-muted font-light">
-            Eksklyuziv mebel yaratish uchun eng sara materiallar to'plami.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {categories.map((cat, idx) => {
-            const IconComp = cat.icon;
-            return (
-              <Link
-                key={idx}
-                href={`/${locale}/catalog/${cat.slug}`}
-                className="group relative rounded-[2rem] overflow-hidden bg-surface shadow-sm hover:shadow-2xl hover:shadow-accent/5 transition-all duration-500 flex flex-col"
-              >
-                <div className="aspect-[4/3] bg-secondary overflow-hidden relative">
-                  <img
-                    src={cat.image}
-                    alt={cat.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500" />
-                </div>
-                <div className="p-6 flex flex-col gap-2 relative bg-surface border border-t-0 border-border rounded-b-[2rem]">
-                  <div className="absolute -top-6 right-6 p-3 bg-surface text-accent rounded-2xl shadow-lg border border-border group-hover:scale-110 transition-transform duration-300">
-                    <IconComp className="w-5 h-5" />
-                  </div>
-                  <h3 className="text-lg font-medium text-heading pr-12">{cat.title}</h3>
-                  <p className="text-xs text-muted font-light leading-relaxed">{cat.desc}</p>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* POPULAR PRODUCTS */}
-      <section className="py-20 bg-secondary/30 border-y border-border/50">
-        <div className="max-w-7xl mx-auto px-4 space-y-12">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="text-center sm:text-left space-y-2">
-              <span className="text-xs font-semibold uppercase tracking-widest text-accent">Trend</span>
-              <h2 className="text-3xl font-medium text-heading tracking-tight">
-                Ko'p Tanlanayotganlar
+        {/* ======================================================== */}
+        {/* 2. TACTILE CATEGORY DISCOVERY */}
+        {/* ======================================================== */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+          <div className="flex items-end justify-between border-b border-border pb-3">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-heading tracking-tight">
+                {locale === 'ru' ? 'Категории Материалов' : 'Materiallar Kategoriyalari'}
               </h2>
+              <p className="text-xs text-muted mt-0.5 font-medium">
+                {locale === 'ru' ? 'Выберите нужный раздел для быстрого заказа' : 'Buyurtma uchun kerakli yo‘nalishni tanlang'}
+              </p>
             </div>
             <Link
               href={`/${locale}/catalog`}
-              className="inline-flex items-center text-sm font-medium text-heading hover:text-accent transition-colors group"
+              className="text-xs font-bold text-accent hover:text-accent-hover inline-flex items-center gap-1 transition"
             >
-              <span>Katalogni ochish</span>
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              <span>{locale === 'ru' ? 'Весь каталог' : 'Barcha katalog'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {popularProducts.map((prod) => (
-              <ProductCard key={prod.id} product={prod as any} locale={locale} />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            {heroCategories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/${locale}/catalog/${cat.slug}`}
+                className="group bg-surface rounded-2xl border border-border p-3.5 flex flex-col justify-between hover:border-accent/60 hover:shadow-lg transition duration-200"
+              >
+                <div className="relative aspect-video rounded-xl overflow-hidden bg-secondary mb-3">
+                  <img
+                    src={cat.image}
+                    alt={cat.nameUz}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-xs sm:text-sm font-black text-heading group-hover:text-accent transition leading-tight">
+                    {locale === 'ru' ? cat.nameRu : cat.nameUz}
+                  </h3>
+                  <p className="text-[11px] text-muted line-clamp-2 leading-snug">
+                    {locale === 'ru' ? cat.descriptionRu : cat.descriptionUz}
+                  </p>
+                </div>
+                <div className="pt-2 text-[10px] font-bold text-accent group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                  <span>{locale === 'ru' ? 'Смотреть' : 'Ko‘rish'}</span>
+                  <ArrowRight className="w-3 h-3" />
+                </div>
+              </Link>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* ======================================================== */}
+        {/* 3. EARLY PRODUCTS: POPULAR & NEW ARRIVALS */}
+        {/* ======================================================== */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+          <div className="flex items-end justify-between border-b border-border pb-3">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-accent text-xs font-black uppercase tracking-wider mb-1">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{locale === 'ru' ? 'Хиты продаж' : 'Ommabop mahsulotlar'}</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-heading tracking-tight">
+                {locale === 'ru' ? 'Популярные Позиции для Производства' : 'Eng Ko‘p Buyurtma Qilinadigan Materiallar'}
+              </h2>
+            </div>
+            <Link
+              href={`/${locale}/catalog?sort=popular`}
+              className="text-xs font-bold text-accent hover:text-accent-hover inline-flex items-center gap-1 transition"
+            >
+              <span>{locale === 'ru' ? 'Все популярные' : 'Barchasini ko‘rish'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {popularProducts.map((product) => (
+              <ProductCard key={product.id} product={product} locale={locale} />
+            ))}
+          </div>
+        </section>
+
+        {/* ======================================================== */}
+        {/* 4. SIGNATURE EDITORIAL: "MATO FAQAT RANG EMAS" */}
+        {/* ======================================================== */}
+        <section className="bg-secondary/70 border-y border-border py-12 sm:py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+            <div className="max-w-2xl space-y-2">
+              <span className="text-accent text-xs font-black uppercase tracking-widest">
+                {locale === 'ru' ? 'Текстура и Практичность' : 'Faktura va Chidamlilik'}
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-heading tracking-tight">
+                {locale === 'ru' ? 'Ткань — это не только цвет' : 'Mato faqat rang emas'}
+              </h2>
+              <p className="text-xs sm:text-sm text-muted font-medium leading-relaxed">
+                {locale === 'ru'
+                  ? 'Каждая фактура решает конкретную задачу: от износостойкого велюра до уютного букле и прочного шенилла.'
+                  : 'Har bir to‘qima o‘ziga xos xususiyatga ega: baxmal yumshoqlik, tirnalishga chidamlilik yoki Skandinaviya uslubidagi hajm.'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {fabricTypes.map((item, idx) => (
+                <Link
+                  key={idx}
+                  href={item.href}
+                  className="group bg-surface rounded-2xl border border-border overflow-hidden hover:border-accent/60 hover:shadow-xl transition flex flex-col justify-between"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+                    <img
+                      src={item.image}
+                      alt={item.nameUz}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-sm font-black text-heading group-hover:text-accent transition">
+                        {locale === 'ru' ? item.nameRu : item.nameUz}
+                      </h3>
+                      <p className="text-[11px] text-muted leading-relaxed mt-1">
+                        {locale === 'ru' ? item.descRu : item.descUz}
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-border flex items-center justify-between text-xs font-bold text-accent">
+                      <span>{locale === 'ru' ? 'Коллекции ткани' : 'Mato to‘plamlari'}</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ======================================================== */}
+        {/* 5. B2B PROCUREMENT VALUE */}
+        {/* ======================================================== */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="bg-surface rounded-3xl border border-border p-6 sm:p-10 lg:p-12 shadow-sm space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-6 space-y-4">
+                <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>{locale === 'ru' ? 'Для фабрик, цехов и мастеров' : 'Fabrika, sex va ustalar uchun'}</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-heading tracking-tight leading-tight">
+                  {locale === 'ru'
+                    ? 'Удобные оптовые закупки и стабильное снабжение'
+                    : 'Ulgurji xaridlar va uzluksiz ta‘minot'}
+                </h2>
+                <p className="text-xs sm:text-sm text-muted leading-relaxed">
+                  {locale === 'ru'
+                    ? 'Мы помогаем мебельным производствам любого масштаба получать качественные материалы вовремя, с персональными условиями и профессиональной поддержкой.'
+                    : 'Kichik ustaxonalardan yirik mebel fabrikalarigacha — barcha materiallarni bitta ta‘minotchidan olish imkoniyati.'}
+                </p>
+
+                <div className="pt-2">
+                  <Link
+                    href={`/${locale}/wholesale`}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-hover text-surface text-xs sm:text-sm font-black rounded-xl shadow-md transition"
+                  >
+                    <span>{locale === 'ru' ? 'Узнать условия для B2B' : 'B2B shartlari bilan tanishish'}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 rounded-2xl bg-secondary border border-border space-y-2">
+                  <Package className="w-5 h-5 text-accent" />
+                  <h3 className="text-xs font-black text-heading">
+                    {locale === 'ru' ? 'Широкий ассортимент' : 'Keng assortiment'}
+                  </h3>
+                  <p className="text-[11px] text-muted leading-relaxed">
+                    {locale === 'ru' ? 'Все нужные позиции от ткани до скоб в одном заказе' : 'Mato, paralon, mexanizm va instrumentlar bitta joyda'}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-secondary border border-border space-y-2">
+                  <Truck className="w-5 h-5 text-accent" />
+                  <h3 className="text-xs font-black text-heading">
+                    {locale === 'ru' ? 'Доставка в ваш цех' : 'Ustaxonagacha yetkazish'}
+                  </h3>
+                  <p className="text-[11px] text-muted leading-relaxed">
+                    {locale === 'ru' ? 'Доставка по Ташкенту и во все регионы Узбекистана' : 'Toshkent va viloyatlardagi ishlab chiqarish sexlariga'}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-secondary border border-border space-y-2">
+                  <PhoneCall className="w-5 h-5 text-accent" />
+                  <h3 className="text-xs font-black text-heading">
+                    {locale === 'ru' ? 'Персональный менеджер' : 'Shaxsiy menejer'}
+                  </h3>
+                  <p className="text-[11px] text-muted leading-relaxed">
+                    {locale === 'ru' ? 'Оперативный подбор аналогов и расчет партий' : 'Materiallar tanlash va tezkor hisob-kitob'}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-secondary border border-border space-y-2">
+                  <CheckCircle2 className="w-5 h-5 text-accent" />
+                  <h3 className="text-xs font-black text-heading">
+                    {locale === 'ru' ? 'Повторные заказы по SKU' : 'SKU bo‘yicha tezkor buyurtma'}
+                  </h3>
+                  <p className="text-[11px] text-muted leading-relaxed">
+                    {locale === 'ru' ? 'Удобная дозакупка по кодам позиций без лишних согласований' : 'Doimiy xarid qilinadigan kodlarni 1 klikda qaytarish'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ======================================================== */}
+        {/* 6. SAMPLE BOX CTA */}
+        {/* ======================================================== */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="bg-gradient-to-r from-charcoal-900 to-charcoal-800 text-surface rounded-3xl p-6 sm:p-10 lg:p-12 border border-charcoal-700 shadow-xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4">
+                <span className="inline-flex items-center gap-1.5 bg-accent text-surface text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md">
+                  <Package className="w-3.5 h-3.5" />
+                  Sample Box
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
+                  {locale === 'ru'
+                    ? 'Закажите образцы тканей для вашего цеха или офиса'
+                    : 'Ustaxonangiz uchun matolar to‘plami namunalarini oling'}
+                </h2>
+                <p className="text-xs sm:text-sm text-surface/80 leading-relaxed max-w-xl">
+                  {locale === 'ru'
+                    ? 'Выберите нужные коллекции тканей и получите раскладку образцов для согласования с клиентами и проверки качества.'
+                    : 'Haqiqiy rang va fakturalarni qo‘lingizda ushlab ko‘ring. Mijozlaringizga tanlash oson bo‘lishi uchun namuna so‘rang.'}
+                </p>
+                <div className="pt-2">
+                  <Link
+                    href={`/${locale}/sample-box`}
+                    className="inline-flex items-center gap-2 px-6 py-3.5 bg-accent hover:bg-accent-hover text-surface text-xs sm:text-sm font-black rounded-xl shadow-md transition"
+                  >
+                    <span>{locale === 'ru' ? 'Заказать Sample Box' : 'Sample Box so‘rash'}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 grid grid-cols-2 gap-3">
+                <div className="p-4 bg-surface/10 rounded-2xl backdrop-blur-sm border border-surface/10 space-y-1">
+                  <div className="text-accent font-black text-base">01</div>
+                  <div className="text-xs font-bold">{locale === 'ru' ? 'Выбор коллекций' : 'Kolleksiyani tanlash'}</div>
+                  <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Велюр, букле, шенилл' : 'Velyur, bukle, shenill'}</div>
+                </div>
+                <div className="p-4 bg-surface/10 rounded-2xl backdrop-blur-sm border border-surface/10 space-y-1">
+                  <div className="text-accent font-black text-base">02</div>
+                  <div className="text-xs font-bold">{locale === 'ru' ? 'Заявка' : 'So‘rov qoldirish'}</div>
+                  <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Контакты и адрес' : 'Manzil va telefon'}</div>
+                </div>
+                <div className="p-4 bg-surface/10 rounded-2xl backdrop-blur-sm border border-surface/10 space-y-1">
+                  <div className="text-accent font-black text-base">03</div>
+                  <div className="text-xs font-bold">{locale === 'ru' ? 'Доставка образцов' : 'Yetkazib berish'}</div>
+                  <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Прямо в ваш цех' : 'Sexingizga yetkaziladi'}</div>
+                </div>
+                <div className="p-4 bg-surface/10 rounded-2xl backdrop-blur-sm border border-surface/10 space-y-1">
+                  <div className="text-accent font-black text-base">04</div>
+                  <div className="text-xs font-bold">{locale === 'ru' ? 'Точный заказ' : 'Aniq buyurtma'}</div>
+                  <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Без риска ошибки' : 'Xatosiz tanlov'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
 
       <Footer locale={locale} />
     </div>

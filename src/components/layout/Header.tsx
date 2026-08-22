@@ -26,6 +26,7 @@ import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useCompareStore } from '@/store/useCompareStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { topUtilityLinks, mainNavCategories } from '@/data/navigation';
+import { storefrontConfig } from '@/config/storefront';
 
 interface HeaderProps {
   locale: string;
@@ -48,32 +49,28 @@ export function Header({ locale }: HeaderProps) {
   const b2bActive = isB2B();
 
   const switchLocale = (newLocale: string) => {
-    // next-intl usePathname already gives the pathname WITHOUT the locale prefix!
-    // So if URL is /uz/catalog?color=beige, pathname is /catalog
     const search = searchParams.toString();
     const query = search ? `?${search}` : '';
-    
-    // We can use router.replace with { pathname, query } in next-intl
     router.replace(`${pathname}${query}`, { locale: newLocale });
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-surface/80 backdrop-blur-xl border-b border-border shadow-[0_4px_30px_rgb(0,0,0,0.03)]">
+    <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-xl border-b border-border shadow-[0_4px_30px_rgb(0,0,0,0.03)]">
       {/* Top Utility Bar */}
-      <div className="bg-secondary/50 text-muted text-xs py-1.5 px-4 border-b border-border/50">
+      <div className="bg-secondary/60 text-muted text-xs py-1.5 px-4 border-b border-border/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center gap-4">
             <a
-              href="tel:+998712008899"
-              className="inline-flex items-center gap-1.5 hover:text-surface transition font-semibold"
+              href={`tel:${storefrontConfig.phoneRaw}`}
+              className="inline-flex items-center gap-1.5 hover:text-heading transition font-bold text-[11px]"
             >
               <Phone className="w-3.5 h-3.5 text-accent" />
-              <span>+998 (71) 200-88-99</span>
+              <span>{storefrontConfig.phone}</span>
             </a>
             <span className="hidden md:inline text-border">|</span>
-            <div className="hidden md:flex items-center gap-1.5 text-muted">
+            <div className="hidden md:flex items-center gap-1.5 text-muted text-[11px]">
               <Clock className="w-3.5 h-3.5" />
-              <span>{locale === 'ru' ? 'Пн-Сб: 09:00 - 18:00' : 'Dush-Shan: 09:00 - 18:00'}</span>
+              <span>{locale === 'ru' ? storefrontConfig.workingHoursRu : storefrontConfig.workingHoursUz}</span>
             </div>
           </div>
 
@@ -81,7 +78,7 @@ export function Header({ locale }: HeaderProps) {
             {/* Nav links */}
             <div className="hidden lg:flex items-center gap-3">
               {topUtilityLinks.map((link, idx) => (
-                <Link key={idx} href={link.href} className="hover:text-surface transition text-[11px]">
+                <Link key={idx} href={link.href} className="hover:text-heading transition text-[11px] font-semibold">
                   {locale === 'ru' ? link.labelRu : link.labelUz}
                 </Link>
               ))}
@@ -96,27 +93,27 @@ export function Header({ locale }: HeaderProps) {
             ) : (
               <Link
                 href="/wholesale"
-                className="text-surface hover:text-accent font-bold text-[11px] bg-accent/20 px-2 py-0.5 rounded border border-accent/40 transition"
+                className="text-heading hover:text-accent font-black text-[11px] bg-accent/15 px-2.5 py-0.5 rounded-md border border-accent/30 transition"
               >
                 {locale === 'ru' ? 'Опт B2B' : 'Ulgurji B2B'}
               </Link>
             )}
 
             {/* Language Switcher */}
-            <div className="flex items-center gap-1 bg-surface p-0.5 rounded-md border border-border shadow-sm">
-              <Globe className="w-3 h-3 text-muted ml-1" />
+            <div className="flex items-center gap-0.5 bg-surface p-0.5 rounded-md border border-border shadow-xs">
+              <Globe className="w-3 h-3 text-muted ml-1 mr-0.5" />
               <button
                 onClick={() => switchLocale('uz')}
-                className={`px-1.5 py-0.5 rounded text-[11px] font-bold transition ${
-                  locale === 'uz' ? 'bg-accent text-surface' : 'text-muted hover:text-surface'
+                className={`px-1.5 py-0.5 rounded text-[10px] font-black transition ${
+                  locale === 'uz' ? 'bg-accent text-surface' : 'text-muted hover:text-heading'
                 }`}
               >
                 UZ
               </button>
               <button
                 onClick={() => switchLocale('ru')}
-                className={`px-1.5 py-0.5 rounded text-[11px] font-bold transition ${
-                  locale === 'ru' ? 'bg-accent text-surface' : 'text-muted hover:text-surface'
+                className={`px-1.5 py-0.5 rounded text-[10px] font-black transition ${
+                  locale === 'ru' ? 'bg-accent text-surface' : 'text-muted hover:text-heading'
                 }`}
               >
                 RU
@@ -131,7 +128,7 @@ export function Header({ locale }: HeaderProps) {
         {/* Mobile menu trigger */}
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="lg:hidden p-2 text-heading hover:bg-secondary/80 rounded-xl transition"
+          className="lg:hidden p-2 text-heading hover:bg-secondary rounded-xl transition"
         >
           <Menu className="w-6 h-6" />
         </button>
@@ -151,21 +148,21 @@ export function Header({ locale }: HeaderProps) {
           </div>
         </Link>
 
-        {/* Quick Search Bar Trigger (Desktop) */}
+        {/* Persistent Search Bar (Desktop) */}
         <div className="hidden lg:block flex-1 max-w-xl px-4">
           <button
             onClick={() => setSearchOpen(true)}
-            className="w-full pl-4 pr-10 py-2 bg-secondary hover:bg-surface border border-border focus:border-accent rounded-xl text-xs font-medium text-muted flex items-center justify-between shadow-xs transition"
+            className="w-full pl-4 pr-10 py-2.5 bg-secondary hover:bg-surface border border-border focus:border-accent rounded-xl text-xs font-semibold text-muted flex items-center justify-between shadow-xs transition cursor-pointer"
           >
-            <span className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-muted" />
-              <span>
+            <span className="flex items-center gap-2.5">
+              <Search className="w-4 h-4 text-accent" />
+              <span className="text-body/70">
                 {locale === 'ru'
-                  ? 'Поиск ткани, поролона, SKU (LUNA-01, ST2536)...'
-                  : 'Mato, paralon, SKU (LUNA-01, ST2536) qidirish...'}
+                  ? 'Поиск ткани, поролона, SKU (LUNA-01, ST2536, F30D)...'
+                  : 'Mato, paralon, SKU (LUNA-01, ST2536, F30D) qidirish...'}
               </span>
             </span>
-            <kbd className="px-2 py-0.5 bg-surface rounded border border-border text-[10px] font-mono">⌘K</kbd>
+            <kbd className="px-2 py-0.5 bg-surface rounded border border-border text-[10px] font-mono font-bold text-muted">⌘K</kbd>
           </button>
         </div>
 
@@ -181,9 +178,9 @@ export function Header({ locale }: HeaderProps) {
 
           {/* Account */}
           <Link
-            href={user ? `/account` : `/wholesale`}
+            href="/account"
             className="p-2 text-heading hover:text-accent rounded-xl hover:bg-secondary transition hidden sm:block"
-            title="Account"
+            title={locale === 'ru' ? 'Кабинет' : 'Kabinet'}
           >
             <User className="w-5 h-5" />
           </Link>
@@ -192,11 +189,11 @@ export function Header({ locale }: HeaderProps) {
           <Link
             href="/compare"
             className="relative p-2 text-heading hover:text-accent rounded-xl hover:bg-secondary transition hidden sm:block"
-            title="Compare"
+            title={locale === 'ru' ? 'Сравнение' : 'Taqqoslama'}
           >
             <Scale className="w-5 h-5" />
             {compareCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-accent text-surface text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-accent text-surface text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                 {compareCount}
               </span>
             )}
@@ -206,11 +203,11 @@ export function Header({ locale }: HeaderProps) {
           <Link
             href="/favorites"
             className="relative p-2 text-heading hover:text-accent rounded-xl hover:bg-secondary transition hidden sm:block"
-            title="Favorites"
+            title={locale === 'ru' ? 'Избранное' : 'Tanlanganlar'}
           >
             <Heart className="w-5 h-5" />
             {favoriteCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-accent text-surface text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-accent text-surface text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                 {favoriteCount}
               </span>
             )}
@@ -219,10 +216,10 @@ export function Header({ locale }: HeaderProps) {
           {/* Cart Drawer Trigger */}
           <button
             onClick={() => setCartOpen(true)}
-            className="relative flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface px-3.5 py-2 rounded-xl shadow-xs transition"
+            className="relative flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface px-4 py-2.5 rounded-xl shadow-md transition active:scale-98"
           >
             <ShoppingBag className="w-5 h-5" />
-            <span className="text-xs font-bold hidden sm:inline">
+            <span className="text-xs font-black hidden sm:inline">
               {locale === 'ru' ? 'Корзина' : 'Savatcha'}
             </span>
             {totalCartItems > 0 && (
@@ -239,7 +236,7 @@ export function Header({ locale }: HeaderProps) {
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
           {/* MegaMenu Trigger */}
           <div className="relative" onMouseEnter={() => setMegaMenuOpen(true)}>
-            <button className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface font-semibold text-xs uppercase tracking-widest px-6 py-3.5 transition">
+            <button className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface font-black text-xs uppercase tracking-widest px-6 py-3.5 transition">
               <Menu className="w-4 h-4" />
               <span>{locale === 'ru' ? 'Категории товаров' : 'Mahsulot Kategoriyalari'}</span>
               <ChevronDown className="w-3.5 h-3.5 ml-1" />
@@ -252,15 +249,15 @@ export function Header({ locale }: HeaderProps) {
               <Link
                 key={idx}
                 href={cat.href}
-                className="px-4 py-3 text-xs font-bold hover:text-accent transition uppercase tracking-wider"
+                className="px-4 py-3 text-xs font-bold text-heading hover:text-accent transition uppercase tracking-wider"
               >
                 {locale === 'ru' ? cat.labelRu : cat.labelUz}
               </Link>
             ))}
           </nav>
 
-          <div className="text-xs text-accent font-bold">
-            ⚡ {locale === 'ru' ? 'Быстрая доставка по Узб' : 'O\'zbekiston bo\'ylab tezkor yetkazish'}
+          <div className="text-xs text-accent font-black">
+            ⚡ {locale === 'ru' ? 'Быстрая доставка по всему Узбекистану' : 'O‘zbekiston bo‘ylab tezkor yetkazish'}
           </div>
         </div>
 

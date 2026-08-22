@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { storefrontService } from '@/services/storefront';
 import { normalizeUzPhone, isValidUzPhone } from '@/lib/utils/phone';
-import { extractUtmParams } from '@/lib/utils/utm';
-import { SampleStatus, CustomerType } from '@prisma/client';
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,24 +25,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: { code: 'INVALID_PHONE_FORMAT', message: 'Valid Uzbekistan phone number is required' } }, { status: 400 });
     }
 
-    const utmParams = extractUtmParams(body);
-
-    const sampleReq = await db.sampleRequest.create({
-      data: {
-        name: name.trim(),
-        phone: normalizedPhone,
-        companyName: companyName ? companyName.trim() : null,
-        businessType: businessType && Object.values(CustomerType).includes(businessType) ? businessType : null,
-        region: region.trim(),
-        city: city.trim(),
-        requestedCollections: typeof selectedFabrics === 'string' ? selectedFabrics : JSON.stringify(selectedFabrics),
-        comment: comment ? comment.trim() : null,
-        status: SampleStatus.NEW,
-        ...utmParams,
-      },
+    const result = await storefrontService.submitSampleRequest({
+      type: 'SAMPLE_REQUEST',
+      name: name.trim(),
+      phone: normalizedPhone,
+      companyName: companyName ? companyName.trim() : undefined,
+      businessType,
+      region: region.trim(),
+      city: city.trim(),
+      notes: comment ? comment.trim() : undefined,
+      requestedCollections: Array.isArray(selectedFabrics) ? selectedFabrics : [selectedFabrics],
     });
 
-    return NextResponse.json({ success: true, id: sampleReq.id });
+    return NextResponse.json({ success: result.success, id: result.referenceId, message: result.message });
   } catch (error: any) {
     console.error('Sample request error:', error);
     return NextResponse.json({ error: { code: 'INTERNAL_ERROR', message: 'Failed to create sample request' } }, { status: 500 });

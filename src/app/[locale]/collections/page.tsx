@@ -1,6 +1,6 @@
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { db } from '@/lib/db';
+import { storefrontService } from '@/services/storefront';
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
@@ -10,15 +10,7 @@ interface CollectionsPageProps {
 
 export default async function CollectionsPage({ params }: CollectionsPageProps) {
   const { locale } = await params;
-
-  const dbCollections = await db.collection.findMany({
-    where: { isActive: true },
-    include: {
-      _count: {
-        select: { products: true }
-      }
-    }
-  });
+  const collections = await storefrontService.getCollections(locale);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -36,51 +28,48 @@ export default async function CollectionsPage({ params }: CollectionsPageProps) 
           <p className="text-xs text-muted mt-1 font-medium">
             {locale === 'ru'
               ? 'Премиальные дизайны и сочетания тканей для вашей мебели'
-              : 'Dizaynerlik mebellari uchun oliy navli mato to\'plamlari'}
+              : 'Dizaynerlik mebellari uchun oliy navli mato to‘plamlari'}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {dbCollections.map((col) => {
-            const count = col._count.products;
-            return (
-              <div
-                key={col.id}
-                className="bg-surface rounded-3xl border border-border overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between"
-              >
-                <div className="relative aspect-video overflow-hidden">
-                  <img src={col.coverImage || ''} alt={col.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-charcoal-900/20 to-transparent flex items-end p-6">
-                    <div className="text-surface space-y-1">
-                      <span className="bg-accent text-surface font-black text-[10px] uppercase px-2 py-0.5 rounded">
-                        Collection
-                      </span>
-                      <h2 className="text-2xl font-black">{col.name}</h2>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 space-y-4">
-                  <p className="text-xs text-body leading-relaxed">
-                    {locale === 'ru' ? col.descriptionRu : col.descriptionUz}
-                  </p>
-
-                  <div className="flex justify-between items-center pt-2 border-t border-border">
-                    <span className="text-xs font-semibold text-muted">
-                      {count} {locale === 'ru' ? 'позиций' : 'ta mahsulot'}
+          {collections.map((col) => (
+            <div
+              key={col.id}
+              className="bg-surface rounded-3xl border border-border overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between"
+            >
+              <div className="relative aspect-video overflow-hidden">
+                <img src={col.image || ''} alt={col.name} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-charcoal-900/20 to-transparent flex items-end p-6">
+                  <div className="text-surface space-y-1">
+                    <span className="bg-accent text-surface font-black text-[10px] uppercase px-2 py-0.5 rounded">
+                      Collection
                     </span>
-                    <Link
-                      href={`/${locale}/catalog?collection=${col.slug}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:text-accent-hover"
-                    >
-                      <span>{locale === 'ru' ? 'Смотреть коллекцию' : 'Kolleksiyani ko\'rish'}</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
+                    <h2 className="text-2xl font-black">{col.name}</h2>
                   </div>
                 </div>
               </div>
-            );
-          })}
+
+              <div className="p-6 space-y-4">
+                <p className="text-xs text-body leading-relaxed">
+                  {locale === 'ru' ? col.descriptionRu : col.descriptionUz}
+                </p>
+
+                <div className="flex justify-between items-center pt-2 border-t border-border">
+                  <span className="text-xs font-semibold text-muted">
+                    {col.productCount || 0} {locale === 'ru' ? 'позиций' : 'ta mahsulot'}
+                  </span>
+                  <Link
+                    href={`/${locale}/catalog?collection=${col.slug}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:text-accent-hover"
+                  >
+                    <span>{locale === 'ru' ? 'Смотреть коллекцию' : 'Kolleksiyani ko‘rish'}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </main>
 

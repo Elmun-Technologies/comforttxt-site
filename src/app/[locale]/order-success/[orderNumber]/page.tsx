@@ -1,10 +1,9 @@
-import { notFound } from 'next/navigation';
-import { db } from '@/lib/db';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { formatPrice, formatUnit } from '@/lib/formatters';
-import { CheckCircle2, ShoppingBag, MapPin, CreditCard, ChevronRight } from 'lucide-react';
+import { formatPrice } from '@/lib/formatters';
+import { CheckCircle2, ShoppingBag, MapPin, CreditCard, PhoneCall, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { storefrontConfig } from '@/config/storefront';
 
 interface OrderSuccessPageProps {
   params: Promise<{ locale: string; orderNumber: string }>;
@@ -13,97 +12,80 @@ interface OrderSuccessPageProps {
 export default async function OrderSuccessPage({ params }: OrderSuccessPageProps) {
   const { locale, orderNumber } = await params;
 
-  const order = await db.order.findUnique({
-    where: { orderNumber },
-    include: {
-      items: true,
-    },
-  });
-
-  if (!order) {
-    notFound();
-  }
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header locale={locale} />
-      
+
       <main className="flex-1 max-w-3xl mx-auto px-4 py-12 w-full space-y-8">
-        <div className="bg-surface rounded-3xl border border-border p-8 md:p-12 text-center shadow-sm">
-          <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10" />
-          </div>
-          
-          <h1 className="text-3xl font-black text-heading mb-2">
-            {locale === 'ru' ? 'Спасибо за заказ!' : 'Buyurtmangiz uchun rahmat!'}
-          </h1>
-          <p className="text-muted mb-8">
-            {locale === 'ru'
-              ? `Ваш заказ ${order.orderNumber} успешно оформлен. Мы свяжемся с вами в ближайшее время для подтверждения.`
-              : `Sizning ${order.orderNumber} raqamli buyurtmangiz muvaffaqiyatli rasmiylashtirildi. Tez orada tasdiqlash uchun siz bilan bog'lanamiz.`}
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left border-y border-border py-6 mb-8">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-heading font-bold">
-                <MapPin className="w-4 h-4 text-muted" />
-                {locale === 'ru' ? 'Доставка' : 'Yetkazish'}
-              </div>
-              <div className="text-xs text-muted pl-6 space-y-1">
-                <p><span className="font-semibold text-body">{order.guestName}</span></p>
-                <p>{order.guestPhone}</p>
-                <p>{order.deliveryAddress}</p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-heading font-bold">
-                <CreditCard className="w-4 h-4 text-muted" />
-                {locale === 'ru' ? 'Оплата' : 'To\'lov'}
-              </div>
-              <div className="text-xs text-muted pl-6 space-y-1">
-                <p>{order.paymentMethod === 'CASH' ? (locale === 'ru' ? 'Наличными при получении' : 'Qabul qilishda naqd pul') : (locale === 'ru' ? 'Банковский перевод' : 'Bank o\'tkazmasi')}</p>
-                <p className="font-bold text-heading mt-2">{formatPrice(order.total, locale)}</p>
-              </div>
-            </div>
+        <div className="bg-surface rounded-3xl border border-border p-8 md:p-12 text-center shadow-md space-y-6">
+          <div className="w-20 h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-xs">
+            <CheckCircle2 className="w-12 h-12 stroke-[2.5]" />
           </div>
 
-          <div className="text-left space-y-4">
-            <h3 className="font-bold text-heading text-sm">
-              {locale === 'ru' ? 'Детали заказа' : 'Buyurtma tafsilotlari'}
+          <div className="space-y-2">
+            <span className="inline-block bg-accent-light text-accent text-xs font-mono font-black px-3 py-1 rounded-lg">
+              № {orderNumber}
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black text-heading tracking-tight">
+              {locale === 'ru' ? 'Спасибо за заказ!' : 'Buyurtmangiz uchun rahmat!'}
+            </h1>
+            <p className="text-xs sm:text-sm text-muted max-w-lg mx-auto font-medium leading-relaxed">
+              {locale === 'ru'
+                ? `Ваш заказ № ${orderNumber} успешно принят в обработку. Наш менеджер свяжется с вами в течение 10–15 минут для подтверждения деталей доставки.`
+                : `Sizning № ${orderNumber} raqamli buyurtmangiz muvaffaqiyatli qabul qilindi. Menejerimiz 10–15 daqiqa ichida yetkazish tafsilotlarini tasdiqlash uchun bog‘lanadi.`}
+            </p>
+          </div>
+
+          {/* Next Steps Box */}
+          <div className="bg-secondary rounded-2xl p-5 border border-border text-left space-y-3">
+            <h3 className="text-xs font-black text-heading uppercase tracking-wider">
+              {locale === 'ru' ? 'Что происходит дальше?' : 'Keyingi qadamlar:'}
             </h3>
-            <div className="bg-secondary rounded-2xl border border-border divide-y divide-border overflow-hidden">
-              {order.items.map((item) => (
-                <div key={item.id} className="flex items-center justify-between p-4">
-                  <div className="flex-1">
-                    <div className="text-xs font-bold text-heading line-clamp-1">
-                      {locale === 'ru' ? item.productNameRu : item.productNameUz}
-                    </div>
-                    <div className="text-[11px] text-muted font-mono mt-0.5">
-                      SKU: {item.sku} • {Number(item.quantity)} {formatUnit(item.unitType, locale)}
-                    </div>
-                  </div>
-                  <div className="text-xs font-bold text-heading text-right pl-4">
-                    {formatPrice(item.lineSubtotal, locale)}
-                  </div>
-                </div>
-              ))}
-              <div className="p-4 bg-surface flex justify-between items-center text-sm">
-                <span className="font-bold text-heading">{locale === 'ru' ? 'Итого:' : 'Jami:'}</span>
-                <span className="font-black text-accent text-base">{formatPrice(order.total, locale)}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="bg-surface p-3 rounded-xl border border-border/80 space-y-1">
+                <div className="font-bold text-heading">1. {locale === 'ru' ? 'Звонок' : 'Qo‘ng‘iroq'}</div>
+                <div className="text-[11px] text-muted">{locale === 'ru' ? 'Уточнение позиций и адреса' : 'Buyurtmani tasdiqlash'}</div>
+              </div>
+              <div className="bg-surface p-3 rounded-xl border border-border/80 space-y-1">
+                <div className="font-bold text-heading">2. {locale === 'ru' ? 'Сборка' : 'Yig‘ish'}</div>
+                <div className="text-[11px] text-muted">{locale === 'ru' ? 'Комплектация на складе' : 'Omborda tayyorlash'}</div>
+              </div>
+              <div className="bg-surface p-3 rounded-xl border border-border/80 space-y-1">
+                <div className="font-bold text-heading">3. {locale === 'ru' ? 'Доставка' : 'Yetkazish'}</div>
+                <div className="text-[11px] text-muted">{locale === 'ru' ? 'В ваш цех или офис' : 'Ustaxonangizgacha'}</div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="text-center">
-          <Link
-            href={`/${locale}/catalog`}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-secondary hover:bg-border border border-border text-heading font-bold text-xs rounded-xl shadow-xs transition"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span>{locale === 'ru' ? 'Вернуться в каталог' : 'Katalogga qaytish'}</span>
-          </Link>
+          {/* Contact Support */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href={`tel:${storefrontConfig.phoneRaw}`}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface hover:bg-secondary border border-border text-heading text-xs font-bold rounded-xl transition shadow-xs"
+            >
+              <PhoneCall className="w-4 h-4 text-accent" />
+              <span>{storefrontConfig.phone}</span>
+            </a>
+            <a
+              href={storefrontConfig.telegramChannelUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold rounded-xl transition shadow-xs"
+            >
+              <span>{locale === 'ru' ? 'Написать в Telegram' : 'Telegram orqali bog‘lanish'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+
+          <div className="pt-4 border-t border-border">
+            <Link
+              href={`/${locale}/catalog`}
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-accent hover:bg-accent-hover text-surface font-black text-xs rounded-xl shadow-md transition"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>{locale === 'ru' ? 'Вернуться в каталог' : 'Katalogga qaytish'}</span>
+            </Link>
+          </div>
         </div>
       </main>
 
