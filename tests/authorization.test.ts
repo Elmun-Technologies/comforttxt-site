@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Role } from '@prisma/client';
+import { Role } from '../src/lib/enums';
 
 function isAllowed(userRole: Role, allowedRoles: Role[]): boolean {
   return allowedRoles.includes(userRole);

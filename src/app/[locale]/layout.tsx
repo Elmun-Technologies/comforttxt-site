@@ -8,13 +8,28 @@ import '../globals.css';
 // The brandbook's licensed font files can be added through next/font/local
 // when delivered. The current stack stays local and has no runtime font fetch.
 
+// Absolute base for resolving Open Graph / icon URLs. Set NEXT_PUBLIC_SITE_URL
+// to the production origin at deploy time.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 export const metadata = {
+  metadataBase: new URL(siteUrl),
   title: `${brandIdentity.name} — Mebel matolari, paralon, mexanizmlar va furnitura`,
   description: "Mebel matolari, paralon, transformatsiya mexanizmlari, furnitura va professional sarf materiallari — katalog va SKU bo‘yicha buyurtma",
-  // Use the approved logo as the favicon/tab icon once it is provided via
-  // `storefrontConfig.logo.image`. Until then no icon is declared (no broken link).
+  // Approved Comfort Textile badge drives the tab icon, the iOS home-screen
+  // icon and the social preview image.
   ...(storefrontConfig.logo.image
-    ? { icons: { icon: storefrontConfig.logo.image } }
+    ? {
+        icons: {
+          icon: storefrontConfig.logo.image,
+          apple: '/images/brand/apple-touch-icon.png',
+        },
+        openGraph: {
+          title: `${brandIdentity.name} — Mebel matolari, paralon, mexanizmlar va furnitura`,
+          siteName: brandIdentity.name,
+          images: [{ url: storefrontConfig.logo.image }],
+        },
+      }
     : {}),
 };
 

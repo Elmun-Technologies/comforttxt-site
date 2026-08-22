@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client';
+import { Role } from '@/lib/enums';
 import { db } from '@/lib/db';
 import { createClient as createServerSupabaseClient } from '@/lib/supabase/server';
 

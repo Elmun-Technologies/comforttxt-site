@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, type TransactionClient } from '@/lib/db';
 import { requireStaff } from '@/lib/auth/rbac';
-import { MovementType } from '@prisma/client';
+import { MovementType } from '@/lib/enums';
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: { code: 'NOT_FOUND', message: 'Variant not found' } }, { status: 404 });
     }
 
-    const result = await db.$transaction(async (tx) => {
+    const result = await db.$transaction(async (tx: TransactionClient) => {
       // 1. Update Stock & Record Movement if stock passed
       if (stock !== undefined && stock !== null) {
         const newStock = parseFloat(stock);

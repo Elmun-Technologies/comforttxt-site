@@ -1,5 +1,5 @@
+import { PrismaClient } from '@prisma/client';
 import {
-  PrismaClient,
   Role,
   CustomerType,
   UnitType,
@@ -11,7 +11,7 @@ import {
   PaymentStatus,
   DeliveryMethod,
   WholesaleStatus,
-} from '@prisma/client';
+} from '../src/lib/enums';
 
 const prisma = new PrismaClient();
 

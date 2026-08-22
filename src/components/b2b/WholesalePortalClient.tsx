@@ -109,7 +109,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
       {/* Header Banner */}
       <div className="relative bg-charcoal-900 text-surface rounded-3xl p-8 lg:p-12 shadow-xl border border-charcoal-800 overflow-hidden">
         {/* Decorative weave overlay */}
-        <div aria-hidden="true" className="pattern-weave-dark absolute inset-0 pointer-events-none" />
+        <div aria-hidden="true" className="pattern-rings-dark pattern-fade absolute inset-0 pointer-events-none" />
         <div className="relative space-y-4 max-w-2xl">
           <span className="inline-flex items-center gap-1.5 bg-brand-400/10 text-cream-400 border border-brand-400/50 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-4 h-4" />

@@ -25,7 +25,30 @@ Comfort Textile rebrendingi quyidagi tasdiqlangan korporativ ranglar asosida mar
 - **Tintlar:** 100 / 80 / 60 / 40 / 20% rang qadamlaridan hosil qilingan `brand-*` va `cream-*` Tailwind tokenlari
 - **Konfiguratsiya:** `src/config/brand.ts`; mijozga ko‘rinadigan nom, wordmark va kontaktlar `src/config/storefront.ts` ichida
 
-Rasmiy logo fayli kelganda uni `public/images/comfort-textile-logo.svg` ga qo‘ying va `storefrontConfig.logo.image` qiymatini belgilang. Shu paytgacha sayt tasdiqlanmagan ikonka o‘rniga tipografik wordmarkdan foydalanadi.
+### Logo
+
+Rasmiy Comfort Textile emblemasi (doira ichidagi divan belgisi) saytga ulangan:
+
+| Fayl | Qayerda ishlatiladi |
+| --- | --- |
+| `public/images/brand/comfort-textile-logo.png` | Header, favicon, Open Graph — yorug‘ sirtlar |
+| `public/images/brand/comfort-textile-logo-white.png` | Footer va to‘q ko‘k/charcoal sirtlar |
+| `public/images/brand/apple-touch-icon.png` | iOS "home screen" ikonkasi |
+
+Logo `src/components/layout/BrandLogo.tsx` orqali wordmark bilan birga ko‘rsatiladi va
+`storefrontConfig.logo` dan boshqariladi (`image` / `imageDark`).
+
+### Brend patternlari
+
+Guidebookdagi halqa (ring) motivi seamless SVG tile sifatida qayta chizilgan —
+tashqi so‘rov yo‘q, faqat `public/images/patterns/`:
+
+- `rings.svg` — korporativ ko‘k halqalar, yorug‘ fon uchun
+- `rings-dark.svg` — krem halqalar, to‘q fon uchun
+
+`globals.css` dagi utility klasslar orqali qo‘llanadi:
+`.pattern-rings`, `.pattern-rings-dark`, o‘lcham uchun `.pattern-sm` / `.pattern-lg`,
+guidebookdagidek yarim-tekis ko‘rinish uchun `.pattern-fade` / `.pattern-fade-y`.
 
 ---
 
@@ -130,7 +153,18 @@ ShopFlow-ga ulanish uchun `.env` da `NEXT_PUBLIC_DATA_SOURCE=shopflow` va `SHOPF
 - Barcha mijozga ko'rinadigan kontakt ma'lumotlari bitta manbadan keladi: `src/config/storefront.ts` (`storefrontConfig`). Tasdiqlanmagan qiymatlar bo'sh — UI ularni avtomatik yashiradi. Ishlab chiqarishga chiqishdan oldin real ma'lumotlarni kiriting.
 - Mock mahsulotlar (`MockStorefrontService`) — faqat development uchun neytral fixture ma'lumotlar: soxta brendlar, kolleksiyalar, chegirmalar, mijozlar va buyurtmalar yo'q.
 - B2B sahifada demo-rejim/test akkaunt mavjud emas.
-- Vaqtinchalik vizual aktivlar: `public/images/` (kategoriya teksturalari va hero). Tasdiqlangan Comfort Textile suratlari kelganda `storefrontConfig.heroImage` va `public/images/comfort-textile-logo.svg` orqali almashtiriladi.
+- Brend aktivlari (logo va halqa patternlari) tasdiqlangan va `public/images/brand/` hamda `public/images/patterns/` ichida. Kategoriya teksturalari va hero surati (`storefrontConfig.heroImage`) hali vaqtinchalik — rasmiy fotosuratlar kelganda almashtiriladi.
+
+## 🧬 Prisma enumlari
+
+`src/lib/enums.ts` — `prisma/schema.prisma` dagi enumlarning toza TypeScript nusxasi.
+Sabab: `@prisma/client` enum *qiymatlarini* faqat `prisma generate` platforma engine'ini
+yuklab olgandan keyin export qiladi; engine'siz muhitda (CI, offline) type-check va
+testlar buziladi. `src/lib/enums.ts` hech qanday bog‘liqliksiz ishlaydi va qiymatlari
+bazadagi enum a'zolari bilan bir xil, shuning uchun Prisma tiplariga mos keladi.
+
+Ikkalasi bir-biridan uzoqlashib ketmasligi uchun `tests/enums.test.ts` schema'ni parse
+qilib solishtiradi — enum qo‘shsangiz, `src/lib/enums.ts` ni ham yangilang.
 
 ## 📄 Litsenziya
 Comfort Textile © 2026. Barcha huquqlar himoyalangan.

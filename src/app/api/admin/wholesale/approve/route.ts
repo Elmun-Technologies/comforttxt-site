@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, type TransactionClient } from '@/lib/db';
 import { requireAdmin } from '@/lib/auth/rbac';
-import { WholesaleStatus, Role } from '@prisma/client';
+import { WholesaleStatus, Role } from '@/lib/enums';
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       ? WholesaleStatus.REJECTED
       : WholesaleStatus.CONTACTED;
 
-    const result = await db.$transaction(async (tx) => {
+    const result = await db.$transaction(async (tx: TransactionClient) => {
       const wholesaleReq = await tx.wholesaleRequest.update({
         where: { id: requestId },
         data: { status: targetStatus },
