@@ -9,9 +9,10 @@ interface CatalogClientProps {
   locale: string;
   searchParams: Record<string, string | undefined>;
   initialProducts?: any[];
+  categories?: any[];
 }
 
-export function CatalogClient({ locale, searchParams, initialProducts = [] }: CatalogClientProps) {
+export function CatalogClient({ locale, searchParams, initialProducts = [], categories = [] }: CatalogClientProps) {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   const selectedCategory = searchParams.category || '';
@@ -103,7 +104,7 @@ export function CatalogClient({ locale, searchParams, initialProducts = [] }: Ca
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         <div className="hidden lg:block lg:col-span-1">
-          <CategoryFilterSidebar locale={locale} />
+          <CategoryFilterSidebar locale={locale} categories={categories} />
         </div>
 
         <div className="lg:col-span-3 space-y-6">
@@ -150,6 +151,7 @@ export function CatalogClient({ locale, searchParams, initialProducts = [] }: Ca
 
       <CategoryFilterSidebar
         locale={locale}
+        categories={categories}
         isMobile
         isOpenMobile={mobileFilterOpen}
         onCloseMobile={() => setMobileFilterOpen(false)}

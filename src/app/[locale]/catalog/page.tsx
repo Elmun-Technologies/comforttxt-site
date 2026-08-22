@@ -23,6 +23,17 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
   const { locale } = await params;
   const resolvedSearchParams = await searchParams;
 
+  const dbCategories = await db.category.findMany({
+    where: { isActive: true },
+    orderBy: { sortOrder: 'asc' },
+    include: {
+      children: {
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+      }
+    }
+  });
+
   const dbProducts = await db.product.findMany({
     where: { isActive: true },
     include: {
@@ -81,7 +92,7 @@ export default async function CatalogPage({ params, searchParams }: CatalogPageP
     <div className="min-h-screen bg-background flex flex-col">
       <Header locale={locale} />
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 w-full">
-        <CatalogClient locale={locale} searchParams={resolvedSearchParams} initialProducts={formattedProducts as any} />
+        <CatalogClient locale={locale} searchParams={resolvedSearchParams} initialProducts={formattedProducts as any} categories={dbCategories as any} />
       </main>
       <Footer locale={locale} />
     </div>

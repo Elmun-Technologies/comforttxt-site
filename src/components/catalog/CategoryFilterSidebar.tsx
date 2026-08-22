@@ -2,11 +2,11 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Filter, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
-import { mockCategories } from '@/data/categories';
 
 interface CategoryFilterProps {
   categorySlug?: string;
   locale: string;
+  categories?: any[];
   isMobile?: boolean;
   isOpenMobile?: boolean;
   onCloseMobile?: () => void;
@@ -15,6 +15,7 @@ interface CategoryFilterProps {
 export function CategoryFilterSidebar({
   categorySlug,
   locale,
+  categories = [],
   isMobile = false,
   isOpenMobile = false,
   onCloseMobile,
@@ -52,7 +53,7 @@ export function CategoryFilterSidebar({
     router.push(targetUrl);
   };
 
-  const currentCategoryObj = mockCategories.find((c) => c.slug === selectedCategory);
+  const currentCategoryObj = categories.find((c) => c.slug === selectedCategory);
 
   const sidebarContent = (
     <div className="bg-surface p-5 rounded-2xl border border-border shadow-xs space-y-6">
@@ -103,7 +104,7 @@ export function CategoryFilterSidebar({
             >
               {locale === 'ru' ? 'Bce категории' : 'Barcha kategoriyalar'}
             </button>
-            {mockCategories.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => updateParam('category', cat.slug)}
@@ -121,7 +122,7 @@ export function CategoryFilterSidebar({
       )}
 
       {/* Subcategories if category selected */}
-      {currentCategoryObj && currentCategoryObj.subcategories && (
+      {currentCategoryObj && (currentCategoryObj.subcategories || currentCategoryObj.children) && (
         <div className="space-y-2">
           <label className="text-xs font-bold text-heading block uppercase tracking-wider">
             {locale === 'ru' ? 'Подкатегория' : 'Kichik kategoriya'}
@@ -135,7 +136,7 @@ export function CategoryFilterSidebar({
             >
               {locale === 'ru' ? 'Все' : 'Barchasi'}
             </button>
-            {currentCategoryObj.subcategories.map((sub) => (
+            {(currentCategoryObj.subcategories || currentCategoryObj.children).map((sub: any) => (
               <button
                 key={sub.slug}
                 onClick={() => updateParam('sub', sub.slug)}

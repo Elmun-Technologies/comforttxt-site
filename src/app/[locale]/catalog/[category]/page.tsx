@@ -12,6 +12,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const { locale, category } = await params;
   const resolvedSearchParams = await searchParams;
 
+  const dbCategories = await db.category.findMany({
+    where: { isActive: true },
+    orderBy: { sortOrder: 'asc' },
+    include: {
+      children: {
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+      }
+    }
+  });
+
   const dbProducts = await db.product.findMany({
     where: {
       isActive: true,
@@ -72,6 +83,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           category={category}
           searchParams={resolvedSearchParams}
           initialProducts={formattedProducts as any}
+          categories={dbCategories as any}
         />
       </main>
       <Footer locale={locale} />

@@ -10,9 +10,10 @@ interface CategoryClientProps {
   category: string;
   searchParams: Record<string, string | undefined>;
   initialProducts?: any[];
+  categories?: any[];
 }
 
-export function CategoryClient({ locale, category, searchParams, initialProducts = [] }: CategoryClientProps) {
+export function CategoryClient({ locale, category, searchParams, initialProducts = [], categories = [] }: CategoryClientProps) {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   const selectedSub = searchParams.sub || '';
@@ -67,7 +68,7 @@ export function CategoryClient({ locale, category, searchParams, initialProducts
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         <div className="hidden lg:block lg:col-span-1">
-          <CategoryFilterSidebar categorySlug={category} locale={locale} />
+          <CategoryFilterSidebar categorySlug={category} locale={locale} categories={categories} />
         </div>
 
         <div className="lg:col-span-3 space-y-6">
@@ -110,6 +111,7 @@ export function CategoryClient({ locale, category, searchParams, initialProducts
       <CategoryFilterSidebar
         categorySlug={category}
         locale={locale}
+        categories={categories}
         isMobile
         isOpenMobile={mobileFilterOpen}
         onCloseMobile={() => setMobileFilterOpen(false)}

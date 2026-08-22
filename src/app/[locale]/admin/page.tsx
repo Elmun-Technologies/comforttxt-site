@@ -2,6 +2,8 @@ import { db } from '@/lib/db';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AdminDashboardClient } from '@/components/admin/AdminDashboardClient';
+import { requireStaff } from '@/lib/auth/rbac';
+import { redirect } from 'next/navigation';
 
 interface AdminPageProps {
   params: Promise<{ locale: string }>;
@@ -9,6 +11,12 @@ interface AdminPageProps {
 
 export default async function AdminPage({ params }: AdminPageProps) {
   const { locale } = await params;
+
+  try {
+    await requireStaff();
+  } catch (error) {
+    redirect(`/${locale}`);
+  }
 
   const orders = await db.order.findMany({
     include: {

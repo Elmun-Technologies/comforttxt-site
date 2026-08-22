@@ -1,7 +1,6 @@
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
-import { mockCollections } from '@/data/collections';
-import { mockProducts } from '@/data/products';
+import { db } from '@/lib/db';
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
@@ -11,6 +10,15 @@ interface CollectionsPageProps {
 
 export default async function CollectionsPage({ params }: CollectionsPageProps) {
   const { locale } = await params;
+
+  const dbCollections = await db.collection.findMany({
+    where: { isActive: true },
+    include: {
+      _count: {
+        select: { products: true }
+      }
+    }
+  });
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -33,15 +41,15 @@ export default async function CollectionsPage({ params }: CollectionsPageProps) 
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {mockCollections.map((col) => {
-            const count = mockProducts.filter((p) => p.collectionSlug === col.slug).length;
+          {dbCollections.map((col) => {
+            const count = col._count.products;
             return (
               <div
                 key={col.id}
                 className="bg-surface rounded-3xl border border-border overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 flex flex-col justify-between"
               >
                 <div className="relative aspect-video overflow-hidden">
-                  <img src={col.image} alt={col.name} className="w-full h-full object-cover" />
+                  <img src={col.coverImage || ''} alt={col.name} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-charcoal-900/20 to-transparent flex items-end p-6">
                     <div className="text-surface space-y-1">
                       <span className="bg-accent text-surface font-black text-[10px] uppercase px-2 py-0.5 rounded">
