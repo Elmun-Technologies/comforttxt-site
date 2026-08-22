@@ -1,0 +1,591 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Role {
+  CUSTOMER
+  B2B_CUSTOMER
+  MANAGER
+  CONTENT_MANAGER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum CustomerType {
+  RETAIL
+  WORKSHOP
+  MANUFACTURER
+  FACTORY
+  DESIGNER
+  OTHER
+}
+
+enum UnitType {
+  METER
+  PIECE
+  SHEET
+  KG
+  PACK
+  SET
+  ROLL
+}
+
+enum ImageType {
+  MAIN
+  GALLERY
+  TEXTURE
+  APPLICATION
+  DETAIL
+  DIMENSION
+}
+
+enum StockStatus {
+  IN_STOCK
+  LOW_STOCK
+  ON_ORDER
+  OUT_OF_STOCK
+}
+
+enum MovementType {
+  RECEIPT
+  ADJUSTMENT
+  ORDER_RESERVATION
+  ORDER_RELEASE
+  ORDER_FULFILLMENT
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  PROCESSING
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CLICK
+  PAYME
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum DeliveryMethod {
+  COURIER
+  PICKUP
+  REGIONAL_DELIVERY
+}
+
+enum QuickOrderStatus {
+  NEW
+  CONTACTED
+  CONVERTED
+  CANCELLED
+}
+
+enum WholesaleStatus {
+  NEW
+  REVIEWING
+  APPROVED
+  REJECTED
+  CONTACTED
+}
+
+enum SampleStatus {
+  NEW
+  REVIEWING
+  APPROVED
+  SENT
+  DELIVERED
+  CANCELLED
+}
+
+// ==========================================
+// USER & AUTH
+// ==========================================
+
+model User {
+  id                String             @id @default(uuid())
+  authUserId        String?            @unique
+  email             String             @unique
+  phone             String
+  firstName         String?
+  lastName          String?
+  role              Role               @default(CUSTOMER)
+  customerType      CustomerType       @default(RETAIL)
+  companyName       String?
+  b2bApproved       Boolean            @default(false)
+  b2bDiscount       Float              @default(0.0)
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  addresses         Address[]
+  orders            Order[]
+  wholesaleRequests WholesaleRequest[]
+
+  @@index([email])
+  @@index([phone])
+}
+
+model Address {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  region      String
+  district    String?
+  city        String
+  addressLine String
+  landmark    String?
+  postalCode  String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ==========================================
+// CATALOG & PRODUCTS
+// ==========================================
+
+model Category {
+  id               String   @id @default(uuid())
+  slug             String   @unique
+  nameUz           String
+  nameRu           String
+  descriptionUz    String?
+  descriptionRu    String?
+  icon             String?
+  image            String?
+  parentId         String?
+  sortOrder        Int      @default(0)
+  isActive         Boolean  @default(true)
+  seoTitleUz       String?
+  seoTitleRu       String?
+  seoDescriptionUz String?
+  seoDescriptionRu String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  parent           Category?                  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children         Category[]                 @relation("CategoryHierarchy")
+  products         Product[]
+  collections      Collection[]
+  specDefinitions  SpecificationDefinition[]
+
+  @@index([slug])
+  @@index([parentId])
+}
+
+model Brand {
+  id        String       @id @default(uuid())
+  name      String
+  slug      String       @unique
+  logo      String?
+  country   String?
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  products    Product[]
+  collections Collection[]
+
+  @@index([slug])
+}
+
+model Collection {
+  id            String    @id @default(uuid())
+  name          String
+  slug          String    @unique
+  brandId       String?
+  brand         Brand?    @relation(fields: [brandId], references: [id])
+  categoryId    String?
+  category      Category? @relation(fields: [categoryId], references: [id])
+  descriptionUz String?
+  descriptionRu String?
+  coverImage    String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  products      Product[]
+
+  @@index([slug])
+}
+
+model Product {
+  id               String                 @id @default(uuid())
+  slug             String                 @unique
+  titleUz          String
+  titleRu          String
+  descriptionUz    String
+  descriptionRu    String
+  categoryId       String
+  category         Category               @relation(fields: [categoryId], references: [id])
+  brandId          String?
+  brand            Brand?                 @relation(fields: [brandId], references: [id])
+  collectionId     String?
+  collection       Collection?            @relation(fields: [collectionId], references: [id])
+  unitType         UnitType               @default(METER)
+  productType      String                 @default("FABRIC")
+  isActive         Boolean                @default(true)
+  isFeatured       Boolean                @default(false)
+  isPopular        Boolean                @default(false)
+  isNew            Boolean                @default(false)
+  seoTitleUz       String?
+  seoTitleRu       String?
+  seoDescriptionUz String?
+  seoDescriptionRu String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  variants         ProductVariant[]
+  images           ProductImage[]
+  specifications   ProductSpecification[]
+  quickOrders      QuickOrderRequest[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([isActive])
+}
+
+model ProductVariant {
+  id               String       @id @default(uuid())
+  productId        String
+  product          Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku              String       @unique
+  nameUz           String?
+  nameRu           String?
+  colorNameUz      String?
+  colorNameRu      String?
+  colorHex         String?
+  barcode          String?
+  minOrderQuantity Decimal      @default(1.0) @db.Decimal(10, 2)
+  quantityStep     Decimal      @default(0.5) @db.Decimal(10, 2)
+  isActive         Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  price            ProductPrice?
+  inventory        Inventory?
+  images           ProductImage[]
+  orderItems       OrderItem[]
+  quickOrders      QuickOrderRequest[]
+
+  @@index([sku])
+  @@index([productId])
+  @@index([isActive])
+}
+
+model ProductPrice {
+  id             String         @id @default(uuid())
+  variantId      String         @unique
+  variant        ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  retailPrice    Int            // Stored as integer UZS (e.g. 85000)
+  wholesalePrice Int?           // Stored as integer UZS
+  oldPrice       Int?           // Stored as integer UZS
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        String          @id @default(uuid())
+  productId String
+  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variantId String?
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  url       String
+  altUz     String?
+  altRu     String?
+  sortOrder Int             @default(0)
+  imageType ImageType       @default(MAIN)
+
+  @@index([productId])
+  @@index([variantId])
+}
+
+model SpecificationDefinition {
+  id         String                 @id @default(uuid())
+  categoryId String?
+  category   Category?              @relation(fields: [categoryId], references: [id])
+  key        String                 @unique // e.g. "martindale", "density", "width"
+  labelUz    String
+  labelRu    String
+  dataType   String                 @default("STRING") // STRING, NUMBER, BOOLEAN
+  unit       String?                // e.g. "Martindale", "g/m2", "cm", "mm"
+  filterable Boolean                @default(true)
+  comparable Boolean                @default(true)
+  sortOrder  Int                    @default(0)
+
+  values     ProductSpecification[]
+}
+
+model ProductSpecification {
+  id           String                  @id @default(uuid())
+  productId    String
+  product      Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  definitionId String
+  definition   SpecificationDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  value        String                  // Can store text or stringified number
+
+  @@unique([productId, definitionId])
+  @@index([productId])
+}
+
+// ==========================================
+// INVENTORY
+// ==========================================
+
+model Inventory {
+  id                String         @id @default(uuid())
+  variantId         String         @unique
+  variant           ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  onHand            Decimal        @default(0.0) @db.Decimal(10, 2)
+  reserved          Decimal        @default(0.0) @db.Decimal(10, 2)
+  status            StockStatus    @default(IN_STOCK)
+  updatedAt         DateTime       @updatedAt
+
+  movements         InventoryMovement[]
+}
+
+model InventoryMovement {
+  id            String       @id @default(uuid())
+  inventoryId   String
+  inventory     Inventory    @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  type          MovementType
+  quantity      Decimal      @db.Decimal(10, 2)
+  reason        String?
+  referenceType String?      // e.g. "ORDER", "MANUAL_ADJUSTMENT"
+  referenceId   String?      // e.g. orderId
+  createdBy     String?      // admin/user ID
+  createdAt     DateTime     @default(now())
+
+  @@index([inventoryId])
+  @@index([createdAt])
+}
+
+// ==========================================
+// ORDERS
+// ==========================================
+
+model Order {
+  id             String         @id @default(uuid())
+  orderNumber    String         @unique // e.g. CT-260820-00123
+  userId         String?
+  user           User?          @relation(fields: [userId], references: [id])
+  guestName      String
+  guestPhone     String
+  guestEmail     String?
+  orderStatus    OrderStatus    @default(NEW)
+  paymentMethod  PaymentMethod  @default(CASH)
+  paymentStatus  PaymentStatus  @default(PENDING)
+  deliveryMethod DeliveryMethod @default(COURIER)
+  deliveryRegion String?
+  deliveryCity   String?
+  deliveryAddress String
+  comment        String?
+  subtotal       Int            // Authoritative UZS integer
+  deliveryAmount Int            @default(0)
+  discountAmount Int            @default(0)
+  total          Int            // subtotal + deliveryAmount - discountAmount
+  currency       String         @default("UZS")
+  locale         String         @default("uz")
+  idempotencyKey String?        @unique
+  isQuickOrder   Boolean        @default(false)
+  
+  // UTM Attribution
+  utmSource      String?
+  utmMedium      String?
+  utmCampaign    String?
+  utmContent     String?
+  utmTerm        String?
+  landingPage    String?
+  referrer       String?
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  items          OrderItem[]
+
+  @@index([orderNumber])
+  @@index([userId])
+  @@index([orderStatus])
+  @@index([createdAt])
+  @@index([guestPhone])
+}
+
+model OrderItem {
+  id             String          @id @default(uuid())
+  orderId        String
+  order          Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId      String?
+  variantId      String?
+  variant        ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  productNameUz  String
+  productNameRu  String
+  sku            String
+  variantNameUz  String?
+  variantNameRu  String?
+  unitType       UnitType        @default(METER)
+  unitPrice      Int             // Stored snapshot unit price in UZS
+  quantity       Decimal         @db.Decimal(10, 2)
+  lineSubtotal   Int             // quantity * unitPrice snapshot
+
+  @@index([orderId])
+}
+
+// ==========================================
+// REQUESTS & LEADS
+// ==========================================
+
+model QuickOrderRequest {
+  id          String           @id @default(uuid())
+  productId   String?
+  product     Product?         @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variantId   String?
+  variant     ProductVariant?  @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  name        String
+  phone       String
+  quantity    Decimal?         @db.Decimal(10, 2)
+  notes       String?
+  status      QuickOrderStatus @default(NEW)
+
+  // UTM Attribution
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  landingPage String?
+  referrer    String?
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+}
+
+model WholesaleRequest {
+  id                   String          @id @default(uuid())
+  userId               String?
+  user                 User?           @relation(fields: [userId], references: [id])
+  name                 String
+  phone                String
+  companyName          String
+  businessType         CustomerType?
+  region               String
+  city                 String
+  monthlyPurchaseRange String?
+  notes                String?
+  status               WholesaleStatus @default(NEW)
+
+  // UTM Attribution
+  utmSource            String?
+  utmMedium            String?
+  utmCampaign          String?
+  utmContent           String?
+  utmTerm              String?
+  landingPage          String?
+  referrer             String?
+
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model SampleRequest {
+  id                   String       @id @default(uuid())
+  name                 String
+  phone                String
+  companyName          String?
+  businessType         CustomerType?
+  region               String
+  city                 String
+  requestedCollections String       // JSON array or string of requested collections/SKUs
+  comment              String?
+  status               SampleStatus @default(NEW)
+
+  // UTM Attribution
+  utmSource            String?
+  utmMedium            String?
+  utmCampaign          String?
+  utmContent           String?
+  utmTerm              String?
+  landingPage          String?
+  referrer             String?
+
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ==========================================
+// CMS & AUDIT LOGS
+// ==========================================
+
+model BlogPost {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  titleUz     String
+  titleRu     String
+  contentUz   String
+  contentRu   String
+  excerptUz   String
+  excerptRu   String
+  category    String
+  readTime    String   @default("5 min")
+  coverImage  String
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([slug])
+}
+
+model CmsBlock {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  titleUz     String
+  titleRu     String
+  contentJson String
+  isEnabled   Boolean  @default(true)
+
+  @@index([key])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String
+  metadata   String?  // JSON stringified details
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

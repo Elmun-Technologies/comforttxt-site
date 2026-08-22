@@ -1,0 +1,71 @@
+import { Category } from '@/types';
+
+export const mockCategories: Category[] = [
+  {
+    id: 'cat-1',
+    slug: 'mebel-matolari',
+    nameUz: 'Mebel matolari',
+    nameRu: 'Мебельные ткани',
+    descriptionUz: 'Velyur, bukle, shenill, rogojka, mikrofibra va eko-charm matolari',
+    descriptionRu: 'Велюр, букле, шенилл, рогожка, микрофибра и эко-кожа',
+    iconName: 'Palette',
+    subcategories: [
+      { slug: 'velyur', nameUz: 'Velyur', nameRu: 'Велюр' },
+      { slug: 'bukle', nameUz: 'Bukle', nameRu: 'Букле' },
+      { slug: 'shenill', nameUz: 'Shenill', nameRu: 'Шенилл' },
+      { slug: 'rogojka', nameUz: 'Rogojka', nameRu: 'Рогожка' },
+      { slug: 'mikrofibra', nameUz: 'Mikrofibra', nameRu: 'Микрофибра' },
+      { slug: 'eko-charm', nameUz: 'Eko-charm', nameRu: 'Эко-кожа' },
+    ],
+  },
+  {
+    id: 'cat-2',
+    slug: 'paralon',
+    nameUz: 'Paralon (Porolon)',
+    nameRu: 'Поролон (ППУ)',
+    descriptionUz: 'ST, EL va HR markali turli zichlik va qalinlikdagi mebel paralonlari',
+    descriptionRu: 'Поролон различной плотности и толщины марок ST, EL, HR',
+    iconName: 'Layers',
+    subcategories: [
+      { slug: 'st-standart', nameUz: 'ST (Standart)', nameRu: 'ST (Стандарт)' },
+      { slug: 'el-qattiq', nameUz: 'EL (Yuqori qattiqlik)', nameRu: 'EL (Повышенная жесткость)' },
+      { slug: 'hr-elastik', nameUz: 'HR (Yuqori elastik)', nameRu: 'HR (Высокоэластичный)' },
+    ],
+  },
+  {
+    id: 'cat-3',
+    slug: 'mexanizmlar',
+    nameUz: 'Mexanizmlar',
+    nameRu: 'Механизмы',
+    descriptionUz: 'Transformatsiya mexanizmlari, gaz-liftlar, zatsap va ko\'targichlar',
+    descriptionRu: 'Механизмы трансформации, газ-лифты, зацепы и подъемники',
+    iconName: 'Settings',
+    subcategories: [
+      { slug: 'gaz-lift', nameUz: 'Gaz-liftlar', nameRu: 'Газ-лифты' },
+      { slug: 'transformatsiya', nameUz: 'Transformatsiya mexanizmlari', nameRu: 'Механизмы трансформации' },
+    ],
+  },
+  {
+    id: 'cat-4',
+    slug: 'furnitura-va-oyoqlar',
+    nameUz: 'Furnitura va Oyoqlar',
+    nameRu: 'Фурнитура и Ножки',
+    descriptionUz: 'Yog\'och va metal mebel oyoqlari, petlya va murvatlar',
+    descriptionRu: 'Деревянные и металлические ножки, петли, стяжки',
+    iconName: 'Wrench',
+  },
+  {
+    id: 'cat-5',
+    slug: 'sarf-materiallar-va-instrumentlar',
+    nameUz: 'Instrumentlar va Sarf materiallari',
+    nameRu: 'Инструменты и Расходники',
+    descriptionUz: 'Akfix sprey yelimi, pnevmatik steplerlar va zımba skobalari',
+    descriptionRu: 'Клей Akfix sprey, пневмостеплеры, скобы',
+    iconName: 'Hammer',
+    subcategories: [
+      { slug: 'pnevmatik', nameUz: 'Pnevmatik instrumentlar', nameRu: 'Пневмоинструмент' },
+      { slug: 'yelim', nameUz: 'Mebel yelimik', nameRu: 'Клей мебельный' },
+      { slug: 'skoba', nameUz: 'Skobalar', nameRu: 'Скобы' },
+    ],
+  },
+];
