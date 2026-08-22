@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, X, Package, Tag, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { formatPrice } from '@/lib/formatters';
+import { storefrontConfig } from '@/config/storefront';
 
 interface SearchOverlayProps {
   isOpen: boolean;
