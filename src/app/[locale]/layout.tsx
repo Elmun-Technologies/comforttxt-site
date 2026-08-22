@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ToastContainer } from '@/components/ui/ToastContainer';
 import { brandIdentity } from '@/config/brand';
+import { storefrontConfig } from '@/config/storefront';
 import '../globals.css';
 
 // The brandbook's licensed font files can be added through next/font/local
@@ -10,6 +11,11 @@ import '../globals.css';
 export const metadata = {
   title: `${brandIdentity.name} — Mebel matolari, paralon, mexanizmlar va furnitura`,
   description: "Mebel matolari, paralon, transformatsiya mexanizmlari, furnitura va professional sarf materiallari — katalog va SKU bo‘yicha buyurtma",
+  // Use the approved logo as the favicon/tab icon once it is provided via
+  // `storefrontConfig.logo.image`. Until then no icon is declared (no broken link).
+  ...(storefrontConfig.logo.image
+    ? { icons: { icon: storefrontConfig.logo.image } }
+    : {}),
 };
 
 export const viewport = {

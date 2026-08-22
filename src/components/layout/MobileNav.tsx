@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Home, Grid, Search, Heart, ShoppingBag, X, Phone, Globe, ShieldCheck } from 'lucide-react';
 import { useEffect } from 'react';
 import { storefrontConfig } from '@/config/storefront';
+import { BrandLogo } from '@/components/layout/BrandLogo';
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -67,12 +68,7 @@ export function MobileNav({
           <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-surface shadow-2xl flex flex-col z-50">
             {/* Header */}
             <div className="p-4 border-b border-border flex justify-between items-center bg-charcoal-900 text-surface">
-              <span className="font-display font-bold text-base tracking-[0.06em] text-cream-400">
-                {storefrontConfig.logo.wordmark.primary}{' '}
-                <span className="font-sans text-[9px] font-black tracking-[0.22em] text-brand-200">
-                  {storefrontConfig.logo.wordmark.secondary}
-                </span>
-              </span>
+              <BrandLogo locale={locale} size="footer" />
               <button onClick={onClose} className="p-1 text-muted hover:text-surface">
                 <X className="w-5 h-5" />
               </button>

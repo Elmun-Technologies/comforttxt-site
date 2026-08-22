@@ -76,7 +76,9 @@ export default async function HomePage({ params }: HomePageProps) {
         {/* 1. COMMERCE-DRIVEN HERO */}
         {/* ======================================================== */}
         <section className="brand-wash relative overflow-hidden bg-gradient-to-b from-secondary/70 via-background to-background pt-8 pb-12 sm:pt-12 sm:pb-16 border-b border-border/60">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          {/* Subtle textile weave accent behind the hero copy */}
+          <div aria-hidden="true" className="pattern-weave absolute inset-0 pointer-events-none opacity-70" />
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               {/* Left Column (60%): Direct value proposition & Actions */}
               <div className="lg:col-span-7 space-y-6">
@@ -306,7 +308,7 @@ export default async function HomePage({ params }: HomePageProps) {
         {/* ======================================================== */}
         {/* 4. FABRIC TEXTURES: WHAT TO EXPECT */}
         {/* ======================================================== */}
-        <section className="bg-secondary/70 border-y border-border py-12 sm:py-16">
+        <section className="pattern-twill bg-secondary/70 border-y border-border py-12 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
             <div className="max-w-2xl space-y-2">
               <span className="text-accent text-xs font-black uppercase tracking-widest">
@@ -439,8 +441,10 @@ export default async function HomePage({ params }: HomePageProps) {
         {/* 6. SAMPLE BOX CTA */}
         {/* ======================================================== */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="bg-gradient-to-r from-charcoal-900 to-charcoal-800 text-surface rounded-3xl p-6 sm:p-10 lg:p-12 border border-charcoal-700 shadow-xl">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="relative bg-gradient-to-r from-charcoal-900 to-charcoal-800 text-surface rounded-3xl p-6 sm:p-10 lg:p-12 border border-charcoal-700 shadow-xl overflow-hidden">
+            {/* Decorative weave overlay for the dark CTA panel */}
+            <div aria-hidden="true" className="pattern-weave-dark absolute inset-0 pointer-events-none" />
+            <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-4">
                 <span className="inline-flex items-center gap-1.5 bg-accent text-surface text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md">
                   <Package className="w-3.5 h-3.5" />
