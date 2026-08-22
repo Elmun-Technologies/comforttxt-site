@@ -60,7 +60,7 @@ export function StickyMobilePurchaseBar({
           disabled={!variant?.isAvailable}
           className="px-3 py-2 bg-secondary text-heading text-xs font-bold rounded-lg flex items-center gap-1 border border-border disabled:opacity-50"
         >
-          <Zap className="w-3.5 h-3.5 text-amber-600" />
+          <Zap className="w-3.5 h-3.5 text-accent" />
           <span>1-Klik</span>
         </button>
         <button

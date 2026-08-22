@@ -102,7 +102,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               {stockInfo.label}
             </span>
             {b2bActive && (
-              <span className="bg-emerald-800/90 text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
+              <span className="bg-brand-700/90 text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
                 B2B {locale === 'ru' ? 'Опт' : 'Ulgurji'}
               </span>
             )}
@@ -151,8 +151,8 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               }}
               className={`p-2 rounded-xl backdrop-blur-md shadow-xs transition ${
                 inCompare
-                  ? 'bg-amber-500/20 text-amber-600 border border-amber-500/40'
-                  : 'bg-surface/85 text-muted hover:text-amber-600 hover:bg-surface border border-border/60'
+                  ? 'bg-accent-light text-accent border border-accent/40'
+                  : 'bg-surface/85 text-muted hover:text-accent hover:bg-surface border border-border/60'
               }`}
               title={locale === 'ru' ? 'Сравнить' : 'Taqqoslash'}
             >
@@ -221,7 +221,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                 </span>
               </div>
               {selectedVariant?.wholesalePrice && !b2bActive && (
-                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200" title="Ulgurji mijozlar uchun">
+                <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded border border-brand-200" title="Ulgurji mijozlar uchun">
                   B2B {formatPrice(selectedVariant.wholesalePrice, locale)}
                 </span>
               )}
@@ -233,7 +233,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                 onClick={handleQuickOrder}
                 className="inline-flex items-center justify-center gap-1 py-2 px-2 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-xl transition active:scale-98"
               >
-                <Zap className="w-3.5 h-3.5 text-amber-500" />
+                <Zap className="w-3.5 h-3.5 text-accent" />
                 <span className="hidden sm:inline">{locale === 'ru' ? '1-Клик' : '1-Klik'}</span>
               </button>
 
