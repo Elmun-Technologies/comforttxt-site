@@ -1,6 +1,6 @@
-# Comfort TXT — Premium Mebel Matolari va Paralon Platformasi
+# Comfort Textile — Premium Mebel Matolari va Paralon Platformasi
 
-Comfort TXT — mebel matolari, paralon (ST, EL, HR), transformatsiya mexanizmlari hamda mebelchilik sarf-materiallarini ulgurji va chakana sotish uchun mo'ljallangan zamonaviy e-commerce va B2B platformasi.
+Comfort Textile — mebel matolari, paralon (ST, EL, HR), transformatsiya mexanizmlari hamda mebelchilik sarf-materiallarini ulgurji va chakana sotish uchun mo'ljallangan zamonaviy e-commerce va B2B platformasi.
 
 ---
 
@@ -13,6 +13,19 @@ Comfort TXT — mebel matolari, paralon (ST, EL, HR), transformatsiya mexanizmla
 - **Ma'lumotlar bazasi & ORM:** PostgreSQL (Supabase), Prisma ORM 5.22
 - **Autentifikatsiya & RBAC:** Supabase Auth (SSR Cookie-based session management)
 - **Testlash:** Vitest (Unit & Integration tests)
+
+---
+
+## 🎨 Brand Identity
+
+Comfort Textile rebrendingi quyidagi tasdiqlangan korporativ ranglar asosida markazlashtirilgan:
+
+- **Asosiy ko‘k:** `#283593` — primary action, heading va brand elementlari
+- **Asosiy iliq neytral:** `#F9F5EC` — umumiy sahifa foni va yumshoq sirtlar
+- **Tintlar:** 100 / 80 / 60 / 40 / 20% rang qadamlaridan hosil qilingan `brand-*` va `cream-*` Tailwind tokenlari
+- **Konfiguratsiya:** `src/config/brand.ts`; mijozga ko‘rinadigan nom, wordmark va kontaktlar `src/config/storefront.ts` ichida
+
+Rasmiy logo fayli kelganda uni `public/images/comfort-textile-logo.svg` ga qo‘ying va `storefrontConfig.logo.image` qiymatini belgilang. Shu paytgacha sayt tasdiqlanmagan ikonka o‘rniga tipografik wordmarkdan foydalanadi.
 
 ---
 
@@ -117,7 +130,7 @@ ShopFlow-ga ulanish uchun `.env` da `NEXT_PUBLIC_DATA_SOURCE=shopflow` va `SHOPF
 - Barcha mijozga ko'rinadigan kontakt ma'lumotlari bitta manbadan keladi: `src/config/storefront.ts` (`storefrontConfig`). Tasdiqlanmagan qiymatlar bo'sh — UI ularni avtomatik yashiradi. Ishlab chiqarishga chiqishdan oldin real ma'lumotlarni kiriting.
 - Mock mahsulotlar (`MockStorefrontService`) — faqat development uchun neytral fixture ma'lumotlar: soxta brendlar, kolleksiyalar, chegirmalar, mijozlar va buyurtmalar yo'q.
 - B2B sahifada demo-rejim/test akkaunt mavjud emas.
-- Vaqtinchalik vizual aktivlar: `public/images/` (kategoriya teksturalari va hero). Real Comfort TXT suratlari kelganda `storefrontConfig.heroImage` va `public/images/comfort-txt-logo.svg` orqali almashtiriladi.
+- Vaqtinchalik vizual aktivlar: `public/images/` (kategoriya teksturalari va hero). Tasdiqlangan Comfort Textile suratlari kelganda `storefrontConfig.heroImage` va `public/images/comfort-textile-logo.svg` orqali almashtiriladi.
 
 ## 📄 Litsenziya
-Comfort TXT © 2026. Barcha huquqlar himoyalangan.
+Comfort Textile © 2026. Barcha huquqlar himoyalangan.

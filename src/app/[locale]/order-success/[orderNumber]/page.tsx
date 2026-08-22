@@ -73,7 +73,7 @@ export default async function OrderSuccessPage({ params }: OrderSuccessPageProps
                 href={storefrontConfig.telegramChannelUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold rounded-xl transition shadow-xs"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent-light hover:bg-brand-100 border border-accent/30 text-accent text-xs font-bold rounded-xl transition shadow-xs"
               >
                 <span>{locale === 'ru' ? 'Написать в Telegram' : 'Telegram orqali bog‘lanish'}</span>
                 <ArrowRight className="w-3.5 h-3.5" />

@@ -75,7 +75,7 @@ export default async function HomePage({ params }: HomePageProps) {
         {/* ======================================================== */}
         {/* 1. COMMERCE-DRIVEN HERO */}
         {/* ======================================================== */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-secondary/60 via-background to-background pt-8 pb-12 sm:pt-12 sm:pb-16 border-b border-border/50">
+        <section className="brand-wash relative overflow-hidden bg-gradient-to-b from-secondary/70 via-background to-background pt-8 pb-12 sm:pt-12 sm:pb-16 border-b border-border/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
               {/* Left Column (60%): Direct value proposition & Actions */}
@@ -106,7 +106,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 <div className="flex flex-wrap items-center gap-3 pt-1">
                   <Link
                     href={`/${locale}/catalog`}
-                    className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-accent hover:bg-accent-hover text-surface font-black text-xs sm:text-sm rounded-xl shadow-md transition active:scale-98"
+                    className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-accent hover:bg-accent-hover text-surface font-black text-xs sm:text-sm rounded-xl shadow-brand transition active:scale-98"
                   >
                     <span>{locale === 'ru' ? 'Смотреть каталог' : 'Katalogni ko‘rish'}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -183,14 +183,14 @@ export default async function HomePage({ params }: HomePageProps) {
               <div className="lg:col-span-5 relative">
                 <div className="relative rounded-3xl overflow-hidden border border-border/80 shadow-2xl bg-surface">
                   <div className="aspect-[4/3] sm:aspect-square relative overflow-hidden">
-                    {/* Temporary neutral visual — replace with real Comfort TXT
+                    {/* Temporary neutral visual — replace with approved Comfort Textile
                         product/material photography via storefrontConfig.heroImage */}
                     <img
                       src={storefrontConfig.heroImage}
                       alt={
                         locale === 'ru'
-                          ? 'Мебельные материалы Comfort TXT'
-                          : 'Comfort TXT mebel materiallari'
+                          ? `Мебельные материалы ${storefrontConfig.name}`
+                          : `${storefrontConfig.name} mebel materiallari`
                       }
                       className="w-full h-full object-cover"
                     />
@@ -364,8 +364,8 @@ export default async function HomePage({ params }: HomePageProps) {
           <div className="bg-surface rounded-3xl border border-border p-6 sm:p-10 lg:p-12 shadow-sm space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-6 space-y-4">
-                <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full text-xs font-bold">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
+                <div className="inline-flex items-center gap-1.5 bg-accent-light text-accent border border-accent/30 px-3 py-1 rounded-full text-xs font-bold">
+                  <ShieldCheck className="w-3.5 h-3.5 text-accent" />
                   <span>{locale === 'ru' ? 'Для фабрик, цехов и мастеров' : 'Fabrika, sex va ustalar uchun'}</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-heading tracking-tight leading-tight">
@@ -469,22 +469,22 @@ export default async function HomePage({ params }: HomePageProps) {
 
               <div className="lg:col-span-5 grid grid-cols-2 gap-3">
                 <div className="p-4 bg-surface/10 rounded-2xl border border-surface/10 space-y-1">
-                  <div className="text-accent font-black text-base">01</div>
+                  <div className="text-brand-200 font-black text-base">01</div>
                   <div className="text-xs font-bold">{locale === 'ru' ? 'Выбор тканей' : 'Matolarni tanlash'}</div>
                   <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Велюр, букле, шенилл' : 'Velyur, bukle, shenill'}</div>
                 </div>
                 <div className="p-4 bg-surface/10 rounded-2xl border border-surface/10 space-y-1">
-                  <div className="text-accent font-black text-base">02</div>
+                  <div className="text-brand-200 font-black text-base">02</div>
                   <div className="text-xs font-bold">{locale === 'ru' ? 'Заявка' : 'So‘rov qoldirish'}</div>
                   <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Имя и телефон' : 'Ism va telefon'}</div>
                 </div>
                 <div className="p-4 bg-surface/10 rounded-2xl border border-surface/10 space-y-1">
-                  <div className="text-accent font-black text-base">03</div>
+                  <div className="text-brand-200 font-black text-base">03</div>
                   <div className="text-xs font-bold">{locale === 'ru' ? 'Подготовка образцов' : 'Namunalarni tayyorlash'}</div>
                   <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Согласует менеджер' : 'Menejer tasdiqlaydi'}</div>
                 </div>
                 <div className="p-4 bg-surface/10 rounded-2xl border border-surface/10 space-y-1">
-                  <div className="text-accent font-black text-base">04</div>
+                  <div className="text-brand-200 font-black text-base">04</div>
                   <div className="text-xs font-bold">{locale === 'ru' ? 'Точный заказ' : 'Aniq buyurtma'}</div>
                   <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Без риска ошибки' : 'Xatosiz tanlov'}</div>
                 </div>

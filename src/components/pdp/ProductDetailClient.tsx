@@ -113,7 +113,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                 {stockInfo.label}
               </span>
               {b2bActive && (
-                <span className="bg-emerald-700 text-surface text-xs font-black px-2.5 py-1 rounded-md shadow-xs">
+                <span className="bg-brand-700 text-surface text-xs font-black px-2.5 py-1 rounded-md shadow-xs">
                   B2B {locale === 'ru' ? 'Опт' : 'Ulgurji'}
                 </span>
               )}
@@ -202,10 +202,10 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
 
               {!b2bActive && selectedVariant?.wholesalePrice && (
                 <div className="text-right">
-                  <div className="text-[11px] text-emerald-800 font-bold">
+                  <div className="text-[11px] text-brand-700 font-bold">
                     {locale === 'ru' ? 'Оптом B2B:' : 'Ulgurji B2B:'}
                   </div>
-                  <div className="text-base font-black text-emerald-700">
+                  <div className="text-base font-black text-brand-700">
                     {formatPrice(selectedVariant.wholesalePrice, locale)}
                   </div>
                 </div>
@@ -333,7 +333,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                 disabled={!selectedVariant?.isAvailable}
                 className="py-3.5 px-6 bg-secondary hover:bg-border text-heading font-bold text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 border border-border disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Zap className="w-5 h-5 text-amber-600 fill-current" />
+                <Zap className="w-5 h-5 text-accent" />
                 <span>{locale === 'ru' ? 'Купить в 1 клик' : '1-Klikda xarid qilish'}</span>
               </button>
             </div>
@@ -345,7 +345,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                   href={telegramLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 px-4 py-2 rounded-xl border border-blue-200 transition"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-accent hover:text-accent-hover bg-accent-light px-4 py-2 rounded-xl border border-accent/30 transition"
                 >
                   <Send className="w-4 h-4" />
                   <span>{locale === 'ru' ? 'Написать в Telegram' : 'Telegram orqali bog‘lanish'}</span>
@@ -381,7 +381,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                     })
                   }
                   className={`p-2.5 rounded-xl border transition ${
-                    inCompare ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-secondary text-body hover:bg-border border-border'
+                    inCompare ? 'bg-accent-light text-accent border-accent/30' : 'bg-secondary text-body hover:bg-border border-border'
                   }`}
                   title={locale === 'ru' ? 'Сравнить' : 'Taqqoslash'}
                 >

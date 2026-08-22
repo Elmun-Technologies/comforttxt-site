@@ -104,7 +104,7 @@ export function QuickOrderModal({
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex items-center gap-2 text-accent font-bold text-lg border-b border-border pb-3">
-              <Zap className="w-5 h-5 text-amber-600 fill-current" />
+              <Zap className="w-5 h-5 text-accent" />
               <span>{locale === 'ru' ? 'Быстрый заказ в 1 клик' : '1-Klikda tez buyurtma'}</span>
             </div>
 
@@ -205,7 +205,7 @@ export function QuickOrderModal({
                   href={telegramLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-blue-600 font-semibold hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs text-accent font-semibold hover:text-accent-hover hover:underline"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{locale === 'ru' ? 'Или написать в Telegram' : 'Yoki Telegram orqali bog‘lanish'}</span>

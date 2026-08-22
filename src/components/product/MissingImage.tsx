@@ -23,7 +23,7 @@ export function MissingImage({ locale = 'uz', className = '', compact = false }:
         className="absolute inset-0 opacity-[0.5]"
         style={{
           backgroundImage:
-            'repeating-linear-gradient(0deg, rgba(197,160,89,0.06) 0 1px, transparent 1px 6px), repeating-linear-gradient(90deg, rgba(197,160,89,0.05) 0 1px, transparent 1px 6px)',
+            'repeating-linear-gradient(0deg, rgba(40,53,147,0.08) 0 1px, transparent 1px 6px), repeating-linear-gradient(90deg, rgba(40,53,147,0.06) 0 1px, transparent 1px 6px)',
         }}
       />
       <div className="relative flex flex-col items-center gap-1.5 text-center">

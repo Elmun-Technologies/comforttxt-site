@@ -5,41 +5,73 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    background: #F9F5EC;
   }
-  
+
   body {
-    @apply bg-background text-body antialiased selection:bg-accent/20 selection:text-accent;
+    @apply bg-background text-body antialiased;
+  }
+
+  ::selection {
+    background: rgba(40, 53, 147, 0.16);
+    color: #202A78;
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply text-heading font-medium tracking-tight;
   }
+
+  :focus-visible {
+    outline: 2px solid #283593;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .brand-kicker {
+    @apply inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-accent;
+  }
+
+  .brand-rule {
+    @apply h-px w-10 bg-accent/60;
+  }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-surface/70 backdrop-blur-lg border border-surface shadow-sm;
+    @apply bg-surface/75 backdrop-blur-lg border border-surface shadow-brand-sm;
   }
+
   .glass-card {
-    @apply bg-surface/80 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+    @apply bg-surface/85 backdrop-blur-xl border border-white/60 shadow-brand-sm;
   }
+
+  .brand-wash {
+    background:
+      radial-gradient(circle at 100% 0%, rgba(40, 53, 147, 0.1), transparent 34%),
+      radial-gradient(circle at 0% 100%, rgba(249, 245, 236, 0.9), transparent 42%);
+  }
+
   .text-balance {
     text-wrap: balance;
   }
 }
 
-/* Custom subtle scrollbar */
+/* Brand-aligned, unobtrusive scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #F9F5EC;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #E6E4DD;
-  border-radius: 4px;
+  background: #A9AED3;
+  border-radius: 999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #C5A059;
+  background: #283593;
 }

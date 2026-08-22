@@ -1,15 +1,19 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ToastContainer } from '@/components/ui/ToastContainer';
+import { brandIdentity } from '@/config/brand';
 import '../globals.css';
 
-// NOTE: brand fonts can be added via next/font/local once Comfort TXT
-// provides font assets. The system stack below keeps the site fast and
-// fully offline (no Google Fonts runtime dependency).
+// The brandbook's licensed font files can be added through next/font/local
+// when delivered. The current stack stays local and has no runtime font fetch.
 
 export const metadata = {
-  title: "Comfort TXT — Mebel matolari, paralon, mexanizmlar va furnitura",
+  title: `${brandIdentity.name} — Mebel matolari, paralon, mexanizmlar va furnitura`,
   description: "Mebel matolari, paralon, transformatsiya mexanizmlari, furnitura va professional sarf materiallari — katalog va SKU bo‘yicha buyurtma",
+};
+
+export const viewport = {
+  themeColor: brandIdentity.colors.primary,
 };
 
 export default async function LocaleLayout({

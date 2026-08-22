@@ -95,7 +95,7 @@ export function SampleBoxClient({ fabrics, locale }: SampleBoxProps) {
         </div>
 
         <div className="bg-surface p-5 rounded-2xl border border-border shadow-xs space-y-2">
-          <div className="p-2 bg-emerald-100 text-emerald-700 rounded-xl w-fit">
+          <div className="p-2 bg-brand-100 text-brand-700 rounded-xl w-fit">
             <Handshake className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-black text-heading">
@@ -109,7 +109,7 @@ export function SampleBoxClient({ fabrics, locale }: SampleBoxProps) {
         </div>
 
         <div className="bg-surface p-5 rounded-2xl border border-border shadow-xs space-y-2">
-          <div className="p-2 bg-amber-100 text-amber-700 rounded-xl w-fit">
+          <div className="p-2 bg-cream-300 text-brand-700 rounded-xl w-fit">
             <ClipboardCheck className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-black text-heading">
@@ -123,7 +123,7 @@ export function SampleBoxClient({ fabrics, locale }: SampleBoxProps) {
         </div>
 
         <div className="bg-surface p-5 rounded-2xl border border-border shadow-xs space-y-2">
-          <div className="p-2 bg-blue-100 text-blue-700 rounded-xl w-fit">
+          <div className="p-2 bg-brand-200 text-brand-700 rounded-xl w-fit">
             <Layers className="w-5 h-5" />
           </div>
           <h3 className="text-sm font-black text-heading">

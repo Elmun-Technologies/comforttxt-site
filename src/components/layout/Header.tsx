@@ -55,7 +55,7 @@ export function Header({ locale }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-surface/90 backdrop-blur-xl border-b border-border shadow-[0_4px_30px_rgb(0,0,0,0.03)]">
+    <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-border shadow-brand-sm">
       {/* Top Utility Bar — shows only confirmed contact values */}
       <div className="bg-secondary/60 text-muted text-xs py-1.5 px-4 border-b border-border/50">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
@@ -92,7 +92,7 @@ export function Header({ locale }: HeaderProps) {
 
             {/* B2B Status Indicator */}
             {b2bActive ? (
-              <span className="inline-flex items-center gap-1 bg-emerald-950 text-emerald-300 border border-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">
+              <span className="inline-flex items-center gap-1 bg-brand-900 text-brand-100 border border-brand-700 px-2 py-0.5 rounded text-[11px] font-bold">
                 <ShieldCheck className="w-3 h-3" />
                 B2B {user?.companyName || 'Partner'}
               </span>
@@ -210,7 +210,7 @@ export function Header({ locale }: HeaderProps) {
           {/* Cart Drawer Trigger */}
           <button
             onClick={() => setCartOpen(true)}
-            className="relative flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface px-4 py-2.5 rounded-xl shadow-md transition active:scale-98"
+            className="relative flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface px-4 py-2.5 rounded-xl shadow-brand-sm transition active:scale-98"
           >
             <ShoppingBag className="w-5 h-5" />
             <span className="text-xs font-black hidden sm:inline">

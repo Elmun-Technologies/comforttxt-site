@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { storefrontConfig } from '@/config/storefront';
 import {
   ShieldCheck,
   Building2,
@@ -108,9 +109,9 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
       {/* Header Banner */}
       <div className="bg-charcoal-900 text-surface rounded-3xl p-8 lg:p-12 shadow-xl border border-charcoal-800">
         <div className="space-y-4 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 bg-accent/20 text-accent border border-accent/40 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+          <span className="inline-flex items-center gap-1.5 bg-brand-400/10 text-cream-400 border border-brand-400/50 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-4 h-4" />
-            Comfort TXT B2B
+            {storefrontConfig.name} B2B
           </span>
           <h1 className="text-3xl lg:text-4xl font-black leading-tight">
             {locale === 'ru'
@@ -322,7 +323,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
             </div>
 
             <div className="p-4 bg-surface rounded-2xl border border-border shadow-xs flex items-start gap-4">
-              <div className="p-2.5 bg-emerald-100 text-emerald-700 rounded-xl">
+              <div className="p-2.5 bg-brand-100 text-brand-700 rounded-xl">
                 <PackageCheck className="w-5 h-5" />
               </div>
               <div>
@@ -338,7 +339,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
             </div>
 
             <div className="p-4 bg-surface rounded-2xl border border-border shadow-xs flex items-start gap-4">
-              <div className="p-2.5 bg-amber-100 text-amber-700 rounded-xl">
+              <div className="p-2.5 bg-cream-300 text-brand-700 rounded-xl">
                 <RefreshCw className="w-5 h-5" />
               </div>
               <div>
