@@ -30,37 +30,39 @@ export default async function HomePage({ params }: HomePageProps) {
 
   const { heroCategories, popularProducts, newArrivals, featuredFabrics, collections } = homepageData;
 
+  // Neutral fabric-type discovery cards — describe the material, make no
+  // unverified performance claims (no Martindale, no Easy Clean, no Pet Friendly).
   const fabricTypes = [
     {
-      nameUz: 'Velyur matolar',
-      nameRu: 'Велюровые ткани',
-      descUz: 'Yumshoq baxmal to‘qima va keng ranglar palitrasi',
-      descRu: 'Мягкая бархатистая текстура и богатая палитра оттенков',
-      image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop',
+      nameUz: 'Velyur',
+      nameRu: 'Велюр',
+      descUz: 'Yumshoq baxmal faktura',
+      descRu: 'Мягкая бархатистая фактура',
+      image: '/images/categories/fabrics.jpg',
       href: `/${locale}/catalog/mebel-matolari?sub=velyur`,
     },
     {
-      nameUz: 'Bukle matolar',
-      nameRu: 'Ткани букле',
-      descUz: 'Zamonaviy hajm va nozik tugunchali faktura',
-      descRu: 'Выразительная фактура узелков для современной мебели',
-      image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop',
+      nameUz: 'Bukle',
+      nameRu: 'Букле',
+      descUz: 'Tugunchali zamonaviy faktura',
+      descRu: 'Выразительная узелковая фактура',
+      image: '/images/categories/fabrics.jpg',
       href: `/${locale}/catalog/mebel-matolari?sub=bukle`,
     },
     {
-      nameUz: 'Shenill matolar',
-      nameRu: 'Шенилловые ткани',
-      descUz: 'Klassik va zamonaviy mebellar uchun zich to‘qima',
-      descRu: 'Плотная ворсистая нить для мягкой мебели',
-      image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop',
+      nameUz: 'Shenill',
+      nameRu: 'Шенилл',
+      descUz: 'Qalin va hajmli to‘qima',
+      descRu: 'Плотная объемная структура',
+      image: '/images/categories/fabrics.jpg',
       href: `/${locale}/catalog/mebel-matolari?sub=shenill`,
     },
     {
-      nameUz: 'Rogojka to‘qimalar',
-      nameRu: 'Рогожка и рогожки',
-      descUz: 'Tabiiy ko‘rinishdagi pishiq va amaliy to‘qima',
-      descRu: 'Практичная натуральная фактура плетения',
-      image: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=800&auto=format&fit=crop',
+      nameUz: 'Rogojka',
+      nameRu: 'Рогожка',
+      descUz: 'Zich to‘qilgan faktura',
+      descRu: 'Плотная тканая фактура',
+      image: '/images/categories/fabrics.jpg',
       href: `/${locale}/catalog/mebel-matolari?sub=rogojka`,
     },
   ];
@@ -79,8 +81,12 @@ export default async function HomePage({ params }: HomePageProps) {
               {/* Left Column (60%): Direct value proposition & Actions */}
               <div className="lg:col-span-7 space-y-6">
                 <div className="inline-flex items-center gap-2 bg-surface px-3 py-1.5 rounded-full border border-border text-xs font-bold text-heading shadow-xs">
-                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                  <span>{locale === 'ru' ? '20 лет опыта в сфере мебельных материалов' : 'Mebel materiallari sohasida 20 yillik tajriba'}</span>
+                  <span className="w-2 h-2 rounded-full bg-accent" />
+                  <span>
+                    {locale === 'ru'
+                      ? 'Ткани • Поролон • Механизмы • Фурнитура'
+                      : 'Mato • Paralon • Mexanizm • Furnitura'}
+                  </span>
                 </div>
 
                 <div className="space-y-3">
@@ -91,8 +97,8 @@ export default async function HomePage({ params }: HomePageProps) {
                   </h1>
                   <p className="text-sm sm:text-base text-muted font-medium max-w-xl leading-relaxed">
                     {locale === 'ru'
-                      ? 'Ткани, поролон, механизмы трансформации, фурнитура и профессиональные инструменты с быстрой доставкой по всему Узбекистану.'
-                      : 'Mato, paralon, mexanizm, furnitura va professional instrumentlar. O‘zbekiston bo‘ylab tezkor yetkazib berish.'}
+                      ? 'Ткани, поролон, механизмы трансформации, фурнитура и профессиональные инструменты — для цехов, мастеров и фабрик.'
+                      : 'Mato, paralon, mexanizm, furnitura va professional instrumentlar — sexlar, ustalar va fabrikalar uchun.'}
                   </p>
                 </div>
 
@@ -111,9 +117,33 @@ export default async function HomePage({ params }: HomePageProps) {
                     className="inline-flex items-center gap-2 px-5 py-3.5 bg-surface hover:bg-secondary text-heading border border-border font-bold text-xs sm:text-sm rounded-xl transition shadow-xs"
                   >
                     <ShieldCheck className="w-4 h-4 text-accent" />
-                    <span>{locale === 'ru' ? 'Для мебельных цехов (B2B)' : 'Mebelchilar uchun (B2B)'}</span>
+                    <span>{locale === 'ru' ? 'Для мебельных производств' : 'Mebelchilar uchun'}</span>
                   </Link>
                 </div>
+
+                {/* SKU / Search Discovery */}
+                <form
+                  action={`/${locale}/catalog`}
+                  className="flex items-center gap-2 bg-surface border border-border rounded-xl pl-4 pr-2 py-2 shadow-sm max-w-lg"
+                >
+                  <Search className="w-4 h-4 text-accent flex-shrink-0" />
+                  <input
+                    type="search"
+                    name="search"
+                    placeholder={
+                      locale === 'ru'
+                        ? 'Поиск по названию или артикулу (SKU), например F30D'
+                        : 'Nomi yoki artikul (SKU) bo‘yicha qidirish, masalan F30D'
+                    }
+                    className="w-full text-xs sm:text-sm font-semibold text-heading placeholder:text-muted/80 bg-transparent focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-heading hover:bg-charcoal-800 text-surface text-xs font-black rounded-lg transition flex-shrink-0"
+                  >
+                    {locale === 'ru' ? 'Найти' : 'Qidirish'}
+                  </button>
+                </form>
 
                 {/* Quick Category Chips */}
                 <div className="pt-4 border-t border-border/70">
@@ -149,26 +179,36 @@ export default async function HomePage({ params }: HomePageProps) {
                 </div>
               </div>
 
-              {/* Right Column (40%): Tactile Material Visual Zone */}
+              {/* Right Column (40%): Replaceable Material Visual Zone */}
               <div className="lg:col-span-5 relative">
                 <div className="relative rounded-3xl overflow-hidden border border-border/80 shadow-2xl bg-surface">
                   <div className="aspect-[4/3] sm:aspect-square relative overflow-hidden">
+                    {/* Temporary neutral visual — replace with real Comfort TXT
+                        product/material photography via storefrontConfig.heroImage */}
                     <img
-                      src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=1000&auto=format&fit=crop"
-                      alt="Comfort TXT Mebel Matolari"
+                      src={storefrontConfig.heroImage}
+                      alt={
+                        locale === 'ru'
+                          ? 'Мебельные материалы Comfort TXT'
+                          : 'Comfort TXT mebel materiallari'
+                      }
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/85 via-charcoal-950/20 to-transparent flex items-end p-6">
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950/80 via-charcoal-950/20 to-transparent flex items-end p-6">
                       <div className="text-surface space-y-1.5">
                         <div className="inline-flex items-center gap-1.5 bg-accent text-surface text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md">
-                          <Sparkles className="w-3 h-3" />
-                          {locale === 'ru' ? 'Коллекция тканей' : 'Mato to‘plami'}
+                          <Palette className="w-3 h-3" />
+                          {locale === 'ru' ? 'Материалы для мебели' : 'Mebel materiallari'}
                         </div>
                         <h2 className="text-lg sm:text-xl font-black">
-                          {locale === 'ru' ? 'Мебельные ткани и материалы' : 'Mebel matolari va materiallar'}
+                          {locale === 'ru'
+                            ? 'Ткани, поролон, механизмы — одним заказом'
+                            : 'Mato, paralon va mexanizmlar — bitta buyurtmada'}
                         </h2>
                         <p className="text-xs text-surface/80 font-medium">
-                          {locale === 'ru' ? 'Фактура, плотность и богатая палитра оттенков' : 'Faktura, zichlik va ranglarni katalogda ko‘ring'}
+                          {locale === 'ru'
+                            ? 'Подбор по каталогу и артикулам (SKU)'
+                            : 'Katalog va artikul (SKU) bo‘yicha tanlash'}
                         </p>
                       </div>
                     </div>
@@ -186,10 +226,10 @@ export default async function HomePage({ params }: HomePageProps) {
           <div className="flex items-end justify-between border-b border-border pb-3">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-heading tracking-tight">
-                {locale === 'ru' ? 'Категории Материалов' : 'Materiallar Kategoriyalari'}
+                {locale === 'ru' ? 'Категории материалов' : 'Materiallar kategoriyalari'}
               </h2>
               <p className="text-xs text-muted mt-0.5 font-medium">
-                {locale === 'ru' ? 'Выберите нужный раздел для быстрого заказа' : 'Buyurtma uchun kerakli yo‘nalishni tanlang'}
+                {locale === 'ru' ? 'Выберите раздел для заказа' : 'Buyurtma uchun kerakli yo‘nalishni tanlang'}
               </p>
             </div>
             <Link
@@ -211,7 +251,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 <div className="relative aspect-video rounded-xl overflow-hidden bg-secondary mb-3">
                   <img
                     src={cat.image}
-                    alt={cat.nameUz}
+                    alt={locale === 'ru' ? cat.nameRu : cat.nameUz}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -225,7 +265,7 @@ export default async function HomePage({ params }: HomePageProps) {
                   </p>
                 </div>
                 <div className="pt-2 text-[10px] font-bold text-accent group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                  <span>{locale === 'ru' ? 'Ko‘rish' : 'Ko‘rish'}</span>
+                  <span>{locale === 'ru' ? 'Смотреть' : 'Ko‘rish'}</span>
                   <ArrowRight className="w-3 h-3" />
                 </div>
               </Link>
@@ -234,29 +274,29 @@ export default async function HomePage({ params }: HomePageProps) {
         </section>
 
         {/* ======================================================== */}
-        {/* 3. EARLY PRODUCTS: POPULAR & NEW ARRIVALS */}
+        {/* 3. EARLY PRODUCTS: CURATED MATERIALS */}
         {/* ======================================================== */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
           <div className="flex items-end justify-between border-b border-border pb-3">
             <div>
               <div className="inline-flex items-center gap-1.5 text-accent text-xs font-black uppercase tracking-wider mb-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>{locale === 'ru' ? 'Хиты продаж' : 'Ommabop mahsulotlar'}</span>
+                <span>{locale === 'ru' ? 'Подборка материалов' : 'Tanlab olingan materiallar'}</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-black text-heading tracking-tight">
-                {locale === 'ru' ? 'Популярные Позиции для Производства' : 'Eng Ko‘p Buyurtma Qilinadigan Materiallar'}
+                {locale === 'ru' ? 'Часто заказываемые позиции' : 'Ko‘p buyurtma qilinadigan materiallar'}
               </h2>
             </div>
             <Link
-              href={`/${locale}/catalog?sort=popular`}
+              href={`/${locale}/catalog`}
               className="text-xs font-bold text-accent hover:text-accent-hover inline-flex items-center gap-1 transition"
             >
-              <span>{locale === 'ru' ? 'Все популярные' : 'Barchasini ko‘rish'}</span>
+              <span>{locale === 'ru' ? 'Все позиции' : 'Barchasini ko‘rish'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {popularProducts.map((product) => (
               <ProductCard key={product.id} product={product} locale={locale} />
             ))}
@@ -264,25 +304,25 @@ export default async function HomePage({ params }: HomePageProps) {
         </section>
 
         {/* ======================================================== */}
-        {/* 4. SIGNATURE EDITORIAL: "MATO FAQAT RANG EMAS" */}
+        {/* 4. FABRIC TEXTURES: WHAT TO EXPECT */}
         {/* ======================================================== */}
         <section className="bg-secondary/70 border-y border-border py-12 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
             <div className="max-w-2xl space-y-2">
               <span className="text-accent text-xs font-black uppercase tracking-widest">
-                {locale === 'ru' ? 'Текстура и Назначение' : 'Faktura va To‘qima'}
+                {locale === 'ru' ? 'Фактуры тканей' : 'Mato fakturalari'}
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-heading tracking-tight">
                 {locale === 'ru' ? 'Ткань — это не только цвет' : 'Mato faqat rang emas'}
               </h2>
               <p className="text-xs sm:text-sm text-muted font-medium leading-relaxed">
                 {locale === 'ru'
-                  ? 'Каждая фактура решает конкретную задачу мебели: мягкий велюр, объемное букле, плотный шенилл или практичная рогожка.'
-                  : 'Har bir to‘qima o‘z vazifasiga ega: mayin velyur, zamonaviy bukle, pishiq shenill yoki tabiiy rogojka to‘qimasi.'}
+                  ? 'Каждая фактура решает свою задачу: бархатистый велюр, узелковый букле, плотный шенилл или рогожка.'
+                  : 'Har bir to‘qima o‘z vazifasiga ega: baxmal velyur, tugunchali bukle, qalin shenill yoki rogojka.'}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {fabricTypes.map((item, idx) => (
                 <Link
                   key={idx}
@@ -307,7 +347,7 @@ export default async function HomePage({ params }: HomePageProps) {
                       </p>
                     </div>
                     <div className="pt-2 border-t border-border flex items-center justify-between text-xs font-bold text-accent">
-                      <span>{locale === 'ru' ? 'Коллекции ткани' : 'Mato to‘plamlari'}</span>
+                      <span>{locale === 'ru' ? 'Смотреть ткани' : 'Matolarni ko‘rish'}</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
@@ -330,13 +370,13 @@ export default async function HomePage({ params }: HomePageProps) {
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-black text-heading tracking-tight leading-tight">
                   {locale === 'ru'
-                    ? 'Удобные оптовые закупки и стабильное снабжение'
-                    : 'Ulgurji xaridlar va uzluksiz ta‘minot'}
+                    ? 'Постоянные закупки — без лишних шагов'
+                    : 'Doimiy xaridlar — ortiqcha qadamlarsiz'}
                 </h2>
                 <p className="text-xs sm:text-sm text-muted leading-relaxed">
                   {locale === 'ru'
-                    ? 'Мы помогаем мебельным производствам любого масштаба получать качественные материалы вовремя, с персональными условиями и профессиональной поддержкой.'
-                    : 'Kichik ustaxonalardan yirik mebel fabrikalarigacha — barcha materiallarni bitta ta‘minotchidan olish imkoniyati.'}
+                    ? 'Повторные заказы по артикулам, подбор материалов под конкретную мебель и заявка на оптовые условия — на одной странице.'
+                    : 'Artikullar bo‘yicha qayta buyurtma, muayyan mebelga material tanlash va ulgurji shartlarga ariza — bitta sahifada.'}
                 </p>
 
                 <div className="pt-2">
@@ -344,7 +384,7 @@ export default async function HomePage({ params }: HomePageProps) {
                     href={`/${locale}/wholesale`}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-hover text-surface text-xs sm:text-sm font-black rounded-xl shadow-md transition"
                   >
-                    <span>{locale === 'ru' ? 'Узнать условия для B2B' : 'B2B shartlari bilan tanishish'}</span>
+                    <span>{locale === 'ru' ? 'Условия для B2B' : 'B2B shartlari'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -354,40 +394,40 @@ export default async function HomePage({ params }: HomePageProps) {
                 <div className="p-4 rounded-2xl bg-secondary border border-border space-y-2">
                   <Package className="w-5 h-5 text-accent" />
                   <h3 className="text-xs font-black text-heading">
-                    {locale === 'ru' ? 'Широкий ассортимент' : 'Keng assortiment'}
+                    {locale === 'ru' ? 'Ассортимент под заказ' : 'Buyurtma uchun assortiment'}
                   </h3>
                   <p className="text-[11px] text-muted leading-relaxed">
-                    {locale === 'ru' ? 'Все нужные позиции от ткани до скоб в одном заказе' : 'Mato, paralon, mexanizm va instrumentlar bitta joyda'}
+                    {locale === 'ru' ? 'Ткань, поролон, механизмы и расходники в одном заказе' : 'Mato, paralon, mexanizm va sarf materiallari bitta joyda'}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-secondary border border-border space-y-2">
                   <Truck className="w-5 h-5 text-accent" />
                   <h3 className="text-xs font-black text-heading">
-                    {locale === 'ru' ? 'Доставка в ваш цех' : 'Ustaxonagacha yetkazish'}
+                    {locale === 'ru' ? 'Доставка по заказу' : 'Buyurtma bo‘yicha yetkazish'}
                   </h3>
                   <p className="text-[11px] text-muted leading-relaxed">
-                    {locale === 'ru' ? 'Доставка по Ташкенту и во все регионы Узбекистана' : 'Toshkent va viloyatlardagi ishlab chiqarish sexlariga'}
+                    {locale === 'ru' ? 'Условия и сроки подтверждает менеджер' : 'Shart va muddatlarni menejer tasdiqlaydi'}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-secondary border border-border space-y-2">
                   <PhoneCall className="w-5 h-5 text-accent" />
                   <h3 className="text-xs font-black text-heading">
-                    {locale === 'ru' ? 'Персональный менеджер' : 'Shaxsiy menejer'}
+                    {locale === 'ru' ? 'Помощь менеджера' : 'Menejer yordami'}
                   </h3>
                   <p className="text-[11px] text-muted leading-relaxed">
-                    {locale === 'ru' ? 'Оперативный подбор аналогов и расчет партий' : 'Materiallar tanlash va tezkor hisob-kitob'}
+                    {locale === 'ru' ? 'Подбор аналогов и расчет партии' : 'Material tanlash va partiya hisob-kitobi'}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-secondary border border-border space-y-2">
                   <CheckCircle2 className="w-5 h-5 text-accent" />
                   <h3 className="text-xs font-black text-heading">
-                    {locale === 'ru' ? 'Повторные заказы по SKU' : 'SKU bo‘yicha tezkor buyurtma'}
+                    {locale === 'ru' ? 'Заказ по артикулам' : 'Artikul bo‘yicha buyurtma'}
                   </h3>
                   <p className="text-[11px] text-muted leading-relaxed">
-                    {locale === 'ru' ? 'Удобная дозакупка по кодам позиций без лишних согласований' : 'Doimiy xarid qilinadigan kodlarni 1 klikda qaytarish'}
+                    {locale === 'ru' ? 'Повторная закупка по кодам позиций' : 'Doimiy xarid qilinadigan kodlar bilan qayta buyurtma'}
                   </p>
                 </div>
               </div>
@@ -408,13 +448,13 @@ export default async function HomePage({ params }: HomePageProps) {
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
                   {locale === 'ru'
-                    ? 'Закажите образцы тканей для вашего цеха или офиса'
-                    : 'Ustaxonangiz uchun matolar to‘plami namunalarini oling'}
+                    ? 'Образцы тканей — до принятия решения'
+                    : 'Mato namunalari — qaror qabul qilishdan oldin'}
                 </h2>
                 <p className="text-xs sm:text-sm text-surface/80 leading-relaxed max-w-xl">
                   {locale === 'ru'
-                    ? 'Выберите нужные коллекции тканей и получите раскладку образцов для согласования с клиентами и проверки качества.'
-                    : 'Haqiqiy rang va fakturalarni qo‘lingizda ushlab ko‘ring. Mijozlaringizga tanlash oson bo‘lishi uchun namuna so‘rang.'}
+                    ? 'Выберите ткани из каталога и оставьте заявку — соберем раскладку образцов, чтобы вы и ваш клиент увидели реальные цвет и фактуру.'
+                    : 'Katalogdan kerakli matolarni tanlab, so‘rov qoldiring — haqiqiy rang va fakturani qo‘lda ko‘rib chiqish uchun namunalar to‘plamini tayyorlaymiz.'}
                 </p>
                 <div className="pt-2">
                   <Link
@@ -428,28 +468,84 @@ export default async function HomePage({ params }: HomePageProps) {
               </div>
 
               <div className="lg:col-span-5 grid grid-cols-2 gap-3">
-                <div className="p-4 bg-surface/10 rounded-2xl backdrop-blur-sm border border-surface/10 space-y-1">
+                <div className="p-4 bg-surface/10 rounded-2xl border border-surface/10 space-y-1">
                   <div className="text-accent font-black text-base">01</div>
-                  <div className="text-xs font-bold">{locale === 'ru' ? 'Выбор коллекций' : 'Kolleksiyani tanlash'}</div>
+                  <div className="text-xs font-bold">{locale === 'ru' ? 'Выбор тканей' : 'Matolarni tanlash'}</div>
                   <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Велюр, букле, шенилл' : 'Velyur, bukle, shenill'}</div>
                 </div>
-                <div className="p-4 bg-surface/10 rounded-2xl backdrop-blur-sm border border-surface/10 space-y-1">
+                <div className="p-4 bg-surface/10 rounded-2xl border border-surface/10 space-y-1">
                   <div className="text-accent font-black text-base">02</div>
                   <div className="text-xs font-bold">{locale === 'ru' ? 'Заявка' : 'So‘rov qoldirish'}</div>
-                  <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Контакты и адрес' : 'Manzil va telefon'}</div>
+                  <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Имя и телефон' : 'Ism va telefon'}</div>
                 </div>
-                <div className="p-4 bg-surface/10 rounded-2xl backdrop-blur-sm border border-surface/10 space-y-1">
+                <div className="p-4 bg-surface/10 rounded-2xl border border-surface/10 space-y-1">
                   <div className="text-accent font-black text-base">03</div>
-                  <div className="text-xs font-bold">{locale === 'ru' ? 'Доставка образцов' : 'Yetkazib berish'}</div>
-                  <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Прямо в ваш цех' : 'Sexingizga yetkaziladi'}</div>
+                  <div className="text-xs font-bold">{locale === 'ru' ? 'Подготовка образцов' : 'Namunalarni tayyorlash'}</div>
+                  <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Согласует менеджер' : 'Menejer tasdiqlaydi'}</div>
                 </div>
-                <div className="p-4 bg-surface/10 rounded-2xl backdrop-blur-sm border border-surface/10 space-y-1">
+                <div className="p-4 bg-surface/10 rounded-2xl border border-surface/10 space-y-1">
                   <div className="text-accent font-black text-base">04</div>
                   <div className="text-xs font-bold">{locale === 'ru' ? 'Точный заказ' : 'Aniq buyurtma'}</div>
                   <div className="text-[11px] text-surface/70">{locale === 'ru' ? 'Без риска ошибки' : 'Xatosiz tanlov'}</div>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ======================================================== */}
+        {/* 7. COLLECTIONS */}
+        {/* ======================================================== */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
+          <div className="flex items-end justify-between border-b border-border pb-3">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-heading tracking-tight">
+                {locale === 'ru' ? 'Подборки тканей' : 'Mato to‘plamlari'}
+              </h2>
+              <p className="text-xs text-muted mt-0.5 font-medium">
+                {locale === 'ru' ? 'Готовые подборки для быстрого выбора' : 'Tez tanlash uchun tayyor to‘plamlar'}
+              </p>
+            </div>
+            <Link
+              href={`/${locale}/collections`}
+              className="text-xs font-bold text-accent hover:text-accent-hover inline-flex items-center gap-1 transition"
+            >
+              <span>{locale === 'ru' ? 'Все подборки' : 'Barcha to‘plamlar'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {collections.map((col) => (
+              <Link
+                key={col.id}
+                href={`/${locale}/catalog?collection=${col.slug}`}
+                className="group bg-surface rounded-2xl border border-border overflow-hidden hover:border-accent/60 hover:shadow-xl transition flex flex-col justify-between"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-secondary">
+                  <img
+                    src={col.image}
+                    alt={col.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-sm font-black text-heading group-hover:text-accent transition leading-snug">
+                      {col.name}
+                    </h3>
+                    <p className="text-[11px] text-muted leading-relaxed mt-1">
+                      {locale === 'ru' ? col.descriptionRu : col.descriptionUz}
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-border flex items-center justify-between text-xs font-bold text-accent">
+                    <span>{locale === 'ru' ? 'Смотреть подборку' : 'To‘plamni ko‘rish'}</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
       </main>

@@ -25,7 +25,7 @@ export default async function ProductDetailPage({ params }: PDPProps) {
       <Header locale={locale} />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 py-8 w-full space-y-12">
-        <ProductDetailClient product={product as any} locale={locale} />
+        <ProductDetailClient product={product} locale={locale} />
 
         {relatedProducts.length > 0 && (
           <div className="border-t border-border pt-12 space-y-6">
@@ -34,12 +34,12 @@ export default async function ProductDetailPage({ params }: PDPProps) {
                 {locale === 'ru' ? 'Сопутствующие товары' : 'Birga xarid qilishadi'}
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-heading tracking-tight mt-0.5">
-                {locale === 'ru' ? 'Рекомендуемые Материалы и Расходники' : 'Tavsiya Etiladigan Sarf Materiallari'}
+                {locale === 'ru' ? 'Рекомендуемые материалы' : 'Tavsiya etiladigan materiallar'}
               </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {relatedProducts.map((rp) => (
-                <ProductCard key={rp.id} product={rp as any} locale={locale} />
+                <ProductCard key={rp.id} product={rp} locale={locale} />
               ))}
             </div>
           </div>

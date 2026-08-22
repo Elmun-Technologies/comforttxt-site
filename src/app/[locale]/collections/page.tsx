@@ -20,15 +20,15 @@ export default async function CollectionsPage({ params }: CollectionsPageProps) 
         <div>
           <div className="inline-flex items-center gap-1.5 bg-accent-light text-accent px-3 py-1 rounded-full text-xs font-bold mb-2">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Exclusives</span>
+            <span>{locale === 'ru' ? 'Подборки' : 'To‘plamlar'}</span>
           </div>
           <h1 className="text-3xl font-black text-heading tracking-tight">
-            {locale === 'ru' ? 'Мебельные Коллекции' : 'Mebel Kolleksiyalari'}
+            {locale === 'ru' ? 'Подборки тканей' : 'Mato to‘plamlari'}
           </h1>
           <p className="text-xs text-muted mt-1 font-medium">
             {locale === 'ru'
-              ? 'Премиальные дизайны и сочетания тканей для вашей мебели'
-              : 'Dizaynerlik mebellari uchun oliy navli mato to‘plamlari'}
+              ? 'Готовые подборки материалов для быстрого выбора'
+              : 'Tez tanlash uchun tayyor materiallar to‘plamlari'}
           </p>
         </div>
 

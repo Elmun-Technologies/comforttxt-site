@@ -9,6 +9,7 @@ import { formatPrice, formatUnit } from '@/lib/formatters';
 import { normalizeUzPhone } from '@/lib/utils/phone';
 import { User, Phone, MapPin, Truck, CreditCard, ShieldCheck, Loader2, ArrowRight, ShoppingBag, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { MissingImage } from '@/components/product/MissingImage';
 
 interface CheckoutFormProps {
   locale: string;
@@ -140,9 +141,10 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
               <input
                 type="text"
                 required
+                autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={locale === 'ru' ? 'Иван Иванов' : 'Otabek Rixsiyev'}
+                placeholder={locale === 'ru' ? 'Имя и фамилия' : 'Ism va familiya'}
                 className="w-full px-3.5 py-2.5 bg-secondary border border-border rounded-xl text-sm font-medium focus:outline-none focus:border-accent"
               />
             </div>
@@ -153,6 +155,8 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
               </label>
               <input
                 type="tel"
+                inputMode="tel"
+                autoComplete="tel"
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
@@ -186,7 +190,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
                   {locale === 'ru' ? 'Доставка курьером' : 'Kuryer orqali yetkazib berish'}
                 </div>
                 <div className="text-[11px] text-muted mt-0.5">
-                  {locale === 'ru' ? 'Ташкент и регионы (1-2 дня)' : 'Toshkent va viloyatlarga (1-2 kun)'}
+                  {locale === 'ru' ? 'Способ и сроки подтверждает менеджер' : 'Usul va muddatni menejer tasdiqlaydi'}
                 </div>
               </div>
             </button>
@@ -203,10 +207,10 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
               <MapPin className="w-5 h-5 text-accent mt-0.5" />
               <div>
                 <div className="text-xs font-bold text-heading">
-                  {locale === 'ru' ? 'Самовывоз со склада' : 'Ombordan olib ketish (Self-pickup)'}
+                  {locale === 'ru' ? 'Самовывоз' : 'Ombordan olib ketish'}
                 </div>
                 <div className="text-[11px] text-muted mt-0.5">
-                  {locale === 'ru' ? 'Сергели, МКАД, 42' : 'Sergeli, Kichik halqa yo\'li, 42'}
+                  {locale === 'ru' ? 'Адрес уточнит менеджер' : 'Manzilni menejer aniqlashtiradi'}
                 </div>
               </div>
             </button>
@@ -225,7 +229,7 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
                 placeholder={
                   locale === 'ru'
                     ? 'Город, район, улица, дом / цех'
-                    : 'Toshkent sh., Sergeli t., Sanoat zonasi, 4-bino'
+                    : 'Shahar, tuman, ko‘cha, uy / sex'
                 }
                 className="w-full px-3.5 py-2.5 bg-secondary border border-border rounded-xl text-sm focus:outline-none focus:border-accent"
               />
@@ -319,7 +323,13 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
 
               return (
                 <div key={item.variantId} className="flex items-center gap-3 text-xs py-2">
-                  <img src={item.image} alt="" className="w-10 h-10 object-cover rounded-lg border border-border flex-shrink-0" />
+                  <div className="w-10 h-10 rounded-lg border border-border flex-shrink-0 overflow-hidden bg-secondary">
+                    {item.image ? (
+                      <img src={item.image} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <MissingImage locale={locale} compact />
+                    )}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-heading truncate">{item.productTitle}</div>
                     <div className="text-[11px] text-muted font-mono">SKU: {item.sku}</div>

@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, X, Package, Tag, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { Search, X, Package, Tag, ArrowRight, Loader2, Sparkles, BookOpen, AlertCircle, RotateCcw } from 'lucide-react';
 import { formatPrice } from '@/lib/formatters';
+import { MissingImage } from '@/components/product/MissingImage';
 import { storefrontConfig } from '@/config/storefront';
 
 interface SearchOverlayProps {
@@ -23,6 +24,8 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
     collections: [],
   });
   const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     if (isOpen) {
@@ -32,6 +35,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
       document.body.style.overflow = '';
       setQuery('');
       setResults({ products: [], categories: [], collections: [] });
+      setFailed(false);
     }
     return () => {
       document.body.style.overflow = '';
@@ -53,32 +57,43 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
   useEffect(() => {
     if (q.length < 2) {
       setResults({ products: [], categories: [], collections: [] });
+      setFailed(false);
       return;
     }
 
     const timer = setTimeout(async () => {
       setLoading(true);
+      setFailed(false);
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
         if (res.ok) {
           const data = await res.json();
           setResults(data);
+        } else {
+          setFailed(true);
         }
       } catch (err) {
         console.error('Search error:', err);
+        setFailed(true);
       } finally {
         setLoading(false);
       }
     }, 250);
 
     return () => clearTimeout(timer);
-  }, [q]);
+  }, [q, retryKey]);
 
   if (!isOpen) return null;
 
   const filteredProducts = results.products || [];
   const filteredCategories = results.categories || [];
   const filteredCollections = results.collections || [];
+
+  // SKU-first: an exact SKU match must be the first result
+  const exactSkuProduct = filteredProducts.find((p) =>
+    (p.variants || []).some((v: any) => v.sku.toLowerCase() === q)
+  );
+  const hasExactSku = Boolean(exactSkuProduct);
 
   const handleSelectProduct = (slug: string) => {
     onClose();
@@ -103,6 +118,8 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
     }
   };
 
+  const contactLink = storefrontConfig.telegramChannelUrl || storefrontConfig.telegramBotOrManagerUrl || '';
+
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-heading/70 backdrop-blur-md animate-in fade-in duration-150">
       <div className="min-h-screen px-3 sm:px-4 pt-4 sm:pt-12 pb-20 text-center flex flex-col items-center">
@@ -118,8 +135,8 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
               onChange={(e) => setQuery(e.target.value)}
               placeholder={
                 locale === 'ru'
-                  ? 'Поиск по названию или точному SKU (LUNA-01, ST2536, F30D)...'
-                  : 'Nomi yoki aniq SKU bo‘yicha qidirish (LUNA-01, ST2536, F30D)...'
+                  ? 'Поиск по названию или точному SKU (например F30D)...'
+                  : 'Nomi yoki aniq SKU bo‘yicha qidirish (masalan F30D)...'
               }
               className="w-full text-sm sm:text-base font-semibold text-heading placeholder:text-muted/80 bg-transparent focus:outline-none"
             />
@@ -136,10 +153,10 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
           {q.length < 2 && (
             <div className="p-5 sm:p-6 space-y-4">
               <span className="text-[11px] font-bold text-muted uppercase tracking-wider block">
-                {locale === 'ru' ? 'Быстрый поиск по артикулу и категории:' : 'Artikul va kategoriya bo‘yicha tezkor qidiruv:'}
+                {locale === 'ru' ? 'Поиск по артикулу или названию:' : 'Artikul yoki nom bo‘yicha qidiruv:'}
               </span>
               <div className="flex flex-wrap gap-2">
-                {['LUNA-01', 'ST2536-50', 'F30D', 'AKFIX-500', '8016', 'Velyur', 'Paralon', 'Delfin'].map((tag) => (
+                {['F30D', 'ST2536-50', '8016', 'Velyur', 'Paralon', 'Delfin'].map((tag) => (
                   <button
                     key={tag}
                     onClick={() => setQuery(tag)}
@@ -161,9 +178,89 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                 </div>
               )}
 
-              {/* Categorized Matches: Categories & Collections */}
-              {!loading && (filteredCategories.length > 0 || filteredCollections.length > 0) && (
-                <div className="pb-3 space-y-3">
+              {!loading && failed && (
+                <div className="py-10 text-center space-y-3">
+                  <AlertCircle className="w-10 h-10 text-muted mx-auto stroke-1" />
+                  <p className="font-bold text-heading text-sm">
+                    {locale === 'ru'
+                      ? 'Не удалось загрузить результаты'
+                      : 'Natijalarni yuklab bo‘lmadi'}
+                  </p>
+                  <button
+                    onClick={() => setRetryKey((k) => k + 1)}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>{locale === 'ru' ? 'Попробовать снова' : 'Qayta urinib ko‘rish'}</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Product Matches — ALWAYS first (SKU-first) */}
+              {!loading && !failed && filteredProducts.length > 0 && (
+                <div className="pt-3 space-y-2">
+                  <span className="text-[10px] font-black text-muted uppercase tracking-wider block mb-1 px-1">
+                    {locale === 'ru' ? 'Товары и артикулы (SKU)' : 'Mahsulotlar va artikullar (SKU)'}
+                    {hasExactSku && (
+                      <span className="ml-2 normal-case bg-accent-light text-accent px-1.5 py-0.5 rounded text-[9px]">
+                        {locale === 'ru' ? 'точное совпадение' : 'aniq moslik'}
+                      </span>
+                    )}
+                  </span>
+                  {filteredProducts.map((product) => {
+                    const firstVar = product.variants?.[0];
+                    const imgUrl = firstVar?.images?.[0] || product.primaryImage || '';
+
+                    return (
+                      <div
+                        key={product.id}
+                        onClick={() => handleSelectProduct(product.slug)}
+                        className={`flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 hover:bg-secondary rounded-xl cursor-pointer border transition ${
+                          hasExactSku && exactSkuProduct?.id === product.id
+                            ? 'border-accent/50 bg-accent-light/40'
+                            : 'border-transparent hover:border-border'
+                        }`}
+                      >
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border border-border flex-shrink-0 overflow-hidden bg-secondary">
+                          {imgUrl ? (
+                            <img
+                              src={imgUrl}
+                              alt={locale === 'ru' ? product.titleRu : product.titleUz}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <MissingImage locale={locale} compact />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-xs sm:text-sm font-bold text-heading truncate">
+                              {locale === 'ru' ? product.titleRu : product.titleUz}
+                            </h4>
+                            {firstVar?.sku && (
+                              <span className="text-[10px] font-mono font-bold bg-surface text-heading px-1.5 py-0.5 rounded border border-border flex-shrink-0">
+                                {firstVar.sku}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-muted truncate mt-0.5 font-medium">
+                            {locale === 'ru' ? product.categoryNameRu : product.categoryNameUz}
+                          </p>
+                        </div>
+                        {firstVar?.price && (
+                          <div className="text-right font-black text-accent text-xs sm:text-sm flex-shrink-0">
+                            {formatPrice(firstVar.price, locale)}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Categories & Collections — only when there is no exact SKU match */}
+              {!loading && !failed && !hasExactSku && (filteredCategories.length > 0 || filteredCollections.length > 0) && (
+                <div className="pb-3 space-y-3 pt-3">
                   {filteredCategories.length > 0 && (
                     <div>
                       <span className="text-[10px] font-black text-muted uppercase tracking-wider block mb-2 px-1">
@@ -187,7 +284,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                   {filteredCollections.length > 0 && (
                     <div>
                       <span className="text-[10px] font-black text-muted uppercase tracking-wider block mb-2 px-1">
-                        {locale === 'ru' ? 'Коллекции' : 'Kolleksiyalar'}
+                        {locale === 'ru' ? 'Подборки' : 'To‘plamlar'}
                       </span>
                       <div className="flex flex-wrap gap-2">
                         {filteredCollections.map((col) => (
@@ -206,88 +303,39 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                 </div>
               )}
 
-              {/* Product Matches */}
-              {!loading && filteredProducts.length > 0 && (
-                <div className="pt-3 space-y-2">
-                  <span className="text-[10px] font-black text-muted uppercase tracking-wider block mb-1 px-1">
-                    {locale === 'ru' ? 'Товары и Артикулы (SKU)' : 'Mahsulotlar va Artikul (SKU)'}
-                  </span>
-                  {filteredProducts.map((product) => {
-                    const firstVar = product.variants?.[0];
-                    const imgUrl = firstVar?.images?.[0] || product.primaryImage || 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&auto=format&fit=crop';
-
-                    return (
-                      <div
-                        key={product.id}
-                        onClick={() => handleSelectProduct(product.slug)}
-                        className="flex items-center gap-3 sm:gap-4 p-2.5 sm:p-3 hover:bg-secondary rounded-xl cursor-pointer border border-transparent hover:border-border transition"
-                      >
-                        <img
-                          src={imgUrl}
-                          alt={product.titleUz}
-                          className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-xl border border-border flex-shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="text-xs sm:text-sm font-bold text-heading truncate">
-                              {locale === 'ru' ? product.titleRu : product.titleUz}
-                            </h4>
-                            {firstVar?.sku && (
-                              <span className="text-[10px] font-mono font-bold bg-surface text-heading px-1.5 py-0.5 rounded border border-border flex-shrink-0">
-                                {firstVar.sku}
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-[11px] text-muted truncate mt-0.5 font-medium">
-                            {locale === 'ru' ? product.categoryNameRu : product.categoryNameUz}
-                            {product.brand && ` • ${product.brand}`}
-                          </p>
-                        </div>
-                        {firstVar?.price && (
-                          <div className="text-right font-black text-accent text-xs sm:text-sm flex-shrink-0">
-                            {formatPrice(firstVar.price, locale)}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* No matches */}
-              {!loading && filteredProducts.length === 0 && filteredCategories.length === 0 && (
-                <div className="py-10 text-center text-muted space-y-4 px-4">
+              {/* No matches — actionable empty state */}
+              {!loading && !failed && filteredProducts.length === 0 && filteredCategories.length === 0 && (
+                <div className="py-10 text-center text-sm space-y-3">
                   <Package className="w-12 h-12 mx-auto text-muted/50 stroke-1" />
-                  <div>
-                    <h3 className="font-bold text-heading text-base">
-                      {locale === 'ru' ? 'Товар не найден' : 'Mahsulot topilmadi'}
-                    </h3>
-                    <p className="text-xs text-muted max-w-sm mx-auto mt-1 leading-relaxed">
-                      {locale === 'ru'
-                        ? 'Проверьте правильность артикула (SKU) или воспользуйтесь каталогом материалов.'
-                        : 'Artikul (SKU) to‘g‘riligini tekshiring yoki materiallar katalogidan foydalaning.'}
-                    </p>
-                  </div>
-
+                  <p className="font-black text-heading">
+                    {locale === 'ru' ? 'Товар не найден' : 'Mahsulot topilmadi'}
+                  </p>
+                  <p className="text-xs text-muted max-w-sm mx-auto leading-relaxed">
+                    {locale === 'ru'
+                      ? 'Проверьте правильность артикула (SKU) или попробуйте общее название материала.'
+                      : 'Artikul (SKU) to‘g‘riligini tekshiring yoki materialning umumiy nomini kiriting.'}
+                  </p>
                   <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
                     <button
-                      type="button"
                       onClick={() => {
                         onClose();
                         router.push(`/${locale}/catalog`);
                       }}
-                      className="px-4 py-2 bg-accent text-surface text-xs font-bold rounded-xl shadow-xs hover:bg-accent-hover transition"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent hover:bg-accent-hover text-surface text-xs font-bold rounded-xl transition"
                     >
-                      {locale === 'ru' ? 'Перейти в каталог' : 'Katalogni ko‘rish'}
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>{locale === 'ru' ? 'Открыть каталог' : 'Katalogni ochish'}</span>
                     </button>
-                    <a
-                      href={storefrontConfig.telegramChannelUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-xl hover:bg-blue-100 transition"
-                    >
-                      {locale === 'ru' ? 'Спросить у менеджера' : 'Menejerdan so‘rash'}
-                    </a>
+                    {contactLink && (
+                      <a
+                        href={contactLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-xl border border-border transition"
+                      >
+                        <span>{locale === 'ru' ? 'Спросить менеджера' : 'Menejerdan so‘rash'}</span>
+                      </a>
+                    )}
                   </div>
                 </div>
               )}
@@ -297,13 +345,14 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
           {/* Footer Bar */}
           <div className="p-3.5 bg-secondary border-t border-border flex justify-between items-center text-xs text-muted">
             <span className="hidden sm:inline">
-              <kbd className="px-1.5 py-0.5 bg-surface rounded border border-border font-mono font-bold text-[10px]">Esc</kbd> yopish
+              <kbd className="px-1.5 py-0.5 bg-surface rounded border border-border font-mono font-bold text-[10px]">Esc</kbd>{' '}
+              {locale === 'ru' ? 'закрыть' : 'yopish'}
             </span>
             <button
               onClick={handleFormSubmit}
               className="inline-flex items-center gap-1.5 font-black text-accent hover:underline ml-auto"
             >
-              <span>{locale === 'ru' ? 'Смотреть все результаты в каталоге' : 'Katalogda barcha natijalarni ko‘rish'}</span>
+              <span>{locale === 'ru' ? 'Все результаты в каталоге' : 'Barcha natijalar katalogda'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

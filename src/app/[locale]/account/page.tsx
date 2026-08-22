@@ -10,9 +10,10 @@ interface AccountPageProps {
 export default async function AccountPage({ params }: AccountPageProps) {
   const { locale } = await params;
 
-  // Use Storefront Service for customer & orders
-  const customer = await storefrontService.getCustomer('demo-customer-01');
-  const orders = await storefrontService.getCustomerOrders(customer?.id || 'demo-customer-01');
+  // No fake customer data by default: the mock service returns null / [].
+  // ShopFlow will later provide the real customer profile and orders.
+  const customer = await storefrontService.getCustomer('current');
+  const orders = customer ? await storefrontService.getCustomerOrders(customer.id) : [];
 
   const formattedOrders = orders.map((ord) => ({
     id: ord.id,

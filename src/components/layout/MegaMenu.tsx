@@ -11,7 +11,7 @@ interface MegaMenuProps {
 export function MegaMenu({ locale, onClose }: MegaMenuProps) {
   const sections = [
     {
-      title: locale === 'ru' ? 'MEБЕЛЬНЫЕ ТКАНИ' : 'MEBEL MATOLARI',
+      title: locale === 'ru' ? 'МЕБЕЛЬНЫЕ ТКАНИ' : 'MEBEL MATOLARI',
       icon: Palette,
       items: [
         { labelUz: 'Velyur matolar', labelRu: 'Велюровые ткани', href: '/catalog/mebel-matolari?sub=velyur' },
@@ -23,7 +23,7 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
       ],
     },
     {
-      title: locale === 'ru' ? 'ПРОИЗВОДСТВО MEБЕЛИ' : 'MEBEL ISHLAB CHIQARISH',
+      title: locale === 'ru' ? 'ПРОИЗВОДСТВО МЕБЕЛИ' : 'MEBEL ISHLAB CHIQARISH',
       icon: Layers,
       items: [
         { labelUz: 'Paralon ST / EL / HR', labelRu: 'Поролон ST / EL / HR', href: '/catalog/paralon' },
@@ -89,8 +89,8 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
             </h4>
             <p className="text-[11px] text-muted leading-relaxed font-medium">
               {locale === 'ru'
-                ? 'Получите каталог образцов прямо в ваш цех или офис.'
-                : 'Real rang va fakturalarni ustaxonangizda ko\'rib tanlang.'}
+                ? 'Соберём подборку образцов — условия передачи согласует менеджер.'
+                : 'Namunalar to‘plamini tayyorlaymiz — berish shartlarini menejer kelishadi.'}
             </p>
           </div>
 
