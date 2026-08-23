@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CategoryFilterSidebar } from '@/components/catalog/CategoryFilterSidebar';
 import { SlidersHorizontal, PackageX, X, RotateCcw, LayoutGrid } from 'lucide-react';
@@ -16,6 +17,7 @@ interface CatalogClientProps {
 
 export function CatalogClient({ locale, searchParams, initialProducts = [], categories = [] }: CatalogClientProps) {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const router = useRouter();
 
   const selectedCategory = searchParams.category || '';
   const selectedCollection = searchParams.collection || '';
@@ -117,15 +119,18 @@ export function CatalogClient({ locale, searchParams, initialProducts = [], cate
   if (inStock) chips.push({ key: 'inStock', label: locale === 'ru' ? 'В наличии' : 'Omborda bor' });
   if (selectedSort !== 'newest') chips.push({ key: 'sort', label: locale === 'ru' ? 'Сортировка' : 'Saralash' });
 
+  // Pattern #11 — filtering must never trigger a full page reload. Both
+  // handlers go through the Next.js router (client-side transition, no
+  // white-flash / lost scroll position) instead of `window.location.href`.
   const removeChip = (key: string) => {
     const params = new URLSearchParams(window.location.search);
     params.delete(key);
     const qs = params.toString();
-    window.location.href = `/${locale}/catalog${qs ? `?${qs}` : ''}`;
+    router.push(`/${locale}/catalog${qs ? `?${qs}` : ''}`, { scroll: false });
   };
 
   const clearAll = () => {
-    window.location.href = `/${locale}/catalog`;
+    router.push(`/${locale}/catalog`, { scroll: false });
   };
 
   const currentCategoryObj = categories.find((c) => c.slug === selectedCategory);

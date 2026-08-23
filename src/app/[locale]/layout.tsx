@@ -3,10 +3,8 @@ import { getMessages } from 'next-intl/server';
 import { ToastContainer } from '@/components/ui/ToastContainer';
 import { brandIdentity } from '@/config/brand';
 import { storefrontConfig } from '@/config/storefront';
+import { exo2 } from '@/lib/fonts';
 import '../globals.css';
-
-// The brandbook's licensed font files can be added through next/font/local
-// when delivered. The current stack stays local and has no runtime font fetch.
 
 // Absolute base for resolving Open Graph / icon URLs. Set NEXT_PUBLIC_SITE_URL
 // to the production origin at deploy time.
@@ -48,7 +46,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className={exo2.variable}>
       <body className="bg-background text-body antialiased font-sans">
         <NextIntlClientProvider messages={messages}>
           {children}

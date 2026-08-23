@@ -123,13 +123,13 @@ Har biri bizning kontekstga baholangan.
 | # | Pattern | VI? | Biz? | Prioritet | Izoh |
 | --- | --- | --- | --- | --- | --- |
 | 10 | **Grid ↔ List ko'rinish** | ✔ | ❌ | **P0** | B2B uchun list/jadval ko'rinishi kritik: SKU + narx + qoldiq + miqdor bir qatorda |
-| 11 | **Filtr sahifani qayta yuklamasdan** | | ❌ | **P0** | Hozir `router.push` + full reload (`window.location.href`!). Bu eng katta UX muammosi |
+| 11 | **Filtr sahifani qayta yuklamasdan** | | ✅ | — | Asosiy filtrlar `router.push` orqali edi; chip o'chirish/"Barchasini tozalash" esa `window.location.href` ishlatib to'liq reload qilardi — endi ular ham `useRouter().push` ga o'tkazildi (`CatalogClient.tsx`, `CategoryClient.tsx`) |
 | 12 | **Kengaytirilgan filtrlar** | ✔ | ⚠️ | **P0** | Mato uchun: tarkib, zichlik (g/m²), en (sm), Martindale, rang oilasi, suv o'tkazmaslik, hayvon tirnog'iga chidamlilik |
 | 13 | Magazin/ombor bo'yicha filtr | ✔ | ❌ | **P2** | Bir necha ombor bo'lganda |
 | 14 | To'liq filtrlar alohida modalda | | ❌ | **P1** | "Barcha filtrlar" tugmasi |
 | 15 | **Filtr ichida qidiruv** | ✔ | ❌ | **P1** | Rang / kolleksiya ro'yxati uzun bo'lganda |
 | 16 | Filtr parametrlari bo'yicha umumiy qidiruv | | ❌ | **P2** | |
-| 17 | **Filtrlarda tooltip-tushuntirish** | ✔ | ❌ | **P0** | "ST 25/36 nima?", "Martindale nima?" — bizning nishada **hal qiluvchi**. Mijozlarning yarmi terminlarni bilmaydi |
+| 17 | **Filtrlarda tooltip-tushuntirish** | ✔ | ✅ | — | `ui/Tooltip.tsx` + `spec-glossary.ts` endi `CategoryFilterSidebar` filtr sarlavhalarida va PDP xususiyatlar tabida ulangan |
 | 18 | Mobil filtrlarda sticky "Qo'llash/Tozalash" | | ❌ | **P1** | |
 | 19 | Tanlangan filtrlar chip ko'rinishida | ✔ | ✅ | — | `CatalogClient` da bor ✔ |
 
@@ -137,16 +137,16 @@ Har biri bizning kontekstga baholangan.
 
 | # | Pattern | VI? | Biz? | Prioritet | Izoh |
 | --- | --- | --- | --- | --- | --- |
-| 20 | **Hajm/miqdorga qarab turli narx** | | ❌ | **P0** | **Bizning biznesning yuragi:** 1–9 m / 10–49 m / 50+ m narx pog'onalari. Hozir faqat bitta `wholesalePrice` bor |
-| 21 | **SKU ni nusxalash tugmasi** | ✔ | ❌ | **P1** | Mebelchi menejerga SKU yuboradi — juda tez-tez sodir bo'ladi |
+| 20 | **Hajm/miqdorga qarab turli narx** | | ✅ | — | `PriceTierTable.tsx` PDP da ko'rinadi; mock ma'lumot `mockEnrichment.ts` orqali avtomatik generatsiya qilinadi (real 3-pog'ona: 1–9 / 10–49 / 50+) |
+| 21 | **SKU ni nusxalash tugmasi** | ✔ | ✅ | — | `ui/CopyButton.tsx` — kartochka va PDP dagi SKU chip yonida |
 | 22 | Hover da rasmlarni varaqlash | | ❌ | **P2** | |
 | 23 | **Foydalanuvchi ro'yxatlari (spiski)** | ✔ | ❌ | **P0** | Bizda: "Divan №1 loyihasi" ro'yxati — mato + paralon + mexanizm + skoba. **Killer feature** |
 | 24 | Preview dan taqqoslashga o'tish | ✔ | ✅ | — | bor |
-| 25 | **Kartochkada miqdor +/− va savatga** | ✔ | ❌ | **P0** | Hozir faqat "Savatchaga" (1 qadam qo'shadi). Mebelchiga 45 metr kerak |
+| 25 | **Kartochkada miqdor +/− va savatga** | ✔ | ✅ | — | `ui/QuantityStepper.tsx` — kartochkaning o'zida, savatchaga aynan tanlangan miqdor qo'shiladi |
 | 26 | Preview da yetkazish sanasi | ✔ | ❌ | **P2** | |
 | 27 | **"Analoglar" tugmasi (yo'q bo'lganda)** | ✔ | ❌ | **P1** | Mato tugab qolsa — o'xshash tekstura/rangdagi alternativa |
 | 28 | **"Kelganda xabar bering"** | ✔ | ❌ | **P1** | Lead yig'ish + talab analitikasi |
-| 29 | **Preview da aniq qoldiq** | ✔ | ❌ | **P0** | "Omborda bor" emas, **"Omborda 340 m"**. Mebelchi 200 m kerakligini biladi |
+| 29 | **Preview da aniq qoldiq** | ✔ | ✅ | — | `product/StockIndicator.tsx` — "Omborda 340 m" / "Faqat 12 m qoldi" / "Buyurtma asosida" |
 | 30 | **Foydali kontentga havola** | ✔ | ❌ | **P1** | "Paralonni qanday tanlash" gaydiga kategoriya sahifasidan havola |
 
 ### 2.4 Mahsulot sahifasi — PDP (31–45)
@@ -158,7 +158,7 @@ Har biri bizning kontekstga baholangan.
 | 33 | Kartochkada miqdor +/− | | ✅ | — | bor ✔ |
 | 34 | **Birinchi ekranda hamroh mahsulotlar** | ✔ | ❌ | **P0** | Mato sotib olayotganda → paralon, yelim, skoba. **Cross-sell = o'rtacha chek** |
 | 35 | Birinchi ekranda o'xshash mahsulotlar | | ❌ | **P1** | |
-| 36 | **Qoldiq dona/metrda aniq** | ✔ | ❌ | **P0** | §2.3 №29 bilan bir xil |
+| 36 | **Qoldiq dona/metrda aniq** | ✔ | ✅ | — | §2.3 №29 bilan bir xil — `StockIndicator` PDP galereyasida ham |
 | 37 | Diapazon emas, aniq sana | | ❌ | **P2** | |
 | 38 | **PDP da sticky tab navigatsiya** | | ⚠️ | **P1** | Tab lar bor, sticky emas |
 | 39 | **Fotosuratli sharhlar** | ✔ | ❌ | **P1** | Mebelchi tayyor divan rasmini joylaydi → boshqa mijozlar matoni **ishda** ko'radi. Bizning nishada eng kuchli ijtimoiy dalil |
@@ -193,9 +193,9 @@ Har biri bizning kontekstga baholangan.
 
 | Prioritet | Soni | Holat |
 | --- | --- | --- |
-| ✅ Bizda bor | 8 | 13% |
-| **P0 — majburiy** | **17** | Faza 1–2 |
-| **P1 — muhim** | **24** | Faza 2–3 |
+| ✅ Bizda bor | 15 | 25% (+7 shu sessiyada: #11, #17, #20, #21, #25, #29, #36) |
+| **P0 — majburiy** | **11** | Faza 1–2 |
+| **P1 — muhim** | **23** | Faza 2–3 |
 | **P2 — keyinroq** | **11** | Faza 4 |
 
 ---
@@ -361,16 +361,16 @@ interface ProductReview {       // #39
 
 ## 7. Yangi komponentlar ro'yxati
 
-| Komponent | Pattern | Faza |
-| --- | --- | --- |
-| `layout/MobileTabBar.tsx` | #2 | 1 |
-| `ui/Tooltip.tsx` | #17 | 1 |
-| `ui/CopyButton.tsx` | #21 | 1 |
-| `ui/QuantityStepper.tsx` | #25, #33 | 1 |
-| `ui/Skeleton.tsx` | — | 1 |
-| `product/StockIndicator.tsx` | #29, #36 | 1 |
-| `product/PriceTierTable.tsx` | #20 | 1 |
-| `catalog/ViewModeToggle.tsx` | #10 | 1 |
+| Komponent | Pattern | Faza | Holat |
+| --- | --- | --- | --- |
+| `layout/MobileTabBar.tsx` | #2 | 1 | Hali yo'q |
+| `ui/Tooltip.tsx` | #17 | 1 | ✅ Qurildi |
+| `ui/CopyButton.tsx` | #21 | 1 | ✅ Qurildi |
+| `ui/QuantityStepper.tsx` | #25, #33 | 1 | ✅ Qurildi |
+| `ui/Skeleton.tsx` | — | 1 | ✅ Qurildi |
+| `product/StockIndicator.tsx` | #29, #36 | 1 | ✅ Qurildi |
+| `product/PriceTierTable.tsx` | #20 | 1 | ✅ Qurildi |
+| `catalog/ViewModeToggle.tsx` | #10 | 1 | Hali yo'q |
 | `catalog/ProductRow.tsx` (list view) | #10 | 1 |
 | `catalog/SubcategoryChips.tsx` | #9 | 1 |
 | `catalog/FilterSearch.tsx` | #15 | 2 |
@@ -394,14 +394,15 @@ interface ProductReview {       // #39
 
 ## 8. Texnik qarzlar (birinchi navbatda tuzatish)
 
-| Muammo | Fayl | Ta'sir |
-| --- | --- | --- |
-| **`window.location.href` bilan filtr** — to'liq sahifa reload | `CatalogClient.tsx:120-130` | Pattern #11 buziladi, UX sekin |
-| **Filtrlash client-side, barcha mahsulot yuklanadi** | `CatalogClient.tsx:33-95` | 500+ SKU da ishlamaydi |
-| **`product: any`** | `ProductCard.tsx:17` | Type xavfsizligi yo'q |
-| Sticky element yo'q (PDP tab, cart summary) | bir nechta | #32, #38, #46 |
-| Skeleton/loading holati yo'q | global | Sekin tarmoqda yomon UX |
-| Kategoriya rasmi placeholder | `public/images/categories/` | Vizual sifat |
+| Muammo | Fayl | Ta'sir | Holat |
+| --- | --- | --- | --- |
+| **`window.location.href` bilan filtr** — to'liq sahifa reload | `CatalogClient.tsx`, `CategoryClient.tsx` | Pattern #11 buziladi, UX sekin | ✅ Tuzatildi — `router.push` ga o'tkazildi |
+| **Filtrlash client-side, barcha mahsulot yuklanadi** | `CatalogClient.tsx:33-95` | 500+ SKU da ishlamaydi | Hali ochiq |
+| **`product: any`** | `ProductCard.tsx:17` | Type xavfsizligi yo'q | Hali ochiq |
+| Sticky element yo'q (PDP tab, cart summary) | bir nechta | #32, #38, #46 | Hali ochiq |
+| Skeleton/loading holati yo'q | global | Sekin tarmoqda yomon UX | ✅ Qisman — `ui/Skeleton.tsx` + `ProductCardSkeleton`/`ProductDetailSkeleton`, `loading.tsx` (root va `/product/[slug]`) ulandi |
+| Kategoriya rasmi placeholder | `public/images/categories/` | Vizual sifat | Hali ochiq |
+| **`onHandQuantity` / `priceTiers` mock ma'lumotda to'ldirilmagan** | `MockStorefrontService.ts` | #20/#29/#36 UI hech narsa ko'rsatolmaydi | ✅ Tuzatildi — `mockEnrichment.ts` har bir variantga deterministik qiymat qo'shadi |
 
 ---
 

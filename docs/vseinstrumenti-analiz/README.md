@@ -62,3 +62,27 @@ Reja bilan bir qatorda Faza 0/1 ning eng kritik qismlari kodga tushirildi:
 > qadam bilan sotilgani uchun **9.5 m** kabi miqdorlar `maxQty:9` va `minQty:10` orasidagi
 > "teshik"ka tushib, ulgurji narxsiz qolar edi. Mantiq faqat `minQty` bo'yicha ishlashga
 > o'zgartirildi — endi pog'ona uzluksiz.
+
+## Ikkinchi sessiya (2026-08-23) — Faza 0 qoldig'i + Faza 1 ning bir qismi
+
+Reja davom ettirildi: yangi tahlil yozilmadi, `01-TAHLIL.md` / `02-QOLLASH-REJASI.md` dagi
+mavjud 60-pattern reestridan navbatdagi P0 vazifalar amalga oshirildi.
+
+| Fayl | Nima |
+| --- | --- |
+| `src/services/storefront/mockEnrichment.ts` | Mock variantlarga SKU'dan deterministik `onHandQuantity` va `wholesalePrice`dan 3-pog'onali `priceTiers` qo'shadi — oldingi sessiyada `types.ts`ga qo'shilgan maydonlar birinchi marta haqiqiy qiymat oladi |
+| `src/components/ui/{Tooltip,CopyButton,QuantityStepper,Skeleton}.tsx` | Yangi UI primitivlari (Faza 0.5) |
+| `src/components/product/{StockIndicator,PriceTierTable}.tsx` | Aniq qoldiq (#29/#36) va hajmli narx jadvali (#20) |
+| `CategoryFilterSidebar.tsx`, `ProductDetailClient.tsx` | `spec-glossary.ts` endi `Tooltip` orqali ko'rinadi (#17) |
+| `ProductCard.tsx`, `ProductDetailClient.tsx` | `StockIndicator`, `PriceTierTable`, SKU `CopyButton`, kartochkada `QuantityStepper` (#20, #21, #25, #29, #36) ulandi |
+| `CatalogClient.tsx`, `CategoryClient.tsx` | Filtr chip'ini o'chirish / "Barchasini tozalash" endi `window.location.href` emas, `router.push` — to'liq sahifa reload yo'qoldi (#11) |
+| `src/app/[locale]/product/[slug]/loading.tsx` | PDP shaklidagi skeleton holati |
+
+**Testlar:** 59/59 o'tdi (`tests/mock-enrichment.test.ts` — 9 ta yangi) · **Type-check:** toza ·
+**Production build:** muvaffaqiyatli · UI Playwright orqali vizual tekshirildi (katalog, PDP,
+mobil, tooltip hover).
+
+**Ataylab qoldirilgan (keyingi sessiya uchun):** grid/list toggle (#10), 3-darajali mega-menyu
+(#3/#4), mobil tab-bar (#2), material kalkulyatori, `product: any` tiplarini tozalash, server-side
+filtrlash (0.2). Sabab — har biri alohida yangi sahifa/komponent talab qiladigan kattaroq ish;
+ularni shoshib qilish sifatni pasaytirar edi.

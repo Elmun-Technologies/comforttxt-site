@@ -15,7 +15,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { StorefrontProduct } from '@/services/storefront/types';
-import { formatPrice, formatStockStatus, formatUnit } from '@/lib/formatters';
+import { formatPrice, formatUnit } from '@/lib/formatters';
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useCompareStore } from '@/store/useCompareStore';
@@ -23,6 +23,11 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { QuickOrderModal } from '@/components/modals/QuickOrderModal';
 import { StickyMobilePurchaseBar } from '@/components/layout/StickyMobilePurchaseBar';
 import { MissingImage } from '@/components/product/MissingImage';
+import { StockIndicator } from '@/components/product/StockIndicator';
+import { PriceTierTable } from '@/components/product/PriceTierTable';
+import { CopyButton } from '@/components/ui/CopyButton';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { getSpecTooltip } from '@/data/spec-glossary';
 import { validateQuantity, calculateSubtotal } from '@/lib/calc';
 import { storefrontConfig } from '@/config/storefront';
 
@@ -56,7 +61,6 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
   const b2bActive = isB2B();
   const favorite = isFavorite(product.id);
   const inCompare = isInCompare(product.id);
-  const stockInfo = formatStockStatus(selectedVariant?.stockStatus || 'IN_STOCK', locale);
   const unitLabel = formatUnit(product.unitType, locale);
 
   const currentPrice = b2bActive
@@ -109,9 +113,13 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
               <MissingImage locale={locale} />
             )}
             <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-md border shadow-xs ${stockInfo.color}`}>
-                {stockInfo.label}
-              </span>
+              <StockIndicator
+                stockStatus={selectedVariant?.stockStatus || 'IN_STOCK'}
+                onHandQuantity={selectedVariant?.onHandQuantity}
+                unitType={product.unitType}
+                locale={locale}
+                className="!text-xs !px-2.5 !py-1"
+              />
               {b2bActive && (
                 <span className="bg-brand-700 text-surface text-xs font-black px-2.5 py-1 rounded-md shadow-xs">
                   B2B {locale === 'ru' ? 'Опт' : 'Ulgurji'}
@@ -162,8 +170,11 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
 
             {/* SKU Badge + current variant */}
             <div className="flex items-center gap-3 text-xs flex-wrap">
-              <span className="font-mono bg-charcoal-900 text-surface font-bold px-2.5 py-1 rounded-md">
+              <span className="inline-flex items-center gap-1.5 font-mono bg-charcoal-900 text-surface font-bold px-2.5 py-1 rounded-md">
                 SKU: {selectedVariant?.sku}
+                {selectedVariant?.sku && (
+                  <CopyButton value={selectedVariant.sku} locale={locale} className="!text-surface/80 hover:!text-surface" />
+                )}
               </span>
               <span className="text-body font-semibold">
                 {locale === 'ru'
@@ -211,6 +222,22 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                 </div>
               )}
             </div>
+
+            {/* Volume price ladder — UX pattern #20 */}
+            {selectedVariant?.priceTiers && selectedVariant.priceTiers.length > 0 && (
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-heading block uppercase tracking-wider">
+                  {locale === 'ru' ? 'Цена по объёму:' : 'Hajmga qarab narx:'}
+                </label>
+                <PriceTierTable
+                  tiers={selectedVariant.priceTiers}
+                  basePrice={selectedVariant.price}
+                  unitType={product.unitType}
+                  locale={locale}
+                  activeQuantity={quantity}
+                />
+              </div>
+            )}
 
             {/* Color / Variant Swatches — full discovery with overflow control */}
             {product.variants.length > 1 && (
@@ -424,14 +451,18 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
         {activeTab === 'specs' && (
           <div className="bg-secondary rounded-2xl p-4 border border-border space-y-2 max-w-2xl">
             {product.specs && product.specs.length > 0 ? (
-              product.specs.map((s, idx) => (
-                <div key={idx} className="flex justify-between text-xs py-1.5 border-b last:border-0 border-border">
-                  <span className="text-muted font-bold">
-                    {locale === 'ru' ? s.labelRu || s.key : s.labelUz || s.key}
-                  </span>
-                  <span className="font-bold text-heading">{locale === 'ru' ? s.valueRu : s.valueUz}</span>
-                </div>
-              ))
+              product.specs.map((s, idx) => {
+                const tip = getSpecTooltip(s.key, locale);
+                return (
+                  <div key={idx} className="flex justify-between text-xs py-1.5 border-b last:border-0 border-border">
+                    <span className="text-muted font-bold inline-flex items-center gap-1.5">
+                      {locale === 'ru' ? s.labelRu || s.key : s.labelUz || s.key}
+                      {tip && <Tooltip title={tip.title} body={tip.body} />}
+                    </span>
+                    <span className="font-bold text-heading">{locale === 'ru' ? s.valueRu : s.valueUz}</span>
+                  </div>
+                );
+              })
             ) : (
               <p className="text-xs text-muted py-2">
                 {locale === 'ru'

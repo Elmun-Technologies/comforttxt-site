@@ -1,16 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Heart, Scale, ShoppingBag, Zap, Check } from 'lucide-react';
 import { StorefrontProduct } from '@/services/storefront/types';
-import { formatPrice, formatStockStatus, formatUnit } from '@/lib/formatters';
+import { formatPrice, formatUnit } from '@/lib/formatters';
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useCompareStore } from '@/store/useCompareStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { QuickOrderModal } from '@/components/modals/QuickOrderModal';
 import { MissingImage } from '@/components/product/MissingImage';
+import { StockIndicator } from '@/components/product/StockIndicator';
+import { CopyButton } from '@/components/ui/CopyButton';
+import { QuantityStepper } from '@/components/ui/QuantityStepper';
+import { calculateSubtotal } from '@/lib/calc';
 
 interface ProductCardProps {
   product: StorefrontProduct | any;
@@ -34,8 +38,17 @@ export function ProductCard({ product, locale }: ProductCardProps) {
   const b2bActive = isB2B();
   const favorite = isFavorite(product.id);
   const inCompare = isInCompare(product.id);
-  const stockInfo = formatStockStatus(selectedVariant?.stockStatus || selectedVariant?.stock || 'IN_STOCK', locale);
   const unitLabel = formatUnit(product.unitType || 'meter', locale);
+  const step = selectedVariant?.quantityStep || (product.unitType === 'meter' ? 0.5 : 1);
+
+  const [quantity, setQuantity] = useState(selectedVariant?.minQuantity || step);
+
+  // Reset the visible quantity to this variant's own minimum when the buyer
+  // switches swatches, so a leftover "45" from another colour never carries over.
+  useEffect(() => {
+    setQuantity(selectedVariant?.minQuantity || step);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedVariantIdx]);
 
   const currentPrice = b2bActive && selectedVariant?.wholesalePrice
     ? selectedVariant.wholesalePrice
@@ -45,8 +58,6 @@ export function ProductCard({ product, locale }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (!selectedVariant) return;
-
-    const step = selectedVariant.quantityStep || (product.unitType === 'meter' ? 0.5 : 1);
 
     addItem({
       variantId: selectedVariant.id,
@@ -59,7 +70,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
       wholesalePrice: selectedVariant.wholesalePrice || selectedVariant.price,
       unitType: product.unitType,
       minQtyStep: step,
-      quantity: step,
+      quantity,
     });
 
     setAddedToast(true);
@@ -98,9 +109,13 @@ export function ProductCard({ product, locale }: ProductCardProps) {
 
           {/* Badges */}
           <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border backdrop-blur-md shadow-xs ${stockInfo.color}`}>
-              {stockInfo.label}
-            </span>
+            <StockIndicator
+              stockStatus={selectedVariant?.stockStatus || 'IN_STOCK'}
+              onHandQuantity={selectedVariant?.onHandQuantity}
+              unitType={product.unitType || 'meter'}
+              locale={locale}
+              className="backdrop-blur-md"
+            />
             {b2bActive && (
               <span className="bg-brand-700/90 text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
                 B2B {locale === 'ru' ? 'Опт' : 'Ulgurji'}
@@ -169,8 +184,9 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               <span className="truncate font-semibold uppercase tracking-wider text-[10px]">
                 {product.collectionName || (locale === 'ru' ? product.categoryNameRu : product.categoryNameUz)}
               </span>
-              <span className="font-mono bg-secondary border border-border/80 px-1.5 py-0.5 rounded text-heading font-bold text-[10px]">
+              <span className="inline-flex items-center gap-1 font-mono bg-secondary border border-border/80 px-1.5 py-0.5 rounded text-heading font-bold text-[10px]">
                 {selectedVariant?.sku}
+                {selectedVariant?.sku && <CopyButton value={selectedVariant.sku} locale={locale} />}
               </span>
             </div>
 
@@ -225,6 +241,24 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                   B2B {formatPrice(selectedVariant.wholesalePrice, locale)}
                 </span>
               )}
+            </div>
+
+            {/* Quantity stepper — visible on the card itself (pattern #25): a
+                workshop buyer needs 45 m, not "one", so the control belongs
+                here rather than only on the product page. */}
+            <div className="flex items-center justify-between gap-2">
+              <QuantityStepper
+                value={quantity}
+                onChange={setQuantity}
+                step={step}
+                unitType={product.unitType || 'meter'}
+                min={selectedVariant?.minQuantity}
+                size="sm"
+              />
+              <span className="text-[11px] font-bold text-muted">
+                {locale === 'ru' ? 'Итого' : 'Jami'}{' '}
+                <strong className="text-heading">{formatPrice(calculateSubtotal(currentPrice, quantity), locale)}</strong>
+              </span>
             </div>
 
             {/* CTA Buttons — primary: Savatchaga, secondary: 1-Klik (icon on mobile) */}

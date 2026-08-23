@@ -9,11 +9,14 @@
 
 | Faza | Nomi | Vazifalar | Asosiy natija |
 | --- | --- | --- | --- |
-| **0** | Poydevor va texnik qarz | 6 | Filtrlash reload'siz, tiplar, skeleton |
-| **1** | Professional xarid tajribasi | 12 | Aniq qoldiq, hajmli narx, list-view, kalkulyator |
+| **0** | Poydevor va texnik qarz | 6 | Filtrlash reload'siz ✅, tiplar, skeleton ✅ |
+| **1** | Professional xarid tajribasi | 12 | Aniq qoldiq ✅, hajmli narx ✅, list-view, kalkulyator |
 | **2** | B2B yadro | 10 | Ro'yxatlar/smeta, kabinet, individual narx |
 | **3** | Ishonch va kontent | 9 | Gaydlar, sharhlar, brendlar, yangi sahifalar |
 | **4** | Kengaytirish | 7 | Excel-buyurtma, EDO, analitika, foto-qidiruv |
+
+**Holat (2026-08-23):** Faza 0 dan 4/6, Faza 1 dan 5/12 vazifa bajarildi — batafsil har bir
+bo'limda "✅ BAJARILDI" belgisi bilan. Qolganlar keyingi sessiyalar uchun ochiq.
 
 ---
 
@@ -21,12 +24,17 @@
 
 > Bularsiz keyingi fazalar sifatli chiqmaydi.
 
-### 0.1 Filtrlashni reload'siz qilish `P0` · Pattern #11
+### 0.1 Filtrlashni reload'siz qilish `P0` · Pattern #11 · ✅ BAJARILDI
 - **Nima:** `window.location.href` va full `router.push` ni `useRouter` + `scroll: false` +
   `useTransition` ga almashtirish. URL state saqlanadi (SEO + ulashish uchun).
 - **Fayllar:** `src/components/catalog/CatalogClient.tsx`, `CategoryFilterSidebar.tsx`,
   `CategoryClient.tsx`
 - **Tekshirish:** filtr bosilganda sahifa "sakramaydi", scroll pozitsiya saqlanadi, orqaga tugmasi ishlaydi.
+- **Holat:** `CategoryFilterSidebar`ning asosiy filtr tugmalari allaqachon `router.push` ishlatgan
+  edi. Haqiqiy og'riq nuqtasi — chip o'chirish va "Barchasini tozalash" `window.location.href`
+  bilan to'liq reload qilardi — shu ikkisi `router.push(url, { scroll: false })` ga o'tkazildi
+  (`CatalogClient.tsx`, `CategoryClient.tsx`). `useTransition` hozircha qo'shilmadi — server-side
+  filtrlash (0.2) amalga oshganda kerak bo'ladi.
 
 ### 0.2 Server-side filtrlash
 - **Nima:** Filtrlash mantig'ini `CatalogClient` dan `StorefrontService.getProducts()` ga ko'chirish.
@@ -39,35 +47,48 @@
 - **Fayllar:** `ProductCard.tsx`, `CatalogClient.tsx`, `CompareClient.tsx`
 - **Tekshirish:** `npx tsc --noEmit` toza.
 
-### 0.4 Skeleton komponentlari
+### 0.4 Skeleton komponentlari · ✅ BAJARILDI
 - **Nima:** `ui/Skeleton.tsx` + `ProductCardSkeleton`, `PDPSkeleton`, `ListRowSkeleton`.
   `loading.tsx` larda ishlatish.
 - **Tekshirish:** `NEXT_PUBLIC_MOCK_LATENCY_MS=1500 npm run dev` — skeleton ko'rinadi.
+- **Holat:** `ui/Skeleton.tsx` (`Skeleton`, `ProductCardSkeleton`, `ProductDetailSkeleton`) qurildi.
+  Root `[locale]/loading.tsx` shularga o'tkazildi; `/product/[slug]/loading.tsx` yangi qo'shildi
+  (`ProductDetailSkeleton`). `ListRowSkeleton` — list-view (1.4) qurilganda kerak bo'ladi.
 
-### 0.5 Umumiy UI primitivlari
-- `ui/Tooltip.tsx` — hover + tap (mobil), klaviatura bilan ochiladi (a11y)
-- `ui/CopyButton.tsx` — clipboard + "Nusxalandi" toast
-- `ui/QuantityStepper.tsx` — `step`, `min`, `max`, `unit`, klaviaturadan kiritish, debounce
-- `ui/Sticky.tsx` — sticky konteyner helper
+### 0.5 Umumiy UI primitivlari · ✅ QISMAN
+- `ui/Tooltip.tsx` — hover + tap (mobil), klaviatura bilan ochiladi (a11y) — ✅ qurildi
+- `ui/CopyButton.tsx` — clipboard + "Nusxalandi" toast — ✅ qurildi (mavjud `useToastStore` orqali)
+- `ui/QuantityStepper.tsx` — `step`, `min`, `unit`, klaviaturadan kiritish — ✅ qurildi
+- `ui/Sticky.tsx` — sticky konteyner helper — hali yo'q (2.9 bilan birga qurilsin)
 
-### 0.6 Ma'lumot modeli kengaytirish
+### 0.6 Ma'lumot modeli kengaytirish · ✅ BAJARILDI (mock qatlam)
 - **Nima:** `types.ts` ga `priceTiers`, `onHandQuantity`, `tooltipUz/Ru`, `analogProductIds`,
   `brandSlug`, `rating`, `reviewCount` qo'shish. `MockStorefrontService` da to'ldirish.
   Prisma sxemasiga mos migratsiya.
 - **Tekshirish:** `npm test` o'tadi, seed ishlaydi.
+- **Holat:** `types.ts` maydonlari oldingi sessiyada qo'shilgan edi, lekin `MOCK_PRODUCTS` ularni
+  to'ldirmasdi — UI hech narsa ko'rsatolmasdi. `src/services/storefront/mockEnrichment.ts`
+  (`enrichMockProduct`) endi har bir variant uchun SKU'dan deterministik `onHandQuantity` va
+  `wholesalePrice`dan 3-pog'onali `priceTiers` hosil qiladi — ~50 SKUni qo'lda to'ldirmasdan.
+  ShopFlow production'da bu qiymatlarni to'g'ridan-to'g'ri beradi, `mockEnrichment.ts` faqat
+  mock qatlamda ishlaydi. Prisma migratsiyasi hali qilinmagan (ShopFlow integratsiyasi bilan
+  birga).
 
 ---
 
 ## FAZA 1 — Professional xarid tajribasi
 
-### 1.1 Aniq qoldiq ko'rsatish `P0` · Pattern #29, #36
+### 1.1 Aniq qoldiq ko'rsatish `P0` · Pattern #29, #36 · ✅ BAJARILDI
 - **Nima:** "Omborda bor" → **"Omborda 340 m"**. Kam qolganda: **"Faqat 12 m qoldi"** (sariq).
   Yo'q bo'lganda: "Buyurtma bo'yicha · ~7 kun".
 - **Yangi:** `product/StockIndicator.tsx`
 - **Fayllar:** `ProductCard.tsx`, `ProductDetailClient.tsx`, `lib/formatters.ts`
 - **Tekshirish:** 4 ta stok holati uchun to'g'ri matn va rang.
+- **Holat:** Qurildi va ikkala joyda ulandi. `lib/formatters.ts`ga `formatQuantity()` qo'shildi
+  (0.5 qadamli metrajni "3.5" kabi toza ko'rsatish uchun). Haqiqiy son `mockEnrichment.ts`dan
+  keladi (0.6 ga qarang).
 
-### 1.2 Hajmli narx pog'onalari `P0` · Pattern #20
+### 1.2 Hajmli narx pog'onalari `P0` · Pattern #20 · ✅ BAJARILDI
 - **Nima:** PDP va kartochkada narx jadvali:
   | Miqdor | Narx / m |
   |---|---|
@@ -77,11 +98,19 @@
   Miqdor o'zgarganda **avtomatik** faol pog'ona ajratiladi va yakuniy narx yangilanadi.
 - **Yangi:** `product/PriceTierTable.tsx`, `lib/calc.ts` ga `resolveTierPrice()`
 - **Tekshirish:** unit test — 9→1-tier, 10→2-tier, 50→3-tier, chegara qiymatlar.
+- **Holat:** `resolveTierPrice()` va testlar allaqachon oldingi sessiyada bor edi
+  (`lib/pricing/tiers.ts`, `tests/price-tiers.test.ts`). Bu sessiyada `PriceTierTable.tsx`
+  qurildi va PDP narx blokiga ulandi, faol pog'ona joriy miqdorga qarab ajratib ko'rsatiladi.
+  Kartochkadagi qisqa hint (masalan "10 m dan −24%") hali qo'shilmadi — keyingi qadam.
 
-### 1.3 Kartochkada miqdor + savatga `P0` · Pattern #25
+### 1.3 Kartochkada miqdor + savatga `P0` · Pattern #25 · ✅ BAJARILDI
 - **Nima:** `QuantityStepper` ni `ProductCard` ga qo'shish. Savatga qo'shgandan keyin tugma
   "Savatda: 45 m" ga aylanadi va stepper savatni to'g'ridan-to'g'ri boshqaradi.
 - **Fayllar:** `ProductCard.tsx`, `store/useCartStore.ts`
+- **Holat:** Stepper kartochkada, tanlangan miqdor va "Jami" ko'rsatiladi, savatchaga aynan shu
+  miqdor qo'shiladi. "Savatda: N m" holatiga aylanish (savat bilan ikki tomonlama sinxronizatsiya)
+  hali qilinmadi — hozircha har bosishda savatga qo'shiladi (mavjud `addItem` mantig'i miqdorlarni
+  qo'shib boradi, xato emas, lekin UX sifatida keyingi safar yaxshilash mumkin).
 
 ### 1.4 Grid ↔ List ko'rinish `P0` · Pattern #10
 - **Nima:** Katalogda ko'rinish almashtirgich. **List qatori:** rasm(64px) · nom+SKU · asosiy
@@ -89,13 +118,16 @@
 - **Yangi:** `catalog/ViewModeToggle.tsx`, `catalog/ProductRow.tsx`
 - **Tekshirish:** reload dan keyin tanlangan rejim saqlanadi.
 
-### 1.5 Filtrlarda tooltip `P0` · Pattern #17
+### 1.5 Filtrlarda tooltip `P0` · Pattern #17 · ✅ BAJARILDI
 - **Nima:** Har bir texnik parametr yonida `?` ikonkasi:
   - ST/EL/HR — "ST — standart zichlik, kundalik yuk uchun..."
   - Martindale — "Ishqalanishga chidamlilik. 20 000+ — uy mebeli, 40 000+ — kommertsiya"
   - g/m² — "Matoning zichligi. Yuqori — bardoshli"
 - **Fayllar:** `CategoryFilterSidebar.tsx`, `ProductDetailClient.tsx` (spetslar tabi)
 - **Ma'lumot:** `src/data/spec-glossary.ts` (yangi) — UZ/RU tushuntirishlar
+- **Holat:** `spec-glossary.ts` oldingi sessiyada tayyor edi, lekin hech qayerda ishlatilmasdi.
+  `ui/Tooltip.tsx` shu sessiyada qurildi va ikkala joyga ulandi: filtr sarlavhalari (tekstura,
+  paralon markasi, instrument turi) va PDP xususiyatlar jadvalidagi har bir qator.
 
 ### 1.6 Ko'p darajali menyu `P0` · Pattern #4, #3
 - **Nima:** MegaMenu ni 3 darajaga kengaytirish + har bir kategoriya yonida **tekstura mini-rasm**.
@@ -115,8 +147,9 @@
 - **Yangi:** `layout/MobileTabBar.tsx` — pastda fixed: Bosh · Katalog · Qidiruv · Savat(badge) · Kabinet.
   PDP da `StickyMobilePurchaseBar` bilan to'qnashmasligi kerak (z-index + padding-bottom).
 
-### 1.10 SKU nusxalash `P1` · Pattern #21
+### 1.10 SKU nusxalash `P1` · Pattern #21 · ✅ BAJARILDI
 - **Nima:** `CopyButton` ni kartochka va PDP dagi SKU chip yoniga.
+- **Holat:** Qurildi va ikkala joyga ulandi, `useToastStore` orqali "SKU nusxalandi" tasdig'i bilan.
 
 ### 1.11 Material kalkulyatori `P0` · YANGI SAHIFA `/calculator`
 - **Nima:** Bizning eng kuchli differensiatorimiz.

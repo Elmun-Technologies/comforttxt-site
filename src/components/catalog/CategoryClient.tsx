@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CategoryFilterSidebar } from '@/components/catalog/CategoryFilterSidebar';
 import { SlidersHorizontal, PackageX, X, RotateCcw, LayoutGrid } from 'lucide-react';
@@ -25,6 +26,7 @@ export function CategoryClient({
   categories = [],
 }: CategoryClientProps) {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const router = useRouter();
 
   const selectedSub = searchParams.sub || '';
   const selectedSort = searchParams.sort || 'newest';
@@ -83,15 +85,16 @@ export function CategoryClient({
   if (inStock) chips.push({ key: 'inStock', label: locale === 'ru' ? 'В наличии' : 'Omborda bor' });
   if (selectedSort !== 'newest') chips.push({ key: 'sort', label: locale === 'ru' ? 'Сортировка' : 'Saralash' });
 
+  // Pattern #11 — client-side navigation, never a full page reload.
   const removeChip = (key: string) => {
     const params = new URLSearchParams(window.location.search);
     params.delete(key);
     const qs = params.toString();
-    window.location.href = `/${locale}/catalog/${category}${qs ? `?${qs}` : ''}`;
+    router.push(`/${locale}/catalog/${category}${qs ? `?${qs}` : ''}`, { scroll: false });
   };
 
   const clearAll = () => {
-    window.location.href = `/${locale}/catalog/${category}`;
+    router.push(`/${locale}/catalog/${category}`, { scroll: false });
   };
 
   return (
