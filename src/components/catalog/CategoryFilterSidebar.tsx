@@ -2,6 +2,8 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Filter, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { getSpecTooltip } from '@/data/spec-glossary';
 
 interface CategoryFilterProps {
   categorySlug?: string;
@@ -156,8 +158,12 @@ export function CategoryFilterSidebar({
       {(!selectedCategory || selectedCategory === 'mebel-matolari') && (
         <div className="space-y-4 border-t border-border pt-4">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-heading block uppercase tracking-wider">
+            <label className="text-xs font-bold text-heading flex items-center gap-1.5 uppercase tracking-wider">
               {locale === 'ru' ? 'Фактура / Текстура' : 'Faktura / Tekstura'}
+              {(() => {
+                const tip = getSpecTooltip('texture', locale);
+                return tip && <Tooltip title={tip.title} body={tip.body} />;
+              })()}
             </label>
             <div className="flex flex-wrap gap-1.5">
               {['Velyur', 'Bukle', 'Shenill', 'Rogojka', 'Eko-charm'].map((txt) => (
@@ -182,8 +188,12 @@ export function CategoryFilterSidebar({
       {selectedCategory === 'paralon' && (
         <div className="space-y-4 border-t border-border pt-4">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-heading block uppercase tracking-wider">
+            <label className="text-xs font-bold text-heading flex items-center gap-1.5 uppercase tracking-wider">
               {locale === 'ru' ? 'Марка поролона (Тип)' : 'Paralon markasi (Turi)'}
+              {(() => {
+                const tip = getSpecTooltip('foam_type', locale);
+                return tip && <Tooltip title={tip.title} body={tip.body} />;
+              })()}
             </label>
             <div className="flex flex-wrap gap-1.5">
               {[
@@ -212,8 +222,12 @@ export function CategoryFilterSidebar({
       {selectedCategory === 'sarf-materiallar-va-instrumentlar' && (
         <div className="space-y-4 border-t border-border pt-4">
           <div className="space-y-2">
-            <label className="text-xs font-bold text-heading block uppercase tracking-wider">
+            <label className="text-xs font-bold text-heading flex items-center gap-1.5 uppercase tracking-wider">
               {locale === 'ru' ? 'Тип инструмента' : 'Instrument turi'}
+              {(() => {
+                const tip = getSpecTooltip('power_type', locale);
+                return tip && <Tooltip title={tip.title} body={tip.body} />;
+              })()}
             </label>
             <div className="flex flex-wrap gap-1.5">
               {['Pnevmatik', 'Yelim sprey', 'Skobalar'].map((p) => (

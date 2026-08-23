@@ -17,6 +17,7 @@ import {
   StorefrontCustomer,
   StorefrontCustomerOrder,
 } from './types';
+import { enrichMockProduct } from './mockEnrichment';
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
@@ -691,6 +692,14 @@ export const MOCK_PRODUCTS: StorefrontProduct[] = [
   },
 ];
 
+/**
+ * `MOCK_PRODUCTS` with derived exact-stock and volume-price-tier fields filled
+ * in (UX patterns #20, #29, #36 — see `mockEnrichment.ts`). All read paths in
+ * this service use this enriched array; `MOCK_PRODUCTS` itself stays the raw,
+ * hand-authored fixture in case a caller ever needs it unmodified.
+ */
+const MOCK_PRODUCTS_ENRICHED: StorefrontProduct[] = MOCK_PRODUCTS.map(enrichMockProduct);
+
 // ── Development simulation knobs ─────────────────────────────────────────────
 // Simulates ShopFlow remote latency & failures in development.
 //   NEXT_PUBLIC_MOCK_LATENCY_MS=1500  → 1.5s delay per request
@@ -714,9 +723,9 @@ export class MockStorefrontService implements IStorefrontService {
     maybeFail();
     return {
       heroCategories: MOCK_CATEGORIES,
-      popularProducts: MOCK_PRODUCTS.filter((p) => p.isPopular).slice(0, 4),
-      newArrivals: MOCK_PRODUCTS.filter((p) => p.isNew || p.isFeatured).slice(0, 4),
-      featuredFabrics: MOCK_PRODUCTS.filter((p) => p.categorySlug === 'mebel-matolari'),
+      popularProducts: MOCK_PRODUCTS_ENRICHED.filter((p) => p.isPopular).slice(0, 4),
+      newArrivals: MOCK_PRODUCTS_ENRICHED.filter((p) => p.isNew || p.isFeatured).slice(0, 4),
+      featuredFabrics: MOCK_PRODUCTS_ENRICHED.filter((p) => p.categorySlug === 'mebel-matolari'),
       collections: MOCK_COLLECTIONS,
     };
   }
@@ -736,7 +745,7 @@ export class MockStorefrontService implements IStorefrontService {
   async getProducts(filter?: StorefrontProductFilter, locale = 'uz'): Promise<StorefrontProduct[]> {
     await delay();
     maybeFail();
-    let result = [...MOCK_PRODUCTS];
+    let result = [...MOCK_PRODUCTS_ENRICHED];
 
     if (!filter) return result;
 
@@ -813,21 +822,21 @@ export class MockStorefrontService implements IStorefrontService {
   async getProduct(slug: string, locale = 'uz'): Promise<StorefrontProduct | null> {
     await delay();
     maybeFail();
-    return MOCK_PRODUCTS.find((p) => p.slug === slug) || null;
+    return MOCK_PRODUCTS_ENRICHED.find((p) => p.slug === slug) || null;
   }
 
   async getRelatedProducts(productId: string, locale = 'uz'): Promise<StorefrontProduct[]> {
     await delay();
     maybeFail();
-    const current = MOCK_PRODUCTS.find((p) => p.id === productId);
-    if (!current) return MOCK_PRODUCTS.slice(0, 3);
+    const current = MOCK_PRODUCTS_ENRICHED.find((p) => p.id === productId);
+    if (!current) return MOCK_PRODUCTS_ENRICHED.slice(0, 3);
 
     if (current.crossSellProductIds && current.crossSellProductIds.length > 0) {
-      const crossSells = MOCK_PRODUCTS.filter((p) => current.crossSellProductIds?.includes(p.id));
+      const crossSells = MOCK_PRODUCTS_ENRICHED.filter((p) => current.crossSellProductIds?.includes(p.id));
       if (crossSells.length > 0) return crossSells;
     }
 
-    return MOCK_PRODUCTS.filter((p) => p.id !== productId && p.categorySlug === current.categorySlug).slice(0, 3);
+    return MOCK_PRODUCTS_ENRICHED.filter((p) => p.id !== productId && p.categorySlug === current.categorySlug).slice(0, 3);
   }
 
   /**
@@ -843,17 +852,17 @@ export class MockStorefrontService implements IStorefrontService {
       return { products: [], collections: [], categories: [], totalMatches: 0 };
     }
 
-    const exactSkuMatches = MOCK_PRODUCTS.filter((p) =>
+    const exactSkuMatches = MOCK_PRODUCTS_ENRICHED.filter((p) =>
       p.variants.some((v) => v.sku.toLowerCase() === q)
     );
 
-    const textMatches = MOCK_PRODUCTS.filter(
+    const textMatches = MOCK_PRODUCTS_ENRICHED.filter(
       (p) =>
         (p.titleUz.toLowerCase().includes(q) || p.titleRu.toLowerCase().includes(q)) &&
         !exactSkuMatches.includes(p)
     );
 
-    const skuPartialMatches = MOCK_PRODUCTS.filter(
+    const skuPartialMatches = MOCK_PRODUCTS_ENRICHED.filter(
       (p) =>
         p.variants.some((v) => v.sku.toLowerCase().includes(q)) &&
         !exactSkuMatches.includes(p) &&

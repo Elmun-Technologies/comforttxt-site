@@ -25,6 +25,12 @@ export function formatUnit(unit: string, locale: string = 'uz'): string {
   return map[unit.toLowerCase()] || unit;
 }
 
+/** Trims a stepped quantity to a clean display string: 4 → "4", 3.5 → "3.5". */
+export function formatQuantity(qty: number): string {
+  const rounded = Math.round(qty * 100) / 100;
+  return rounded.toString();
+}
+
 export function formatStockStatus(
   stockOrStatus: number | StockStatus | string,
   locale: string = 'uz'
