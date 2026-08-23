@@ -75,7 +75,13 @@ const config: Config = {
         "3xl": "24px",
       },
       fontFamily: {
+        // Brand typeface — Exo 2, loaded via `next/font/google` in
+        // `src/lib/fonts.ts` and exposed as the `--font-exo2` CSS variable on
+        // `<html>`. Both roles point at the same font: Exo 2's own weight
+        // range (100–900) already covers the body/display contrast this
+        // storefront needs, so there is no separate serif fallback anymore.
         sans: [
+          "var(--font-exo2)",
           "ui-sans-serif",
           "system-ui",
           "-apple-system",
@@ -85,10 +91,15 @@ const config: Config = {
           "Arial",
           "sans-serif",
         ],
-        // A restrained editorial accent for the typographic fallback wordmark.
-        // Replace with the supplied brand font through next/font/local when its
-        // licensed files are added to the repository.
-        display: ["Georgia", "Cambria", "Times New Roman", "serif"],
+        display: [
+          "var(--font-exo2)",
+          "ui-sans-serif",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "Arial",
+          "sans-serif",
+        ],
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       boxShadow: {
