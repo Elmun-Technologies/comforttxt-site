@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, X, Package, Tag, ArrowRight, Loader2, Sparkles, BookOpen, AlertCircle, RotateCcw } from 'lucide-react';
 import { formatPrice } from '@/lib/formatters';
-import { MissingImage } from '@/components/product/MissingImage';
+import { ProductImage } from '@/components/product/ProductImage';
 import { storefrontConfig } from '@/config/storefront';
 
 interface SearchOverlayProps {
@@ -222,15 +222,14 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                         }`}
                       >
                         <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl border border-border flex-shrink-0 overflow-hidden bg-secondary">
-                          {imgUrl ? (
-                            <img
-                              src={imgUrl}
-                              alt={locale === 'ru' ? product.titleRu : product.titleUz}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <MissingImage locale={locale} compact />
-                          )}
+                          <ProductImage
+                            src={imgUrl}
+                            alt={locale === 'ru' ? product.titleRu : product.titleUz}
+                            fit="cover"
+                            locale={locale}
+                            compact
+                            className="w-full h-full"
+                          />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">

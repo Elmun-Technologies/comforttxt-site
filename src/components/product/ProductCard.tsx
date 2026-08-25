@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { Heart, Scale, ShoppingBag, Zap, Check } from 'lucide-react';
 import { StorefrontProduct } from '@/services/storefront/types';
 import { formatPrice, formatUnit } from '@/lib/formatters';
+import { resolveImageFit, discountPercent } from '@/lib/media';
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useCompareStore } from '@/store/useCompareStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { QuickOrderModal } from '@/components/modals/QuickOrderModal';
-import { MissingImage } from '@/components/product/MissingImage';
+import { ProductImage } from '@/components/product/ProductImage';
 import { StockIndicator } from '@/components/product/StockIndicator';
 import { CopyButton } from '@/components/ui/CopyButton';
 import { QuantityStepper } from '@/components/ui/QuantityStepper';
@@ -54,6 +55,10 @@ export function ProductCard({ product, locale }: ProductCardProps) {
     ? selectedVariant.wholesalePrice
     : (selectedVariant?.price || 0);
 
+  // Promo state comes from the retail pair (price vs oldPrice) so the badge
+  // means the same thing for retail and B2B viewers; a broken pair shows nothing.
+  const discountPct = discountPercent(selectedVariant?.price, selectedVariant?.oldPrice);
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -83,7 +88,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
     setQuickOrderOpen(true);
   };
 
-  const isFabric = product.categorySlug === 'mebel-matolari';
+  const isFabric = resolveImageFit(product) === 'cover';
   const maxVisibleSwatches = 5;
   const hasExtraSwatches = variants.length > maxVisibleSwatches;
 
@@ -93,18 +98,14 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         {/* Visual Zone */}
         <div className="relative aspect-square bg-secondary/50 overflow-hidden">
           <Link href={`/${locale}/product/${product.slug}`} className="block w-full h-full">
-            {mainImage ? (
-              <img
-                src={mainImage}
-                alt={locale === 'ru' ? product.titleRu : product.titleUz}
-                className={`w-full h-full transition-transform duration-500 group-hover:scale-105 ${
-                  isFabric ? 'object-cover' : 'object-contain p-3'
-                }`}
-                loading="lazy"
-              />
-            ) : (
-              <MissingImage locale={locale} />
-            )}
+            <ProductImage
+              src={mainImage}
+              alt={locale === 'ru' ? product.titleRu : product.titleUz}
+              fit={resolveImageFit(product)}
+              locale={locale}
+              className="w-full h-full"
+              imgClassName={`transition-transform duration-500 group-hover:scale-105 ${isFabric ? '' : 'p-3'}`}
+            />
           </Link>
 
           {/* Badges */}
@@ -116,6 +117,11 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               locale={locale}
               className="backdrop-blur-md"
             />
+            {discountPct > 0 && (
+              <span className="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
+                −{discountPct}%
+              </span>
+            )}
             {b2bActive && (
               <span className="bg-brand-700/90 text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
                 B2B {locale === 'ru' ? 'Опт' : 'Ulgurji'}
@@ -124,6 +130,11 @@ export function ProductCard({ product, locale }: ProductCardProps) {
             {product.isNew && (
               <span className="bg-accent text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
                 {locale === 'ru' ? 'Новинка' : 'Yangi'}
+              </span>
+            )}
+            {product.isPopular && (
+              <span className="bg-amber-500 text-charcoal-900 text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
+                {locale === 'ru' ? 'Хит' : 'Ommabop'}
               </span>
             )}
           </div>
@@ -184,10 +195,12 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               <span className="truncate font-semibold uppercase tracking-wider text-[10px]">
                 {product.collectionName || (locale === 'ru' ? product.categoryNameRu : product.categoryNameUz)}
               </span>
-              <span className="inline-flex items-center gap-1 font-mono bg-secondary border border-border/80 px-1.5 py-0.5 rounded text-heading font-bold text-[10px]">
-                {selectedVariant?.sku}
-                {selectedVariant?.sku && <CopyButton value={selectedVariant.sku} locale={locale} />}
-              </span>
+              {selectedVariant?.sku && (
+                <span className="inline-flex items-center gap-1 font-mono bg-secondary border border-border/80 px-1.5 py-0.5 rounded text-heading font-bold text-[10px]">
+                  {selectedVariant.sku}
+                  <CopyButton value={selectedVariant.sku} locale={locale} />
+                </span>
+              )}
             </div>
 
             {/* Product Title */}
@@ -208,8 +221,8 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                       selectedVariantIdx === idx
                         ? 'ring-2 ring-accent ring-offset-1 scale-110 shadow-xs'
                         : 'hover:scale-105 opacity-85 hover:opacity-100'
-                    }`}
-                    style={{ backgroundColor: v.colorHex || '#d1d5db' }}
+                    } ${v.colorHex ? '' : 'swatch-no-color'}`}
+                    style={v.colorHex ? { backgroundColor: v.colorHex } : undefined}
                     title={locale === 'ru' ? (v.colorNameRu || v.nameRu || v.sku) : (v.colorNameUz || v.nameUz || v.sku)}
                   />
                 ))}
@@ -228,10 +241,15 @@ export function ProductCard({ product, locale }: ProductCardProps) {
           {/* Pricing & Actions */}
           <div className="pt-2.5 border-t border-border/80 space-y-2.5">
             <div className="flex items-baseline justify-between">
-              <div>
+              <div className="flex items-baseline flex-wrap">
                 <span className="text-base font-black text-heading">
                   {formatPrice(currentPrice, locale)}
                 </span>
+                {discountPct > 0 && (
+                  <span className="text-[11px] text-muted font-bold line-through ml-1.5">
+                    {formatPrice(selectedVariant?.oldPrice || 0, locale)}
+                  </span>
+                )}
                 <span className="text-xs text-muted font-medium ml-1">
                   / {unitLabel}
                 </span>

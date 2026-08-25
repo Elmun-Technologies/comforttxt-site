@@ -4,7 +4,7 @@ import { useCompareStore } from '@/store/useCompareStore';
 import { formatPrice, formatUnit } from '@/lib/formatters';
 import Link from 'next/link';
 import { Scale, Trash2, ArrowRight } from 'lucide-react';
-import { MissingImage } from '@/components/product/MissingImage';
+import { ProductImage } from '@/components/product/ProductImage';
 import { PageHero } from '@/components/layout/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 
@@ -109,15 +109,14 @@ export function CompareClient({ locale }: CompareClientProps) {
                         <Trash2 className="w-4 h-4" />
                       </button>
                       <div className="w-32 h-32 rounded-xl border border-border overflow-hidden mx-auto bg-secondary">
-                        {prod.image ? (
-                          <img
-                            src={prod.image}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <MissingImage locale={locale} />
-                        )}
+                        <ProductImage
+                          src={prod.image}
+                          alt=""
+                          fit="cover"
+                          locale={locale}
+                          compact
+                          className="w-full h-full"
+                        />
                       </div>
                       <h4 className="text-xs font-bold text-heading text-center line-clamp-2">
                         {locale === 'ru' ? prod.titleRu : prod.titleUz}

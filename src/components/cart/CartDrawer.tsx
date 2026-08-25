@@ -6,7 +6,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { formatPrice, formatUnit } from '@/lib/formatters';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { MissingImage } from '@/components/product/MissingImage';
+import { ProductImage } from '@/components/product/ProductImage';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -106,15 +106,14 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
                     className="flex gap-3 p-3 bg-secondary rounded-2xl border border-border hover:border-accent/30 transition"
                   >
                     <div className="w-16 h-16 rounded-xl border border-border flex-shrink-0 overflow-hidden bg-secondary">
-                      {item.image ? (
-                        <img
-                          src={item.image as string}
-                          alt={item.productTitle as string}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <MissingImage locale={locale} compact />
-                      )}
+                      <ProductImage
+                        src={item.image as string}
+                        alt={item.productTitle as string}
+                        fit="cover"
+                        locale={locale}
+                        compact
+                        className="w-full h-full"
+                      />
                     </div>
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>

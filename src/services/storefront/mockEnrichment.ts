@@ -83,11 +83,33 @@ function derivePriceTiers(variant: StorefrontVariant, unitType: StorefrontUnitTy
   ];
 }
 
+/**
+ * Promo reference price — real catalogues run a rotating subset of SKUs at a
+ * discount. Deterministically marks ~30% of sellable variants: the crossed-out
+ * `oldPrice` sits 8–20% above retail, rounded to a believable price point.
+ * An explicitly authored `oldPrice` always wins; unsellable stock never
+ * advertises a promo.
+ */
+function deriveOldPrice(variant: StorefrontVariant): number | undefined {
+  if (variant.oldPrice != null) return variant.oldPrice;
+  if (!variant.price || variant.price <= 0) return undefined;
+  if (variant.stockStatus === 'OUT_OF_STOCK' || variant.stockStatus === 'ON_ORDER') return undefined;
+
+  const seed = hashSku(variant.sku);
+  if (seed % 10 >= 3) return undefined; // ~30% of SKUs are on promo
+
+  const pct = 8 + (seed % 13); // 8–20%
+  const raw = (variant.price * (100 + pct)) / 100;
+  const roundTo = raw >= 100_000 ? 1_000 : raw >= 10_000 ? 500 : 100;
+  return Math.ceil(raw / roundTo) * roundTo;
+}
+
 function enrichVariant(variant: StorefrontVariant, unitType: StorefrontUnitType): StorefrontVariant {
   return {
     ...variant,
     onHandQuantity: variant.onHandQuantity ?? deriveOnHandQuantity(variant, unitType),
     priceTiers: variant.priceTiers ?? derivePriceTiers(variant, unitType),
+    oldPrice: deriveOldPrice(variant),
   };
 }
 
