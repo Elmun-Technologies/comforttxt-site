@@ -9,7 +9,7 @@ import { formatPrice, formatUnit } from '@/lib/formatters';
 import { normalizeUzPhone } from '@/lib/utils/phone';
 import { User, Phone, MapPin, Truck, CreditCard, ShieldCheck, Loader2, ArrowRight, ShoppingBag, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
-import { MissingImage } from '@/components/product/MissingImage';
+import { ProductImage } from '@/components/product/ProductImage';
 
 interface CheckoutFormProps {
   locale: string;
@@ -330,11 +330,14 @@ export function CheckoutForm({ locale }: CheckoutFormProps) {
               return (
                 <div key={item.variantId} className="flex items-center gap-3 text-xs py-2">
                   <div className="w-10 h-10 rounded-lg border border-border flex-shrink-0 overflow-hidden bg-secondary">
-                    {item.image ? (
-                      <img src={item.image} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <MissingImage locale={locale} compact />
-                    )}
+                    <ProductImage
+                      src={item.image}
+                      alt=""
+                      fit="cover"
+                      locale={locale}
+                      compact
+                      className="w-full h-full"
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-heading truncate">{item.productTitle}</div>

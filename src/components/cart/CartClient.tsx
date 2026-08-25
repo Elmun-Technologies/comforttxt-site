@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { formatPrice, formatUnit } from '@/lib/formatters';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-import { MissingImage } from '@/components/product/MissingImage';
+import { ProductImage } from '@/components/product/ProductImage';
 import { PageHero } from '@/components/layout/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 
@@ -82,15 +82,14 @@ export function CartClient({ locale }: CartClientProps) {
                 return (
                   <div key={item.variantId} className="p-4 flex items-center gap-4 sm:gap-6">
                     <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl border border-border flex-shrink-0 overflow-hidden bg-secondary">
-                      {item.image ? (
-                        <img
-                          src={item.image}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <MissingImage locale={locale} compact />
-                      )}
+                      <ProductImage
+                        src={item.image}
+                        alt=""
+                        fit="cover"
+                        locale={locale}
+                        compact
+                        className="w-full h-full"
+                      />
                     </div>
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-start justify-between gap-2">

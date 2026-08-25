@@ -13,16 +13,19 @@ import {
   Minus,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { StorefrontProduct } from '@/services/storefront/types';
 import { formatPrice, formatUnit } from '@/lib/formatters';
+import { resolveImageFit, discountPercent } from '@/lib/media';
 import { useCartStore } from '@/store/useCartStore';
 import { useFavoritesStore } from '@/store/useFavoritesStore';
 import { useCompareStore } from '@/store/useCompareStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { QuickOrderModal } from '@/components/modals/QuickOrderModal';
 import { StickyMobilePurchaseBar } from '@/components/layout/StickyMobilePurchaseBar';
-import { MissingImage } from '@/components/product/MissingImage';
+import { ProductImage } from '@/components/product/ProductImage';
 import { StockIndicator } from '@/components/product/StockIndicator';
 import { PriceTierTable } from '@/components/product/PriceTierTable';
 import { CopyButton } from '@/components/ui/CopyButton';
@@ -48,10 +51,16 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
   const [activeTab, setActiveTab] = useState<'desc' | 'specs' | 'delivery'>('desc');
   const [inputValue, setInputValue] = useState(quantity.toString());
   const [showAllSwatches, setShowAllSwatches] = useState(false);
+  /** Cursor-tracked zoom origin ("62% 38%") for the fabric-texture hover zoom. */
+  const [zoomOrigin, setZoomOrigin] = useState('50% 50%');
 
   const selectedVariant = product.variants[selectedVariantIdx] || product.variants[0];
   const images = selectedVariant?.images || [];
   const currentImage = images[selectedImageIdx] || images[0] || '';
+  const imageFit = resolveImageFit(product);
+
+  const showPrevImage = () => setSelectedImageIdx((i) => (i - 1 + images.length) % images.length);
+  const showNextImage = () => setSelectedImageIdx((i) => (i + 1) % images.length);
 
   const addItem = useCartStore((s) => s.addItem);
   const { toggleFavorite, isFavorite } = useFavoritesStore();
@@ -66,6 +75,11 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
   const currentPrice = b2bActive
     ? (selectedVariant?.wholesalePrice ?? selectedVariant?.price ?? 0)
     : (selectedVariant?.price ?? 0);
+
+  // Promo pair is always evaluated against the retail price — the discount a
+  // B2B buyer sees refers to the same crossed-out reference as the retail one.
+  const discountPct = discountPercent(selectedVariant?.price, selectedVariant?.oldPrice);
+  const savingsAmount = discountPct > 0 ? (selectedVariant?.oldPrice || 0) - (selectedVariant?.price || 0) : 0;
 
   const handleAddToCart = () => {
     if (!selectedVariant) return;
@@ -102,16 +116,57 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
       <div className="bg-surface rounded-3xl border border-border p-6 lg:p-8 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Left Column: Gallery */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="relative aspect-square bg-secondary rounded-2xl overflow-hidden border border-border">
-            {currentImage ? (
-              <img
+          <div className="group/zoom relative aspect-square bg-secondary rounded-2xl overflow-hidden border border-border">
+            <div
+              className="absolute inset-0"
+              onMouseMove={(e) => {
+                if (imageFit !== 'cover' || !currentImage) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                setZoomOrigin(`${Math.min(Math.max(x, 0), 100)}% ${Math.min(Math.max(y, 0), 100)}%`);
+              }}
+              onMouseLeave={() => setZoomOrigin('50% 50%')}
+            >
+              <ProductImage
                 src={currentImage}
                 alt={locale === 'ru' ? product.titleRu : product.titleUz}
-                className="w-full h-full object-cover transition-all duration-300"
+                fit={imageFit}
+                locale={locale}
+                priority
+                className="w-full h-full"
+                imgClassName={
+                  imageFit === 'cover'
+                    ? 'cursor-zoom-in transition-transform duration-300 ease-out group-hover/zoom:scale-[1.8] will-change-transform'
+                    : ''
+                }
+                imgStyle={{ transformOrigin: zoomOrigin }}
               />
-            ) : (
-              <MissingImage locale={locale} />
+            </div>
+
+            {/* Prev / Next — real galleries have several photos per variant. */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={showPrevImage}
+                  aria-label={locale === 'ru' ? 'Предыдущее фото' : 'Oldingi rasm'}
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-surface/85 backdrop-blur-md border border-border/60 text-heading shadow-xs hover:bg-surface transition opacity-0 group-hover/zoom:opacity-100 focus:opacity-100"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={showNextImage}
+                  aria-label={locale === 'ru' ? 'Следующее фото' : 'Keyingi rasm'}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-surface/85 backdrop-blur-md border border-border/60 text-heading shadow-xs hover:bg-surface transition opacity-0 group-hover/zoom:opacity-100 focus:opacity-100"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+                <span className="absolute bottom-2.5 right-2.5 z-10 text-[10px] font-black font-mono text-surface bg-charcoal-900/70 backdrop-blur-md px-2 py-0.5 rounded-md">
+                  {Math.min(selectedImageIdx + 1, images.length)}/{images.length}
+                </span>
+              </>
             )}
+
             <div className="absolute top-3 left-3 flex flex-col gap-1 z-10">
               <StockIndicator
                 stockStatus={selectedVariant?.stockStatus || 'IN_STOCK'}
@@ -120,6 +175,16 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                 locale={locale}
                 className="!text-xs !px-2.5 !py-1"
               />
+              {discountPct > 0 && (
+                <span className="bg-red-600 text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs">
+                  −{discountPct}%
+                </span>
+              )}
+              {product.isPopular && (
+                <span className="bg-amber-500 text-charcoal-900 text-xs font-black px-2.5 py-1 rounded-md shadow-xs">
+                  {locale === 'ru' ? 'Хит' : 'Ommabop'}
+                </span>
+              )}
               {b2bActive && (
                 <span className="bg-brand-700 text-surface text-xs font-black px-2.5 py-1 rounded-md shadow-xs">
                   B2B {locale === 'ru' ? 'Опт' : 'Ulgurji'}
@@ -141,7 +206,14 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                       : 'border-border hover:border-muted'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <ProductImage
+                    src={img}
+                    alt=""
+                    fit={imageFit}
+                    locale={locale}
+                    compact
+                    className="w-full h-full"
+                  />
                 </button>
               ))}
             </div>
@@ -201,13 +273,26 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                     ? 'Розничная цена:'
                     : 'Chakana narxi:'}
                 </div>
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="text-3xl font-black text-accent">
                     {formatPrice(currentPrice, locale)}
                   </span>
+                  {discountPct > 0 && (
+                    <span className="text-base font-bold text-muted line-through">
+                      {formatPrice(selectedVariant?.oldPrice || 0, locale)}
+                    </span>
+                  )}
                   <span className="text-xs font-bold text-muted">
                     / {unitLabel}
                   </span>
+                  {discountPct > 0 && (
+                    <span className="inline-flex items-center gap-1.5 bg-red-600 text-white text-[11px] font-black px-2 py-0.5 rounded-md">
+                      −{discountPct}%
+                      <span className="font-bold">
+                        {locale === 'ru' ? 'выгода' : 'tejaysiz'} {formatPrice(savingsAmount, locale)}
+                      </span>
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -266,8 +351,8 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                         title={locale === 'ru' ? (v.colorNameRu || v.nameRu || v.sku) : (v.colorNameUz || v.nameUz || v.sku)}
                       >
                         <span
-                          className="w-3.5 h-3.5 rounded-full border border-border"
-                          style={{ backgroundColor: v.colorHex || '#ccc' }}
+                          className={`w-3.5 h-3.5 rounded-full border border-border ${v.colorHex ? '' : 'swatch-no-color'}`}
+                          style={v.colorHex ? { backgroundColor: v.colorHex } : undefined}
                         />
                         <span>{v.sku}</span>
                       </button>

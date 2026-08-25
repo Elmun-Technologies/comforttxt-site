@@ -94,6 +94,36 @@
     -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
     mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
   }
+
+  /* Image loading shimmer — plays inside ProductImage until bytes arrive. */
+  .image-shimmer {
+    background: linear-gradient(
+      100deg,
+      #F2F3FA 0%,
+      #E8EAF6 40%,
+      #F9F5EC 60%,
+      #F2F3FA 100%
+    );
+    background-size: 200% 100%;
+    animation: ct-shimmer 1.4s ease-in-out infinite;
+  }
+
+  @keyframes ct-shimmer {
+    0% { background-position: 120% 0; }
+    100% { background-position: -80% 0; }
+  }
+
+  /* Variant swatch with no colour on record — diagonal stripes read as
+     "colour not specified" instead of posing as grey fabric. */
+  .swatch-no-color {
+    background-image: repeating-linear-gradient(
+      45deg,
+      #E8EAF6,
+      #E8EAF6 3px,
+      #FFFFFF 3px,
+      #FFFFFF 6px
+    );
+  }
 }
 
 /* Brand-aligned, unobtrusive scrollbar */

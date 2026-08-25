@@ -104,3 +104,54 @@ describe('enrichMockProduct — volume price tiers', () => {
     expect(pcsProduct.variants[0].priceTiers![1].minQty).toBe(20);
   });
 });
+
+describe('enrichMockProduct — promo oldPrice', () => {
+  it('only ever produces an oldPrice strictly above the retail price', () => {
+    for (let i = 0; i < 40; i++) {
+      const variant = makeVariant({ sku: `PROMO-SKU-${String(i).padStart(3, '0')}` });
+      const enriched = enrichMockProduct(makeProduct(variant));
+      const oldPrice = enriched.variants[0].oldPrice;
+      if (oldPrice != null) {
+        expect(oldPrice).toBeGreaterThan(variant.price);
+        // Discount stays in the believable 8–20% band.
+        const pct = ((oldPrice - variant.price) / oldPrice) * 100;
+        expect(pct).toBeGreaterThanOrEqual(5);
+        expect(pct).toBeLessThanOrEqual(25);
+      }
+    }
+  });
+
+  it('is deterministic for the same SKU', () => {
+    const variant = makeVariant({ sku: 'PROMO-DETERMINISTIC' });
+    const a = enrichMockProduct(makeProduct(variant)).variants[0].oldPrice;
+    const b = enrichMockProduct(makeProduct(variant)).variants[0].oldPrice;
+    expect(a).toEqual(b);
+  });
+
+  it('never overrides an explicitly authored oldPrice', () => {
+    const enriched = enrichMockProduct(makeProduct(makeVariant({ oldPrice: 999_999 })));
+    expect(enriched.variants[0].oldPrice).toBe(999_999);
+  });
+
+  it('marks no promo for unsellable stock or broken prices', () => {
+    const outOfStock = enrichMockProduct(makeProduct(makeVariant({ stockStatus: 'OUT_OF_STOCK', sku: 'PROMO-OOS-1' })));
+    const onOrder = enrichMockProduct(makeProduct(makeVariant({ stockStatus: 'ON_ORDER', sku: 'PROMO-OO-1' })));
+    const zeroPrice = enrichMockProduct(makeProduct(makeVariant({ price: 0, wholesalePrice: undefined, sku: 'PROMO-ZERO-1' })));
+    expect(outOfStock.variants[0].oldPrice).toBeUndefined();
+    expect(onOrder.variants[0].oldPrice).toBeUndefined();
+    expect(zeroPrice.variants[0].oldPrice).toBeUndefined();
+  });
+
+  it('covers a realistic share of the catalogue but not all of it', () => {
+    let withPromo = 0;
+    const total = 60;
+    for (let i = 0; i < total; i++) {
+      const enriched = enrichMockProduct(
+        makeProduct(makeVariant({ sku: `PROMO-COVERAGE-${String(i).padStart(3, '0')}` }))
+      );
+      if (enriched.variants[0].oldPrice != null) withPromo++;
+    }
+    expect(withPromo).toBeGreaterThan(0);
+    expect(withPromo).toBeLessThan(total);
+  });
+});
