@@ -28,10 +28,10 @@ describe('Search Engine Algorithm Tests', () => {
     });
 
     it('should normalize SKU codes by stripping spaces and hyphens', () => {
-      expect(normalizeSku('ST-2536-50')).toBe('st253650');
-      expect(normalizeSku('F 30 D')).toBe('f30d');
+      expect(normalizeSku('K-416')).toBe('k416');
+      expect(normalizeSku('F 30')).toBe('f30');
       expect(normalizeSku('80-16')).toBe('8016');
-      expect(normalizeSku('LUNA - 01')).toBe('luna01');
+      expect(normalizeSku('PK - R')).toBe('pkr');
     });
 
     it('should normalize general text', () => {
@@ -41,27 +41,27 @@ describe('Search Engine Algorithm Tests', () => {
   });
 
   describe('Product Scoring & Ranking', () => {
-    it('should match exact SKU F30D with highest score', () => {
-      const f30Product = MOCK_PRODUCTS.find((p) => p.id === 'prod-pnevmatik-f30d')!;
-      const result = scoreProduct(f30Product, 'F30D', 'uz');
+    it('should match exact SKU F30 with highest score', () => {
+      const f30Product = MOCK_PRODUCTS.find((p) => p.id === 'prod-pnevmatik-f30')!;
+      const result = scoreProduct(f30Product, 'F30', 'uz');
       expect(result).not.toBeNull();
       expect(result?.score).toBeGreaterThan(2000);
-      expect(result?.matchedVariant?.sku).toBe('F30D');
+      expect(result?.matchedVariant?.sku).toBe('F30');
     });
 
-    it('should match normalized SKU with spaces "f 30 d" or "f-30"', () => {
-      const f30Product = MOCK_PRODUCTS.find((p) => p.id === 'prod-pnevmatik-f30d')!;
-      const resultSpace = scoreProduct(f30Product, 'f 30 d', 'uz');
+    it('should match normalized SKU with spaces "f 3 0" or "f-30"', () => {
+      const f30Product = MOCK_PRODUCTS.find((p) => p.id === 'prod-pnevmatik-f30')!;
+      const resultSpace = scoreProduct(f30Product, 'f 3 0', 'uz');
       const resultHyphen = scoreProduct(f30Product, 'f-30', 'uz');
       expect(resultSpace).not.toBeNull();
       expect(resultHyphen).not.toBeNull();
     });
 
-    it('should match foam SKU "st 2536" and "ST2536-50"', () => {
-      const stProduct = MOCK_PRODUCTS.find((p) => p.id === 'prod-paralon-st2536')!;
-      const result = scoreProduct(stProduct, 'st 2536', 'uz');
+    it('should match foam SKU "pk r" and "PK-R"', () => {
+      const kornerProduct = MOCK_PRODUCTS.find((p) => p.id === 'prod-paralon-korner')!;
+      const result = scoreProduct(kornerProduct, 'pk r', 'uz');
       expect(result).not.toBeNull();
-      expect(result?.product.id).toBe('prod-paralon-st2536');
+      expect(result?.product.id).toBe('prod-paralon-korner');
     });
 
     it('should match Russian search "поролон" and Latin search "paralon" and "porolon"', () => {
@@ -74,28 +74,28 @@ describe('Search Engine Algorithm Tests', () => {
       expect(searchAlt.products.length).toBeGreaterThan(0);
     });
 
-    it('should find products by variant color name e.g. "sutli krem" or "oq qor"', () => {
-      const searchColor = searchStorefront(MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_COLLECTIONS, 'sutli krem', 'uz');
+    it('should find products by variant color name e.g. "oq sutli"', () => {
+      const searchColor = searchStorefront(MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_COLLECTIONS, 'oq sutli', 'uz');
       expect(searchColor.products.length).toBeGreaterThan(0);
-      expect(searchColor.products[0].id).toBe('prod-velyur-01');
+      expect(searchColor.products[0].id).toBe('prod-bukle');
     });
 
     it('should rank exact SKU match above generic text match', () => {
-      const searchResult = searchStorefront(MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_COLLECTIONS, 'F30D', 'uz');
+      const searchResult = searchStorefront(MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_COLLECTIONS, 'F30', 'uz');
       expect(searchResult.products.length).toBeGreaterThan(0);
-      expect(searchResult.products[0].id).toBe('prod-pnevmatik-f30d');
+      expect(searchResult.products[0].id).toBe('prod-pnevmatik-f30');
     });
 
-    it('should match multi-word queries e.g. "paralon 50"', () => {
-      const searchResult = searchStorefront(MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_COLLECTIONS, 'paralon 50', 'uz');
+    it('should match multi-word queries e.g. "paralon korner"', () => {
+      const searchResult = searchStorefront(MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_COLLECTIONS, 'paralon korner', 'uz');
       expect(searchResult.products.length).toBeGreaterThan(0);
-      expect(searchResult.products[0].id).toBe('prod-paralon-st2536');
+      expect(searchResult.products[0].id).toBe('prod-paralon-korner');
     });
 
-    it('should match synonyms e.g. "kley" to yelim product', () => {
-      const searchResult = searchStorefront(MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_COLLECTIONS, 'kley', 'uz');
+    it('should match synonyms e.g. "kley stik" to glue stick product', () => {
+      const searchResult = searchStorefront(MOCK_PRODUCTS, MOCK_CATEGORIES, MOCK_COLLECTIONS, 'kley stik', 'uz');
       expect(searchResult.products.length).toBeGreaterThan(0);
-      expect(searchResult.products[0].id).toBe('prod-yelim-sprey');
+      expect(searchResult.products[0].id).toBe('prod-kley-stik');
     });
   });
 

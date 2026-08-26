@@ -110,7 +110,7 @@ export function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <Link href={`/${locale}/catalog/paralon`} className="hover:text-copper-300 transition">
-                  {locale === 'ru' ? 'Поролон ST, EL, HR' : 'Paralon ST, EL, HR'}
+                  {locale === 'ru' ? 'Поролон (корнер, гребенки)' : 'Paralon buyumlari (korner, taroq)'}
                 </Link>
               </li>
               <li>

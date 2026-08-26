@@ -110,32 +110,32 @@ const MAX_HISTORY = 6;
 
 const POPULAR_SEARCHES_UZ = [
   'Velyur mato',
-  'Paralon ST2536',
-  'Mix qoqqich F30D',
+  'Paralon korner',
+  'Pnevmatik nailer F30',
   'Delfin mexanizmi',
-  'Sprey yelim',
-  'Bukle matolar',
+  'Kley stiklar',
+  'Bukle mato',
   'Pnevmostepler 8016',
-  'EL-2842',
+  'Skoba K416',
 ];
 
 const POPULAR_SEARCHES_RU = [
   'Велюр ткани',
-  'Поролон ST-2536',
-  'Пневмопистолет F30D',
+  'Поролон корнер',
+  'Пневмопистолет F30',
   'Механизм Дельфин',
-  'Клей спрей',
+  'Клеевые стики',
   'Букле ткани',
   'Пневмостеплер 8016',
-  'Поролон EL-2842',
+  'Скобы K416',
 ];
 
 const QUICK_CATEGORIES = [
-  { slug: 'mebel-matolari', icon: Palette, labelUz: 'Mebel matolari', labelRu: 'Мебельные ткани', count: 24 },
-  { slug: 'paralon', icon: Layers, labelUz: 'Paralon (Porolon)', labelRu: 'Поролон (ППУ)', count: 16 },
-  { slug: 'mexanizmlar', icon: Settings, labelUz: 'Mexanizmlar', labelRu: 'Механизмы', count: 12 },
-  { slug: 'furnitura-va-oyoqlar', icon: Wrench, labelUz: 'Furnitura va oyoqlar', labelRu: 'Фурнитура и ножки', count: 30 },
-  { slug: 'sarf-materiallar-va-instrumentlar', icon: Hammer, labelUz: 'Asboblar va sarf', labelRu: 'Инструменты', count: 18 },
+  { slug: 'mebel-matolari', icon: Palette, labelUz: 'Mebel matolari', labelRu: 'Мебельные ткани', count: 6 },
+  { slug: 'paralon', icon: Layers, labelUz: 'Paralon (Porolon)', labelRu: 'Поролон (ППУ)', count: 2 },
+  { slug: 'mexanizmlar', icon: Settings, labelUz: 'Mexanizmlar', labelRu: 'Механизмы', count: 4 },
+  { slug: 'furnitura-va-oyoqlar', icon: Wrench, labelUz: 'Furnitura va oyoqlar', labelRu: 'Фурнитура и ножки', count: 10 },
+  { slug: 'sarf-materiallar-va-instrumentlar', icon: Hammer, labelUz: 'Asboblar va sarf', labelRu: 'Инструменты', count: 13 },
 ];
 
 function Highlighted({ text, query }: { text: string; query: string }) {
@@ -471,8 +471,8 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
               onChange={(e) => setQuery(e.target.value)}
               placeholder={
                 locale === 'ru'
-                  ? 'Поиск ткани, поролона, механизмов или точного SKU (F30D, ST2536)...'
-                  : 'Mato, paralon, mexanizm yoki aniq SKU (masalan: F30D, ST2536)...'
+                  ? 'Поиск ткани, поролона, механизмов или точного SKU (8016, K416)...'
+                  : 'Mato, paralon, mexanizm yoki aniq SKU (masalan: 8016, K416)...'
               }
               className="w-full text-sm sm:text-base font-semibold text-heading placeholder:text-muted/70 bg-transparent focus:outline-none pr-16"
             />
