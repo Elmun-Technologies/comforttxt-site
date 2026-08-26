@@ -135,8 +135,8 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
               onChange={(e) => setQuery(e.target.value)}
               placeholder={
                 locale === 'ru'
-                  ? 'Поиск по названию или точному SKU (например F30D)...'
-                  : 'Nomi yoki aniq SKU bo‘yicha qidirish (masalan F30D)...'
+                  ? 'Поиск по названию или точному SKU (например 8016)...'
+                  : 'Nomi yoki aniq SKU bo‘yicha qidirish (masalan 8016)...'
               }
               className="w-full text-sm sm:text-base font-semibold text-heading placeholder:text-muted/80 bg-transparent focus:outline-none"
             />
@@ -156,7 +156,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                 {locale === 'ru' ? 'Поиск по артикулу или названию:' : 'Artikul yoki nom bo‘yicha qidiruv:'}
               </span>
               <div className="flex flex-wrap gap-2">
-                {['F30D', 'ST2536-50', '8016', 'Velyur', 'Paralon', 'Delfin'].map((tag) => (
+                {['8016', 'F30', 'K416', 'KL-01', 'Delfin', 'Kley stik'].map((tag) => (
                   <button
                     key={tag}
                     onClick={() => setQuery(tag)}

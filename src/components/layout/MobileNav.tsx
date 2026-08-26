@@ -53,7 +53,7 @@ export function MobileNav({
 
   const categories = [
     { labelUz: 'Mebel matolari', labelRu: 'Мебельные ткани', href: '/catalog/mebel-matolari' },
-    { labelUz: 'Paralon (ST / EL / HR)', labelRu: 'Поролон (ST / EL / HR)', href: '/catalog/paralon' },
+    { labelUz: 'Paralon buyumlari (korner, taroq)', labelRu: 'Поролон (корнер, гребенки)', href: '/catalog/paralon' },
     { labelUz: 'Transformatsiya mexanizmlari', labelRu: 'Механизмы трансформации', href: '/catalog/mexanizmlar' },
     { labelUz: 'Furnitura va Oyoqlar', labelRu: 'Фурнитура и Ножки', href: '/catalog/furnitura-va-oyoqlar' },
     { labelUz: 'Instrumentlar va Sarf', labelRu: 'Инструменты и Расходники', href: '/catalog/sarf-materiallar-va-instrumentlar' },

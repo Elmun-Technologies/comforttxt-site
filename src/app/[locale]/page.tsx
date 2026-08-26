@@ -38,7 +38,7 @@ export default async function HomePage({ params }: HomePageProps) {
       nameRu: 'Велюр',
       descUz: 'Yumshoq baxmal faktura',
       descRu: 'Мягкая бархатистая фактура',
-      image: '/images/categories/fabrics.jpg',
+      image: '/images/products/fabric/fabric-samplers-rangli.jpg',
       href: `/${locale}/catalog/mebel-matolari?sub=velyur`,
     },
     {
@@ -46,7 +46,7 @@ export default async function HomePage({ params }: HomePageProps) {
       nameRu: 'Букле',
       descUz: 'Tugunchali zamonaviy faktura',
       descRu: 'Выразительная узелковая фактура',
-      image: '/images/categories/fabrics.jpg',
+      image: '/images/products/fabric/fabric-samplers-ok.jpg',
       href: `/${locale}/catalog/mebel-matolari?sub=bukle`,
     },
     {
@@ -54,7 +54,7 @@ export default async function HomePage({ params }: HomePageProps) {
       nameRu: 'Шенилл',
       descUz: 'Qalin va hajmli to‘qima',
       descRu: 'Плотная объемная структура',
-      image: '/images/categories/fabrics.jpg',
+      image: '/images/products/fabric/fabric-samplers-devori.jpg',
       href: `/${locale}/catalog/mebel-matolari?sub=shenill`,
     },
     {
@@ -62,7 +62,7 @@ export default async function HomePage({ params }: HomePageProps) {
       nameRu: 'Рогожка',
       descUz: 'Zich to‘qilgan faktura',
       descRu: 'Плотная тканая фактура',
-      image: '/images/categories/fabrics.jpg',
+      image: '/images/products/fabric/fabric-samplers-krem.jpg',
       href: `/${locale}/catalog/mebel-matolari?sub=rogojka`,
     },
   ];
@@ -134,8 +134,8 @@ export default async function HomePage({ params }: HomePageProps) {
                     name="search"
                     placeholder={
                       locale === 'ru'
-                        ? 'Поиск по названию или артикулу (SKU), например F30D'
-                        : 'Nomi yoki artikul (SKU) bo‘yicha qidirish, masalan F30D'
+                        ? 'Поиск по названию или артикулу (SKU), например 8016'
+                        : 'Nomi yoki artikul (SKU) bo‘yicha qidirish, masalan 8016'
                     }
                     className="w-full text-xs sm:text-sm font-semibold text-heading placeholder:text-muted/80 bg-transparent focus:outline-none"
                   />
@@ -163,7 +163,7 @@ export default async function HomePage({ params }: HomePageProps) {
                       href={`/${locale}/catalog/paralon`}
                       className="px-3 py-1 bg-surface hover:bg-accent-light hover:text-accent hover:border-accent/40 border border-border rounded-lg text-xs font-semibold text-body transition"
                     >
-                      {locale === 'ru' ? 'Поролон (ST/EL/HR)' : 'Paralon (ST/EL/HR)'}
+                      {locale === 'ru' ? 'Поролон (корнер)' : 'Paralon buyumlari'}
                     </Link>
                     <Link
                       href={`/${locale}/catalog/mexanizmlar`}
