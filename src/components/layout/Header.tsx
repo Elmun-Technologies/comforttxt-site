@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation';
 import {
@@ -48,6 +48,18 @@ export function Header({ locale }: HeaderProps) {
   const { user, isB2B } = useAuthStore();
   const b2bActive = isB2B();
 
+  // Global ⌘K / Ctrl+K keyboard shortcut to open search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const switchLocale = (newLocale: string) => {
     const search = searchParams.toString();
     const query = search ? `?${search}` : '';
@@ -57,23 +69,23 @@ export function Header({ locale }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-border shadow-brand-sm">
       {/* Top Utility Bar — shows only confirmed contact values */}
-      <div className="bg-secondary/60 text-muted text-xs py-1.5 px-4 border-b border-border/50">
+      <div className="bg-ink-950 text-cream-200/80 text-xs py-1.5 px-4 border-b border-ink-800">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center gap-4">
             {storefrontConfig.phone && (
               <a
                 href={`tel:${storefrontConfig.phoneRaw}`}
-                className="inline-flex items-center gap-1.5 hover:text-heading transition font-bold text-[11px]"
+                className="inline-flex items-center gap-1.5 hover:text-surface transition font-bold text-[11px]"
               >
-                <Phone className="w-3.5 h-3.5 text-accent" />
+                <Phone className="w-3.5 h-3.5 text-copper-400" />
                 <span>{storefrontConfig.phone}</span>
               </a>
             )}
             {storefrontConfig.phone && storefrontConfig.workingHoursUz && (
-              <span className="hidden md:inline text-border">|</span>
+              <span className="hidden md:inline text-cream-200/30">|</span>
             )}
             {storefrontConfig.workingHoursUz && (
-              <div className="hidden md:flex items-center gap-1.5 text-muted text-[11px]">
+              <div className="hidden md:flex items-center gap-1.5 text-[11px] text-cream-200/70">
                 <Clock className="w-3.5 h-3.5" />
                 <span>{locale === 'ru' ? storefrontConfig.workingHoursRu || storefrontConfig.workingHoursUz : storefrontConfig.workingHoursUz}</span>
               </div>
@@ -84,7 +96,7 @@ export function Header({ locale }: HeaderProps) {
             {/* Nav links */}
             <div className="hidden lg:flex items-center gap-3">
               {topUtilityLinks.map((link, idx) => (
-                <Link key={idx} href={link.href} className="hover:text-heading transition text-[11px] font-semibold">
+                <Link key={idx} href={link.href} className="hover:text-surface transition text-[11px] font-semibold">
                   {locale === 'ru' ? link.labelRu : link.labelUz}
                 </Link>
               ))}
@@ -92,26 +104,26 @@ export function Header({ locale }: HeaderProps) {
 
             {/* B2B Status Indicator */}
             {b2bActive ? (
-              <span className="inline-flex items-center gap-1 bg-brand-900 text-brand-100 border border-brand-700 px-2 py-0.5 rounded text-[11px] font-bold">
+              <span className="inline-flex items-center gap-1 bg-brand-700 text-brand-50 border border-brand-500/60 px-2 py-0.5 rounded text-[11px] font-bold">
                 <ShieldCheck className="w-3 h-3" />
                 B2B {user?.companyName || 'Partner'}
               </span>
             ) : (
               <Link
                 href="/wholesale"
-                className="text-heading hover:text-accent font-black text-[11px] bg-accent/15 px-2.5 py-0.5 rounded-md border border-accent/30 transition"
+                className="text-copper-300 hover:text-copper-200 font-black text-[11px] bg-copper-500/15 px-2.5 py-0.5 rounded-md border border-copper-500/40 transition"
               >
                 {locale === 'ru' ? 'Опт B2B' : 'Ulgurji B2B'}
               </Link>
             )}
 
             {/* Language Switcher */}
-            <div className="flex items-center gap-0.5 bg-surface p-0.5 rounded-md border border-border shadow-xs">
-              <Globe className="w-3 h-3 text-muted ml-1 mr-0.5" />
+            <div className="flex items-center gap-0.5 bg-surface/10 p-0.5 rounded-md border border-surface/15 shadow-xs">
+              <Globe className="w-3 h-3 text-cream-200/70 ml-1 mr-0.5" />
               <button
                 onClick={() => switchLocale('uz')}
                 className={`px-1.5 py-0.5 rounded text-[10px] font-black transition ${
-                  locale === 'uz' ? 'bg-accent text-surface' : 'text-muted hover:text-heading'
+                  locale === 'uz' ? 'bg-copper-500 text-surface' : 'text-cream-200/70 hover:text-surface'
                 }`}
               >
                 UZ
@@ -119,7 +131,7 @@ export function Header({ locale }: HeaderProps) {
               <button
                 onClick={() => switchLocale('ru')}
                 className={`px-1.5 py-0.5 rounded text-[10px] font-black transition ${
-                  locale === 'ru' ? 'bg-accent text-surface' : 'text-muted hover:text-heading'
+                  locale === 'ru' ? 'bg-copper-500 text-surface' : 'text-cream-200/70 hover:text-surface'
                 }`}
               >
                 RU
@@ -134,6 +146,7 @@ export function Header({ locale }: HeaderProps) {
         {/* Mobile menu trigger */}
         <button
           onClick={() => setMobileMenuOpen(true)}
+          aria-label={locale === 'ru' ? 'Открыть меню' : 'Menyuni ochish'}
           className="lg:hidden p-2 text-heading hover:bg-secondary rounded-xl transition"
         >
           <Menu className="w-6 h-6" />
@@ -165,6 +178,7 @@ export function Header({ locale }: HeaderProps) {
           {/* Mobile Search Button */}
           <button
             onClick={() => setSearchOpen(true)}
+            aria-label={locale === 'ru' ? 'Поиск' : 'Qidiruv'}
             className="lg:hidden p-2 text-heading hover:bg-secondary rounded-xl transition"
           >
             <Search className="w-5 h-5" />
@@ -228,9 +242,21 @@ export function Header({ locale }: HeaderProps) {
       {/* Navigation Bar & MegaMenu */}
       <div className="bg-surface/50 backdrop-blur-md text-heading border-t border-border hidden lg:block relative">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-          {/* MegaMenu Trigger */}
-          <div className="relative" onMouseEnter={() => setMegaMenuOpen(true)}>
-            <button className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface font-black text-xs uppercase tracking-widest px-6 py-3.5 transition">
+          {/* MegaMenu Trigger — hover for mouse users, click/Enter and focus for keyboard */}
+          <div
+            className="relative"
+            onMouseEnter={() => setMegaMenuOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setMegaMenuOpen(false);
+            }}
+          >
+            <button
+              onClick={() => setMegaMenuOpen((v) => !v)}
+              onFocus={() => setMegaMenuOpen(true)}
+              aria-haspopup="true"
+              aria-expanded={megaMenuOpen}
+              className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface font-black text-xs uppercase tracking-widest px-6 py-3.5 transition"
+            >
               <Menu className="w-4 h-4" />
               <span>{locale === 'ru' ? 'Категории товаров' : 'Mahsulot Kategoriyalari'}</span>
               <ChevronDown className="w-3.5 h-3.5 ml-1" />
@@ -250,8 +276,9 @@ export function Header({ locale }: HeaderProps) {
             ))}
           </nav>
 
-          <div className="text-xs text-accent font-black">
-            ⚡ {locale === 'ru' ? 'Быстрая доставка по всему Узбекистану' : 'O‘zbekiston bo‘ylab tezkor yetkazish'}
+          <div className="text-xs text-ink font-bold inline-flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-copper-500 animate-pulse-dot" />
+            {locale === 'ru' ? 'Доставка по всему Узбекистану' : 'O‘zbekiston bo‘ylab yetkazib berish'}
           </div>
         </div>
 

@@ -18,6 +18,7 @@ import {
   StorefrontCustomerOrder,
 } from './types';
 import { enrichMockProduct } from './mockEnrichment';
+import { searchStorefront } from '@/lib/search/searchEngine';
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
@@ -128,12 +129,8 @@ export class MockStorefrontService implements IStorefrontService {
     }
 
     if (filter.search) {
-      const q = filter.search.toLowerCase();
-      result = result.filter((p) =>
-        p.titleUz.toLowerCase().includes(q) ||
-        p.titleRu.toLowerCase().includes(q) ||
-        p.variants.some((v) => v.sku.toLowerCase().includes(q))
-      );
+      const searchRes = searchStorefront(result, [], [], filter.search, locale);
+      result = searchRes.products;
     }
 
     if (filter.minPrice) {
@@ -178,53 +175,13 @@ export class MockStorefrontService implements IStorefrontService {
   }
 
   /**
-   * Universal search with SKU-first ranking.
-   * An EXACT SKU match (case-insensitive) is always ranked before
-   * approximate text matches, so typing "F30D" surfaces the exact product first.
+   * Universal search with SKU-first ranking, bilingual transliteration,
+   * multi-token matching, variant color discovery, and relevance scoring.
    */
   async searchProducts(query: string, locale = 'uz'): Promise<StorefrontSearchResult> {
     await delay();
     maybeFail();
-    const q = (query || '').trim().toLowerCase();
-    if (!q) {
-      return { products: [], collections: [], categories: [], totalMatches: 0 };
-    }
-
-    const exactSkuMatches = MOCK_PRODUCTS_ENRICHED.filter((p) =>
-      p.variants.some((v) => v.sku.toLowerCase() === q)
-    );
-
-    const textMatches = MOCK_PRODUCTS_ENRICHED.filter(
-      (p) =>
-        (p.titleUz.toLowerCase().includes(q) || p.titleRu.toLowerCase().includes(q)) &&
-        !exactSkuMatches.includes(p)
-    );
-
-    const skuPartialMatches = MOCK_PRODUCTS_ENRICHED.filter(
-      (p) =>
-        p.variants.some((v) => v.sku.toLowerCase().includes(q)) &&
-        !exactSkuMatches.includes(p) &&
-        !textMatches.includes(p)
-    );
-
-    const matchedProducts = [...exactSkuMatches, ...textMatches, ...skuPartialMatches];
-
-    const matchedCollections = MOCK_COLLECTIONS.filter((c) =>
-      c.name.toLowerCase().includes(q)
-    );
-
-    const matchedCategories = MOCK_CATEGORIES.filter(
-      (c) =>
-        c.nameUz.toLowerCase().includes(q) ||
-        c.nameRu.toLowerCase().includes(q)
-    );
-
-    return {
-      products: matchedProducts,
-      collections: matchedCollections,
-      categories: matchedCategories,
-      totalMatches: matchedProducts.length + matchedCollections.length + matchedCategories.length,
-    };
+    return searchStorefront(MOCK_PRODUCTS_ENRICHED, MOCK_CATEGORIES, MOCK_COLLECTIONS, query, locale);
   }
 
   async getCollections(locale = 'uz'): Promise<StorefrontCollection[]> {

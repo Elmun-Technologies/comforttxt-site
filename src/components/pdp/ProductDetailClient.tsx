@@ -33,6 +33,7 @@ import { Tooltip } from '@/components/ui/Tooltip';
 import { getSpecTooltip } from '@/data/spec-glossary';
 import { validateQuantity, calculateSubtotal } from '@/lib/calc';
 import { storefrontConfig } from '@/config/storefront';
+import { useTimedFlag } from '@/lib/hooks/useTimedFlag';
 
 interface PDPClientProps {
   product: StorefrontProduct;
@@ -47,7 +48,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [quantity, setQuantity] = useState(product.variants[0]?.minQuantity || product.minQtyStep || 1);
   const [quickOrderOpen, setQuickOrderOpen] = useState(false);
-  const [addedToast, setAddedToast] = useState(false);
+  const [addedToast, triggerAddedToast] = useTimedFlag(2000);
   const [activeTab, setActiveTab] = useState<'desc' | 'specs' | 'delivery'>('desc');
   const [inputValue, setInputValue] = useState(quantity.toString());
   const [showAllSwatches, setShowAllSwatches] = useState(false);
@@ -94,11 +95,11 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
       wholesalePrice: selectedVariant.wholesalePrice ?? selectedVariant.price,
       unitType: product.unitType,
       minQtyStep: selectedVariant.quantityStep || product.minQtyStep || 1,
+      minQuantity: selectedVariant.minQuantity,
       quantity,
     });
 
-    setAddedToast(true);
-    setTimeout(() => setAddedToast(false), 2000);
+    triggerAddedToast();
   };
 
   // Telegram order link uses the configured public Telegram link (never an invented bot)
@@ -113,10 +114,13 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
 
   return (
     <>
-      <div className="bg-surface rounded-3xl border border-border p-6 lg:p-8 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="bg-surface rounded-3xl border border-border/70 p-6 lg:p-8 shadow-xs grid grid-cols-1 lg:grid-cols-12 gap-10 relative overflow-hidden">
+        {/* corner ticks */}
+        <span aria-hidden="true" className="corner-tick corner-tick-tr text-accent/30 hidden lg:block" />
+        <span aria-hidden="true" className="corner-tick corner-tick-bl text-accent/30 hidden lg:block" />
         {/* Left Column: Gallery */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="group/zoom relative aspect-square bg-secondary rounded-2xl overflow-hidden border border-border">
+          <div className="group/zoom relative aspect-square bg-cream-100 rounded-2xl overflow-hidden border border-border">
             <div
               className="absolute inset-0"
               onMouseMove={(e) => {
@@ -262,50 +266,53 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
             </div>
 
             {/* Price Box */}
-            <div className="bg-secondary p-4 rounded-2xl border border-border flex items-baseline justify-between">
-              <div>
-                <div className="text-xs text-muted font-bold mb-0.5">
-                  {b2bActive
-                    ? locale === 'ru'
-                      ? 'Ваша B2B оптовая цена:'
-                      : 'Sizning B2B ulgurji narxingiz:'
-                    : locale === 'ru'
-                    ? 'Розничная цена:'
-                    : 'Chakana narxi:'}
-                </div>
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-3xl font-black text-accent">
-                    {formatPrice(currentPrice, locale)}
-                  </span>
-                  {discountPct > 0 && (
-                    <span className="text-base font-bold text-muted line-through">
-                      {formatPrice(selectedVariant?.oldPrice || 0, locale)}
+            <div className="bg-ink-950 p-5 rounded-2xl border border-ink-800 relative overflow-hidden">
+              <div aria-hidden="true" className="pattern-rings-dark pattern-fade absolute inset-0 pointer-events-none opacity-40" />
+              <div className="relative flex items-baseline justify-between gap-4">
+                <div>
+                  <div className="text-[11px] text-cream-200/70 font-bold mb-1 uppercase tracking-wider">
+                    {b2bActive
+                      ? locale === 'ru'
+                        ? 'Ваша B2B оптовая цена:'
+                        : 'Sizning B2B ulgurji narxingiz:'
+                      : locale === 'ru'
+                      ? 'Розничная цена:'
+                      : 'Chakana narxi:'}
+                  </div>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="text-3xl font-black text-surface">
+                      {formatPrice(currentPrice, locale)}
                     </span>
-                  )}
-                  <span className="text-xs font-bold text-muted">
-                    / {unitLabel}
-                  </span>
-                  {discountPct > 0 && (
-                    <span className="inline-flex items-center gap-1.5 bg-red-600 text-white text-[11px] font-black px-2 py-0.5 rounded-md">
-                      −{discountPct}%
-                      <span className="font-bold">
-                        {locale === 'ru' ? 'выгода' : 'tejaysiz'} {formatPrice(savingsAmount, locale)}
+                    {discountPct > 0 && (
+                      <span className="text-base font-bold text-cream-200/50 line-through">
+                        {formatPrice(selectedVariant?.oldPrice || 0, locale)}
                       </span>
+                    )}
+                    <span className="text-xs font-bold text-cream-200/60">
+                      / {unitLabel}
                     </span>
-                  )}
+                    {discountPct > 0 && (
+                      <span className="inline-flex items-center gap-1.5 bg-copper-500 text-surface text-[11px] font-black px-2 py-0.5 rounded-md">
+                        −{discountPct}%
+                        <span className="font-bold">
+                          {locale === 'ru' ? 'выгода' : 'tejaysiz'} {formatPrice(savingsAmount, locale)}
+                        </span>
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              {!b2bActive && selectedVariant?.wholesalePrice && (
-                <div className="text-right">
-                  <div className="text-[11px] text-brand-700 font-bold">
-                    {locale === 'ru' ? 'Оптом B2B:' : 'Ulgurji B2B:'}
+                {!b2bActive && selectedVariant?.wholesalePrice && (
+                  <div className="text-right shrink-0">
+                    <div className="text-[11px] text-copper-300 font-bold">
+                      {locale === 'ru' ? 'Оптом B2B:' : 'Ulgurji B2B:'}
+                    </div>
+                    <div className="text-base font-black text-copper-300">
+                      {formatPrice(selectedVariant.wholesalePrice, locale)}
+                    </div>
                   </div>
-                  <div className="text-base font-black text-brand-700">
-                    {formatPrice(selectedVariant.wholesalePrice, locale)}
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Volume price ladder — UX pattern #20 */}
@@ -425,7 +432,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
               <button
                 onClick={handleAddToCart}
                 disabled={!selectedVariant?.isAvailable}
-                className="py-3.5 px-6 bg-accent hover:bg-accent-hover text-surface font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-sheen py-4 px-6 bg-accent hover:bg-accent-hover text-surface font-black text-sm rounded-xl shadow-brand-sm transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-98"
               >
                 {addedToast ? (
                   <>
@@ -443,9 +450,9 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
               <button
                 onClick={() => setQuickOrderOpen(true)}
                 disabled={!selectedVariant?.isAvailable}
-                className="py-3.5 px-6 bg-secondary hover:bg-border text-heading font-bold text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 border border-border disabled:opacity-50 disabled:cursor-not-allowed"
+                className="py-4 px-6 bg-cream-200/70 hover:bg-cream-300 text-ink font-black text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 border border-border disabled:opacity-50 disabled:cursor-not-allowed active:scale-98"
               >
-                <Zap className="w-5 h-5 text-accent" />
+                <Zap className="w-5 h-5 text-copper-600" />
                 <span>{locale === 'ru' ? 'Купить в 1 клик' : '1-Klikda xarid qilish'}</span>
               </button>
             </div>
@@ -466,7 +473,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => toggleFavorite(product.id)}
+                  onClick={() => toggleFavorite(product.id, locale)}
                   className={`p-2.5 rounded-xl border transition ${
                     favorite ? 'bg-accent-light text-accent border-accent/20' : 'bg-secondary text-body hover:bg-border border-border'
                   }`}
@@ -490,7 +497,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                         specValueRu: s.valueRu,
                       })),
                       image: currentImage,
-                    })
+                    }, locale)
                   }
                   className={`p-2.5 rounded-xl border transition ${
                     inCompare ? 'bg-accent-light text-accent border-accent/30' : 'bg-secondary text-body hover:bg-border border-border'
@@ -506,8 +513,9 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
       </div>
 
       {/* Tabs Section below PDP */}
-      <div className="bg-surface rounded-3xl border border-border p-6 lg:p-8 shadow-xs space-y-6 mt-8">
-        <div className="flex border-b border-border space-x-6 overflow-x-auto">
+      <div className="bg-surface rounded-3xl border border-border/70 p-6 lg:p-8 shadow-xs space-y-6 mt-8 relative overflow-hidden">
+        <span aria-hidden="true" className="corner-tick corner-tick-tr text-accent/30 hidden lg:block" />
+        <div className="flex border-b border-border space-x-1 sm:space-x-2 overflow-x-auto">
           {[
             { id: 'desc', label: locale === 'ru' ? 'Описание' : 'Tavsif' },
             { id: 'specs', label: locale === 'ru' ? 'Характеристики' : 'Texnik ko‘rsatkichlar' },
@@ -516,9 +524,9 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`pb-3 text-sm font-bold border-b-2 whitespace-nowrap transition ${
+              className={`px-4 pb-3 text-sm font-bold border-b-2 whitespace-nowrap transition ${
                 activeTab === tab.id
-                  ? 'border-accent text-accent'
+                  ? 'border-copper-500 text-ink'
                   : 'border-transparent text-muted hover:text-heading'
               }`}
             >
