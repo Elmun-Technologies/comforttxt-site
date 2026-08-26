@@ -735,12 +735,17 @@ export function highlightMatch(text: string, query: string): Array<{ text: strin
     .join('|');
 
   try {
+    // `g` flag means `regex.test()` advances `lastIndex`. Because we reuse the
+    // same regex across every part, a failed `test()` resets it but a successful
+    // one does not — so an adjacent/second occurrence of the same token (e.g.
+    // "paralonparalon") is wrongly reported as a non-match. Reset `lastIndex`
+    // before each test to keep highlighting correct.
     const regex = new RegExp(`(${escaped})`, 'gi');
-    const parts = text.split(regex);
-    return parts.filter(Boolean).map((part) => ({
-      text: part,
-      match: regex.test(part),
-    }));
+    const parts = text.split(regex).filter(Boolean);
+    return parts.map((part) => {
+      regex.lastIndex = 0;
+      return { text: part, match: regex.test(part) };
+    });
   } catch {
     return [{ text, match: false }];
   }

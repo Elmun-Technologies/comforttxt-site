@@ -144,7 +144,7 @@ function Highlighted({ text, query }: { text: string; query: string }) {
     <>
       {parts.map((p, idx) =>
         p.match ? (
-          <mark key={idx} className="bg-accent/20 text-accent font-black rounded-xs px-0.5">
+          <mark key={idx} className="bg-accent/20 text-accent font-black rounded-sm px-0.5">
             {p.text}
           </mark>
         ) : (
@@ -163,6 +163,10 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
+  // Tracks the exact query that the last completed search was for. We only show
+  // the "no results" / results states once the current query has actually been
+  // fetched — otherwise the empty state would flash during the debounce window.
+  const [lastLoadedQuery, setLastLoadedQuery] = useState('');
 
   const [results, setResults] = useState<{
     products: SearchProductItem[];
@@ -246,47 +250,66 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
       setFailed(false);
       setActiveIndex(-1);
       setActiveTab('all');
+      setLastLoadedQuery('');
     }
   }, [isOpen]);
 
   const q = query.trim();
+  const hasLoadedQuery = lastLoadedQuery === q;
+  // True while we are still waiting on a response for the CURRENT query (during
+  // the debounce window or an in-flight fetch). Used to avoid showing the
+  // "nothing found" empty state before a search has actually completed.
+  const searchPending = q.length >= 2 && !failed && !hasLoadedQuery;
 
-  // Search API fetcher with debounce
+  // Search API fetcher with debounce.
   useEffect(() => {
     if (q.length < 2) {
       setResults({ products: [], categories: [], collections: [], suggestions: [], totalMatches: 0 });
       setFailed(false);
       setActiveIndex(-1);
+      setLoading(false);
+      setLastLoadedQuery('');
       return;
     }
 
+    setLoading(true);
+    setFailed(false);
+
+    const controller = new AbortController();
     const timer = setTimeout(async () => {
-      setLoading(true);
-      setFailed(false);
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}&locale=${encodeURIComponent(locale)}`);
-        if (res.ok) {
-          const data = await res.json();
-          setResults({
-            products: data.products || [],
-            categories: data.categories || [],
-            collections: data.collections || [],
-            suggestions: data.suggestions || [],
-            totalMatches: data.totalMatches || (data.products?.length || 0) + (data.categories?.length || 0),
-          });
-          setActiveIndex(-1);
-        } else {
+        const res = await fetch(
+          `/api/search?q=${encodeURIComponent(q)}&locale=${encodeURIComponent(locale)}`,
+          { signal: controller.signal }
+        );
+        if (!res.ok) {
           setFailed(true);
+          return;
         }
+        const data = await res.json();
+        setResults({
+          products: data.products || [],
+          categories: data.categories || [],
+          collections: data.collections || [],
+          suggestions: data.suggestions || [],
+          totalMatches: data.totalMatches || (data.products?.length || 0) + (data.categories?.length || 0),
+        });
+        setLastLoadedQuery(q);
+        setActiveIndex(-1);
       } catch (err) {
+        // Ignore aborted (superseded) requests — a newer keystroke is in flight.
+        if ((err as any)?.name === 'AbortError') return;
         console.error('Search error:', err);
         setFailed(true);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }, 200);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
   }, [q, locale, retryKey]);
 
   // Derived filtered results
@@ -369,6 +392,17 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
       onClose();
       router.push(`/${locale}/catalog?search=${encodeURIComponent(query.trim())}`);
     }
+  };
+
+  // Footer "see all results" button should ALWAYS open the filtered catalogue —
+  // not get redirected to whatever result was hovered/keyboard-selected. The form
+  // submit (Enter key) keeps the "open highlighted item" behaviour.
+  const handleOpenCatalogResults = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    saveToHistory(query.trim());
+    onClose();
+    router.push(`/${locale}/catalog?search=${encodeURIComponent(query.trim())}`);
   };
 
   // Keyboard navigation handler
@@ -473,7 +507,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
           </form>
 
           {/* Filter Tabs when query has results */}
-          {q.length >= 2 && !loading && totalRawMatches > 0 && (
+          {q.length >= 2 && !loading && !failed && hasLoadedQuery && totalRawMatches > 0 && (
             <div className="flex items-center gap-1.5 px-4 py-2.5 bg-secondary/60 border-b border-border overflow-x-auto no-scrollbar text-xs font-bold">
               <button
                 type="button"
@@ -485,7 +519,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                 }`}
               >
                 <span>{locale === 'ru' ? 'Все результаты' : 'Barcha natijalar'}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                   activeTab === 'all' ? 'bg-surface/20 text-surface' : 'bg-secondary text-muted'
                 }`}>
                   {totalRawMatches}
@@ -503,7 +537,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                   }`}
                 >
                   <span>{locale === 'ru' ? 'Товары' : 'Mahsulotlar'}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                     activeTab === 'products' ? 'bg-surface/20 text-surface' : 'bg-secondary text-muted'
                   }`}>
                     {results.products.length}
@@ -522,7 +556,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                   }`}
                 >
                   <span>{locale === 'ru' ? 'Категории' : 'Kategoriyalar'}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                     activeTab === 'categories' ? 'bg-surface/20 text-surface' : 'bg-secondary text-muted'
                   }`}>
                     {results.categories.length}
@@ -541,7 +575,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                   }`}
                 >
                   <span>{locale === 'ru' ? 'Подборки' : 'To‘plamlar'}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                     activeTab === 'collections' ? 'bg-surface/20 text-surface' : 'bg-secondary text-muted'
                   }`}>
                     {results.collections.length}
@@ -651,7 +685,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
             )}
 
             {/* 2. LOADING STATE */}
-            {q.length >= 2 && loading && (
+            {searchPending && (
               <div className="py-16 flex flex-col items-center justify-center space-y-3 text-muted">
                 <Loader2 className="w-8 h-8 animate-spin text-accent" />
                 <p className="text-xs font-semibold">
@@ -661,7 +695,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
             )}
 
             {/* 3. ERROR / FAILED STATE */}
-            {q.length >= 2 && !loading && failed && (
+            {q.length >= 2 && !loading && !searchPending && failed && (
               <div className="py-12 text-center space-y-3 px-4">
                 <AlertCircle className="w-10 h-10 text-muted mx-auto stroke-1" />
                 <p className="font-bold text-heading text-sm">
@@ -678,7 +712,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
             )}
 
             {/* 4. ACTIVE RESULTS DISPLAY */}
-            {q.length >= 2 && !loading && !failed && totalRawMatches > 0 && (
+            {q.length >= 2 && !loading && !failed && !searchPending && hasLoadedQuery && totalRawMatches > 0 && (
               <div className="p-3 sm:p-4 space-y-4 divide-y divide-border">
                 {/* Product Matches */}
                 {filteredProducts.length > 0 && (
@@ -761,7 +795,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
                                 </span>
 
                                 {product.matchedReason && (
-                                  <span className="text-[10px] font-semibold bg-accent-light text-accent px-1.5 py-0.2 rounded">
+                                  <span className="text-[10px] font-semibold bg-accent-light text-accent px-1.5 py-0.5 rounded">
                                     {product.matchedReason}
                                   </span>
                                 )}
@@ -937,7 +971,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
             )}
 
             {/* 5. NO RESULTS / EMPTY STATE */}
-            {q.length >= 2 && !loading && !failed && totalRawMatches === 0 && (
+            {q.length >= 2 && !loading && !failed && !searchPending && hasLoadedQuery && totalRawMatches === 0 && (
               <div className="py-10 px-4 sm:px-6 text-center space-y-4">
                 <div className="w-14 h-14 rounded-2xl bg-secondary mx-auto flex items-center justify-center border border-border">
                   <SearchX className="w-7 h-7 text-muted" />
@@ -1024,7 +1058,7 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
             </div>
 
             <button
-              onClick={handleFormSubmit}
+              onClick={handleOpenCatalogResults}
               className="inline-flex items-center gap-1.5 font-black text-accent hover:underline ml-auto text-xs"
             >
               <span>

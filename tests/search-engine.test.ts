@@ -105,5 +105,13 @@ describe('Search Engine Algorithm Tests', () => {
       expect(highlighted.length).toBeGreaterThan(0);
       expect(highlighted.some((h) => h.match && h.text.toLowerCase() === 'velyur')).toBe(true);
     });
+
+    it('should highlight every occurrence of the same token, including adjacent duplicates', () => {
+      // Regression: a global `/gi` regex reused across `test()` calls advanced
+      // `lastIndex`, so a second back-to-back match was mis-reported as a
+      // non-match (e.g. "paralonparalon" showed only one highlight).
+      const highlighted = highlightMatch('paralonparalon', 'paralon');
+      expect(highlighted.filter((h) => h.match).map((h) => h.text)).toEqual(['paralon', 'paralon']);
+    });
   });
 });
