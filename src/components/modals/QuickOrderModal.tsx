@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { X, Zap, Phone, User, CheckCircle2, Loader2, Send } from 'lucide-react';
 import { formatPrice, formatUnit } from '@/lib/formatters';
 import { storefrontConfig } from '@/config/storefront';
+import { isValidUzPhone, normalizeUzPhone } from '@/lib/utils/phone';
 
 interface QuickOrderModalProps {
   isOpen: boolean;
@@ -37,7 +38,7 @@ export function QuickOrderModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || phone.length < 9) return;
+    if (!name || !isValidUzPhone(phone)) return;
 
     setLoading(true);
     setError(false);
@@ -47,7 +48,7 @@ export function QuickOrderModal({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
-          phone,
+          phone: normalizeUzPhone(phone),
           productTitle,
           sku,
           quantity: qty,

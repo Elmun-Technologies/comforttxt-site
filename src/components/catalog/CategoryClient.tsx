@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CategoryFilterSidebar } from '@/components/catalog/CategoryFilterSidebar';
@@ -35,44 +35,50 @@ export function CategoryClient({
   const inStock = searchParams.inStock === 'true';
   const searchQuery = searchParams.search || '';
 
-  let products = [...initialProducts];
+  // Memoized so unrelated re-renders (e.g. the mobile filter drawer toggle)
+  // don't redo the filter/sort pass on every render.
+  const products = useMemo(() => {
+    let result = [...initialProducts];
 
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    products = products.filter((p) =>
-      (locale === 'ru' ? p.titleRu : p.titleUz).toLowerCase().includes(q) ||
-      p.variants.some((v: any) => v.sku.toLowerCase().includes(q))
-    );
-  }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((p) =>
+        (locale === 'ru' ? p.titleRu : p.titleUz).toLowerCase().includes(q) ||
+        p.variants.some((v: any) => v.sku.toLowerCase().includes(q))
+      );
+    }
 
-  if (selectedSub) {
-    products = products.filter((p) =>
-      (p.specs || []).some((s: any) =>
-        (s.valueUz || s.specValueUz || '').toLowerCase().includes(selectedSub.toLowerCase()) ||
-        (s.valueRu || s.specValueRu || '').toLowerCase().includes(selectedSub.toLowerCase())
-      )
-    );
-  }
+    if (selectedSub) {
+      result = result.filter((p) =>
+        (p.specs || []).some((s: any) =>
+          (s.valueUz || s.specValueUz || '').toLowerCase().includes(selectedSub.toLowerCase()) ||
+          (s.valueRu || s.specValueRu || '').toLowerCase().includes(selectedSub.toLowerCase())
+        )
+      );
+    }
 
-  if (minPrice) {
-    const minP = parseFloat(minPrice);
-    products = products.filter((p) => p.variants.some((v: any) => v.price >= minP));
-  }
+    if (minPrice) {
+      const minP = parseFloat(minPrice);
+      result = result.filter((p) => p.variants.some((v: any) => v.price >= minP));
+    }
 
-  if (maxPrice) {
-    const maxP = parseFloat(maxPrice);
-    products = products.filter((p) => p.variants.some((v: any) => v.price <= maxP));
-  }
+    if (maxPrice) {
+      const maxP = parseFloat(maxPrice);
+      result = result.filter((p) => p.variants.some((v: any) => v.price <= maxP));
+    }
 
-  if (inStock) {
-    products = products.filter((p) => p.variants.some((v: any) => (v.stockStatus === 'IN_STOCK' || (typeof v.stock === 'number' && v.stock > 0))));
-  }
+    if (inStock) {
+      result = result.filter((p) => p.variants.some((v: any) => (v.stockStatus === 'IN_STOCK' || (typeof v.stock === 'number' && v.stock > 0))));
+    }
 
-  if (selectedSort === 'price_asc') {
-    products.sort((a, b) => (a.variants[0]?.price || 0) - (b.variants[0]?.price || 0));
-  } else if (selectedSort === 'price_desc') {
-    products.sort((a, b) => (b.variants[0]?.price || 0) - (a.variants[0]?.price || 0));
-  }
+    if (selectedSort === 'price_asc') {
+      result.sort((a, b) => (a.variants[0]?.price || 0) - (b.variants[0]?.price || 0));
+    } else if (selectedSort === 'price_desc') {
+      result.sort((a, b) => (b.variants[0]?.price || 0) - (a.variants[0]?.price || 0));
+    }
+
+    return result;
+  }, [initialProducts, searchQuery, selectedSub, minPrice, maxPrice, inStock, selectedSort, locale]);
 
   interface Chip {
     key: string;

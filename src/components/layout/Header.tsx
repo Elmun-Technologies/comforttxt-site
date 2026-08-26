@@ -134,6 +134,7 @@ export function Header({ locale }: HeaderProps) {
         {/* Mobile menu trigger */}
         <button
           onClick={() => setMobileMenuOpen(true)}
+          aria-label={locale === 'ru' ? 'Открыть меню' : 'Menyuni ochish'}
           className="lg:hidden p-2 text-heading hover:bg-secondary rounded-xl transition"
         >
           <Menu className="w-6 h-6" />
@@ -165,6 +166,7 @@ export function Header({ locale }: HeaderProps) {
           {/* Mobile Search Button */}
           <button
             onClick={() => setSearchOpen(true)}
+            aria-label={locale === 'ru' ? 'Поиск' : 'Qidiruv'}
             className="lg:hidden p-2 text-heading hover:bg-secondary rounded-xl transition"
           >
             <Search className="w-5 h-5" />
@@ -228,9 +230,21 @@ export function Header({ locale }: HeaderProps) {
       {/* Navigation Bar & MegaMenu */}
       <div className="bg-surface/50 backdrop-blur-md text-heading border-t border-border hidden lg:block relative">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-          {/* MegaMenu Trigger */}
-          <div className="relative" onMouseEnter={() => setMegaMenuOpen(true)}>
-            <button className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface font-black text-xs uppercase tracking-widest px-6 py-3.5 transition">
+          {/* MegaMenu Trigger — hover for mouse users, click/Enter and focus for keyboard */}
+          <div
+            className="relative"
+            onMouseEnter={() => setMegaMenuOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setMegaMenuOpen(false);
+            }}
+          >
+            <button
+              onClick={() => setMegaMenuOpen((v) => !v)}
+              onFocus={() => setMegaMenuOpen(true)}
+              aria-haspopup="true"
+              aria-expanded={megaMenuOpen}
+              className="flex items-center gap-2 bg-accent hover:bg-accent-hover text-surface font-black text-xs uppercase tracking-widest px-6 py-3.5 transition"
+            >
               <Menu className="w-4 h-4" />
               <span>{locale === 'ru' ? 'Категории товаров' : 'Mahsulot Kategoriyalari'}</span>
               <ChevronDown className="w-3.5 h-3.5 ml-1" />

@@ -16,6 +16,7 @@ import { StockIndicator } from '@/components/product/StockIndicator';
 import { CopyButton } from '@/components/ui/CopyButton';
 import { QuantityStepper } from '@/components/ui/QuantityStepper';
 import { calculateSubtotal } from '@/lib/calc';
+import { useTimedFlag } from '@/lib/hooks/useTimedFlag';
 
 interface ProductCardProps {
   product: StorefrontProduct | any;
@@ -25,7 +26,7 @@ interface ProductCardProps {
 export function ProductCard({ product, locale }: ProductCardProps) {
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
   const [quickOrderOpen, setQuickOrderOpen] = useState(false);
-  const [addedToast, setAddedToast] = useState(false);
+  const [addedToast, triggerAddedToast] = useTimedFlag(1500);
 
   const variants = product.variants || [];
   const selectedVariant = variants[selectedVariantIdx] || variants[0];
@@ -75,11 +76,11 @@ export function ProductCard({ product, locale }: ProductCardProps) {
       wholesalePrice: selectedVariant.wholesalePrice || selectedVariant.price,
       unitType: product.unitType,
       minQtyStep: step,
+      minQuantity: selectedVariant.minQuantity,
       quantity,
     });
 
-    setAddedToast(true);
-    setTimeout(() => setAddedToast(false), 1500);
+    triggerAddedToast();
   };
 
   const handleQuickOrder = (e: React.MouseEvent) => {
@@ -144,7 +145,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
             <button
               onClick={(e) => {
                 e.preventDefault();
-                toggleFavorite(product.id);
+                toggleFavorite(product.id, locale);
               }}
               className={`p-2 rounded-xl backdrop-blur-md shadow-xs transition ${
                 favorite
@@ -173,7 +174,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                     specValueRu: s.valueRu || s.specValueRu || '',
                   })),
                   image: mainImage,
-                });
+                }, locale);
               }}
               className={`p-2 rounded-xl backdrop-blur-md shadow-xs transition ${
                 inCompare

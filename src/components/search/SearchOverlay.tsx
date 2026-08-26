@@ -6,6 +6,7 @@ import { Search, X, Package, Tag, ArrowRight, Loader2, Sparkles, BookOpen, Alert
 import { formatPrice } from '@/lib/formatters';
 import { ProductImage } from '@/components/product/ProductImage';
 import { storefrontConfig } from '@/config/storefront';
+import { useOverlay } from '@/lib/hooks/useOverlay';
 
 interface SearchOverlayProps {
   isOpen: boolean;
@@ -27,30 +28,17 @@ export function SearchOverlay({ isOpen, onClose, locale }: SearchOverlayProps) {
   const [failed, setFailed] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
 
+  useOverlay(isOpen, onClose);
+
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
       setTimeout(() => inputRef.current?.focus(), 50);
     } else {
-      document.body.style.overflow = '';
       setQuery('');
       setResults({ products: [], categories: [], collections: [] });
       setFailed(false);
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isOpen]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
 
   const q = query.trim().toLowerCase();
 

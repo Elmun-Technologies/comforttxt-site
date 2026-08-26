@@ -33,6 +33,7 @@ import { Tooltip } from '@/components/ui/Tooltip';
 import { getSpecTooltip } from '@/data/spec-glossary';
 import { validateQuantity, calculateSubtotal } from '@/lib/calc';
 import { storefrontConfig } from '@/config/storefront';
+import { useTimedFlag } from '@/lib/hooks/useTimedFlag';
 
 interface PDPClientProps {
   product: StorefrontProduct;
@@ -47,7 +48,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [quantity, setQuantity] = useState(product.variants[0]?.minQuantity || product.minQtyStep || 1);
   const [quickOrderOpen, setQuickOrderOpen] = useState(false);
-  const [addedToast, setAddedToast] = useState(false);
+  const [addedToast, triggerAddedToast] = useTimedFlag(2000);
   const [activeTab, setActiveTab] = useState<'desc' | 'specs' | 'delivery'>('desc');
   const [inputValue, setInputValue] = useState(quantity.toString());
   const [showAllSwatches, setShowAllSwatches] = useState(false);
@@ -94,11 +95,11 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
       wholesalePrice: selectedVariant.wholesalePrice ?? selectedVariant.price,
       unitType: product.unitType,
       minQtyStep: selectedVariant.quantityStep || product.minQtyStep || 1,
+      minQuantity: selectedVariant.minQuantity,
       quantity,
     });
 
-    setAddedToast(true);
-    setTimeout(() => setAddedToast(false), 2000);
+    triggerAddedToast();
   };
 
   // Telegram order link uses the configured public Telegram link (never an invented bot)
@@ -466,7 +467,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => toggleFavorite(product.id)}
+                  onClick={() => toggleFavorite(product.id, locale)}
                   className={`p-2.5 rounded-xl border transition ${
                     favorite ? 'bg-accent-light text-accent border-accent/20' : 'bg-secondary text-body hover:bg-border border-border'
                   }`}
@@ -490,7 +491,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                         specValueRu: s.valueRu,
                       })),
                       image: currentImage,
-                    })
+                    }, locale)
                   }
                   className={`p-2.5 rounded-xl border transition ${
                     inCompare ? 'bg-accent-light text-accent border-accent/30' : 'bg-secondary text-body hover:bg-border border-border'

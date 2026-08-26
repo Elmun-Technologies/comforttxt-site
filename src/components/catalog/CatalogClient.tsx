@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CategoryFilterSidebar } from '@/components/catalog/CategoryFilterSidebar';
@@ -32,70 +32,91 @@ export function CatalogClient({ locale, searchParams, initialProducts = [], cate
   const selectedFoamType = searchParams.foam_type || '';
   const selectedPowerType = searchParams.power_type || '';
 
-  let products = [...initialProducts];
+  // Re-filtering/sorting the whole catalog is pure overhead when only
+  // unrelated state (e.g. the mobile filter drawer) changes, so this only
+  // reruns when the inputs that actually affect the result set change.
+  const products = useMemo(() => {
+    let result = [...initialProducts];
 
-  if (selectedCategory) {
-    products = products.filter((p) => p.categorySlug === selectedCategory);
-  }
+    if (selectedCategory) {
+      result = result.filter((p) => p.categorySlug === selectedCategory);
+    }
 
-  if (selectedCollection) {
-    products = products.filter((p) => p.collectionSlug === selectedCollection);
-  }
+    if (selectedCollection) {
+      result = result.filter((p) => p.collectionSlug === selectedCollection);
+    }
 
-  if (selectedSub) {
-    products = products.filter((p) =>
-      (p.specs || []).some((s: any) =>
-        (s.valueUz || s.specValueUz || '').toLowerCase().includes(selectedSub.toLowerCase()) ||
-        (s.valueRu || s.specValueRu || '').toLowerCase().includes(selectedSub.toLowerCase())
-      )
-    );
-  }
+    if (selectedSub) {
+      result = result.filter((p) =>
+        (p.specs || []).some((s: any) =>
+          (s.valueUz || s.specValueUz || '').toLowerCase().includes(selectedSub.toLowerCase()) ||
+          (s.valueRu || s.specValueRu || '').toLowerCase().includes(selectedSub.toLowerCase())
+        )
+      );
+    }
 
-  if (selectedTexture) {
-    products = products.filter((p) =>
-      (p.specs || []).some((s: any) => s.key === 'texture' && (s.valueUz || s.specValueUz || '').toLowerCase().includes(selectedTexture.toLowerCase()))
-    );
-  }
+    if (selectedTexture) {
+      result = result.filter((p) =>
+        (p.specs || []).some((s: any) => s.key === 'texture' && (s.valueUz || s.specValueUz || '').toLowerCase().includes(selectedTexture.toLowerCase()))
+      );
+    }
 
-  if (selectedFoamType) {
-    products = products.filter((p) =>
-      (p.specs || []).some((s: any) => s.key === 'foam_type' && (s.valueUz || s.specValueUz || '').includes(selectedFoamType))
-    );
-  }
+    if (selectedFoamType) {
+      result = result.filter((p) =>
+        (p.specs || []).some((s: any) => s.key === 'foam_type' && (s.valueUz || s.specValueUz || '').includes(selectedFoamType))
+      );
+    }
 
-  if (selectedPowerType) {
-    products = products.filter((p) =>
-      (p.specs || []).some((s: any) => s.key === 'power_type' && (s.valueUz || s.specValueUz || '').toLowerCase().includes(selectedPowerType.toLowerCase()))
-    );
-  }
+    if (selectedPowerType) {
+      result = result.filter((p) =>
+        (p.specs || []).some((s: any) => s.key === 'power_type' && (s.valueUz || s.specValueUz || '').toLowerCase().includes(selectedPowerType.toLowerCase()))
+      );
+    }
 
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    products = products.filter((p) =>
-      (locale === 'ru' ? p.titleRu : p.titleUz).toLowerCase().includes(q) ||
-      p.variants.some((v: any) => v.sku.toLowerCase().includes(q))
-    );
-  }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((p) =>
+        (locale === 'ru' ? p.titleRu : p.titleUz).toLowerCase().includes(q) ||
+        p.variants.some((v: any) => v.sku.toLowerCase().includes(q))
+      );
+    }
 
-  if (minPrice) {
-    const minP = parseFloat(minPrice);
-    products = products.filter((p) => p.variants.some((v: any) => v.price >= minP));
-  }
+    if (minPrice) {
+      const minP = parseFloat(minPrice);
+      result = result.filter((p) => p.variants.some((v: any) => v.price >= minP));
+    }
 
-  if (maxPrice) {
-    const maxP = parseFloat(maxPrice);
-    products = products.filter((p) => p.variants.some((v: any) => v.price <= maxP));
-  }
+    if (maxPrice) {
+      const maxP = parseFloat(maxPrice);
+      result = result.filter((p) => p.variants.some((v: any) => v.price <= maxP));
+    }
 
-  if (inStock) {
-    products = products.filter((p) => p.variants.some((v: any) => (v.stockStatus === 'IN_STOCK' || (typeof v.stock === 'number' && v.stock > 0))));
-  }
+    if (inStock) {
+      result = result.filter((p) => p.variants.some((v: any) => (v.stockStatus === 'IN_STOCK' || (typeof v.stock === 'number' && v.stock > 0))));
+    }
 
-  if (selectedSort === 'price_asc') {
-    products.sort((a, b) => (a.variants[0]?.price || 0) - (b.variants[0]?.price || 0));
-  } else if (selectedSort === 'price_desc') {
-    products.sort((a, b) => (b.variants[0]?.price || 0) - (a.variants[0]?.price || 0));
-  }
+    if (selectedSort === 'price_asc') {
+      result.sort((a, b) => (a.variants[0]?.price || 0) - (b.variants[0]?.price || 0));
+    } else if (selectedSort === 'price_desc') {
+      result.sort((a, b) => (b.variants[0]?.price || 0) - (a.variants[0]?.price || 0));
+    }
+
+    return result;
+  }, [
+    initialProducts,
+    selectedCategory,
+    selectedCollection,
+    selectedSub,
+    selectedTexture,
+    selectedFoamType,
+    selectedPowerType,
+    searchQuery,
+    minPrice,
+    maxPrice,
+    inStock,
+    selectedSort,
+    locale,
+  ]);
 
   // ── Active filter chips ─────────────────────────────────────────────
   interface Chip {

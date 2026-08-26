@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Filter, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { getSpecTooltip } from '@/data/spec-glossary';
+import { useOverlay } from '@/lib/hooks/useOverlay';
 
 interface CategoryFilterProps {
   categorySlug?: string;
@@ -55,7 +57,33 @@ export function CategoryFilterSidebar({
     router.push(targetUrl);
   };
 
+  // Local, debounced copies of the price inputs — pushing a router
+  // navigation on every keystroke would refetch/re-render on each digit
+  // and drop focus. Committed to the URL 450ms after typing stops, and
+  // resynced when the filters change from elsewhere (e.g. a chip removal).
+  const [minPriceInput, setMinPriceInput] = useState(minPrice);
+  const [maxPriceInput, setMaxPriceInput] = useState(maxPrice);
+
+  useEffect(() => setMinPriceInput(minPrice), [minPrice]);
+  useEffect(() => setMaxPriceInput(maxPrice), [maxPrice]);
+
+  useEffect(() => {
+    if (minPriceInput === minPrice) return;
+    const timer = setTimeout(() => updateParam('minPrice', minPriceInput), 450);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minPriceInput]);
+
+  useEffect(() => {
+    if (maxPriceInput === maxPrice) return;
+    const timer = setTimeout(() => updateParam('maxPrice', maxPriceInput), 450);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [maxPriceInput]);
+
   const currentCategoryObj = categories.find((c) => c.slug === selectedCategory);
+
+  useOverlay(isMobile && isOpenMobile, onCloseMobile || (() => {}));
 
   const sidebarContent = (
     <div className="bg-surface p-5 rounded-2xl border border-border shadow-xs space-y-6">
@@ -257,15 +285,15 @@ export function CategoryFilterSidebar({
           <input
             type="number"
             placeholder="Min"
-            value={minPrice}
-            onChange={(e) => updateParam('minPrice', e.target.value)}
+            value={minPriceInput}
+            onChange={(e) => setMinPriceInput(e.target.value)}
             className="px-3 py-1.5 bg-secondary border border-border rounded-xl text-xs font-semibold text-heading focus:outline-none focus:border-accent"
           />
           <input
             type="number"
             placeholder="Max"
-            value={maxPrice}
-            onChange={(e) => updateParam('maxPrice', e.target.value)}
+            value={maxPriceInput}
+            onChange={(e) => setMaxPriceInput(e.target.value)}
             className="px-3 py-1.5 bg-secondary border border-border rounded-xl text-xs font-semibold text-heading focus:outline-none focus:border-accent"
           />
         </div>
@@ -298,7 +326,11 @@ export function CategoryFilterSidebar({
                 <span className="font-black text-sm uppercase tracking-wider text-heading">
                   {locale === 'ru' ? 'Фильтры' : 'Filterlar'}
                 </span>
-                <button onClick={onCloseMobile} className="p-1 text-muted">
+                <button
+                  onClick={onCloseMobile}
+                  aria-label={locale === 'ru' ? 'Закрыть фильтры' : 'Filterlarni yopish'}
+                  className="p-1 text-muted"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>
