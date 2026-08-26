@@ -7,6 +7,7 @@ import { CategoryFilterSidebar } from '@/components/catalog/CategoryFilterSideba
 import { SlidersHorizontal, PackageX, X, RotateCcw, LayoutGrid } from 'lucide-react';
 import { PageHero } from '@/components/layout/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { scoreProduct } from '@/lib/search/searchEngine';
 
 interface CategoryClientProps {
   locale: string;
@@ -41,11 +42,17 @@ export function CategoryClient({
     let result = [...initialProducts];
 
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter((p) =>
-        (locale === 'ru' ? p.titleRu : p.titleUz).toLowerCase().includes(q) ||
-        p.variants.some((v: any) => v.sku.toLowerCase().includes(q))
-      );
+      const scoredList: { product: any; score: number }[] = [];
+      for (const prod of result) {
+        const scored = scoreProduct(prod, searchQuery, locale);
+        if (scored && scored.score > 0) {
+          scoredList.push({ product: prod, score: scored.score });
+        }
+      }
+      if (selectedSort === 'newest') {
+        scoredList.sort((a, b) => b.score - a.score);
+      }
+      result = scoredList.map((s) => s.product);
     }
 
     if (selectedSub) {
