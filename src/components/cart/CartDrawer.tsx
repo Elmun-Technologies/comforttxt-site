@@ -5,8 +5,8 @@ import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { formatPrice, formatUnit } from '@/lib/formatters';
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { ProductImage } from '@/components/product/ProductImage';
+import { useOverlay } from '@/lib/hooks/useOverlay';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -19,16 +19,7 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
   const { isB2B } = useAuthStore();
   const b2bActive = isB2B();
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+  useOverlay(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -57,6 +48,7 @@ export function CartDrawer({ isOpen, onClose, locale }: CartDrawerProps) {
             </div>
             <button
               onClick={onClose}
+              aria-label={locale === 'ru' ? 'Закрыть корзину' : 'Savatchani yopish'}
               className="p-1.5 text-muted hover:text-heading rounded-xl hover:bg-border transition"
             >
               <X className="w-5 h-5" />

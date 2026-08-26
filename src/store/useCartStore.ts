@@ -13,6 +13,8 @@ export interface CartItem {
   wholesalePrice: number;
   unitType: string; // meter, sheet, pcs, kg, pack
   minQtyStep: number;
+  /** True minimum order quantity for this variant (may exceed minQtyStep). */
+  minQuantity?: number;
   quantity: number;
 }
 
@@ -34,19 +36,21 @@ export const useCartStore = create<CartState>()(
         const items = get().items;
         const existingIndex = items.findIndex((i) => i.variantId === newItem.variantId);
         // Default to minQtyStep if quantity is not provided or invalid
-        const qtyToAdd = validateQuantity(
-          newItem.quantity ?? newItem.minQtyStep,
-          newItem.unitType,
-          newItem.minQtyStep
+        const qtyToAdd = Math.max(
+          validateQuantity(newItem.quantity ?? newItem.minQtyStep, newItem.unitType, newItem.minQtyStep),
+          newItem.minQuantity || 0
         );
 
         if (existingIndex > -1) {
           const updatedItems = [...items];
           // Add to existing quantity, then validate again
-          updatedItems[existingIndex].quantity = validateQuantity(
-            updatedItems[existingIndex].quantity + qtyToAdd,
-            updatedItems[existingIndex].unitType,
-            updatedItems[existingIndex].minQtyStep
+          updatedItems[existingIndex].quantity = Math.max(
+            validateQuantity(
+              updatedItems[existingIndex].quantity + qtyToAdd,
+              updatedItems[existingIndex].unitType,
+              updatedItems[existingIndex].minQtyStep
+            ),
+            updatedItems[existingIndex].minQuantity || 0
           );
           set({ items: updatedItems });
         } else {
@@ -61,13 +65,19 @@ export const useCartStore = create<CartState>()(
           get().removeItem(variantId);
           return;
         }
-        
+
         set({
           items: get().items.map((i) => {
             if (i.variantId === variantId) {
               return {
                 ...i,
-                quantity: validateQuantity(quantity, i.unitType, i.minQtyStep),
+                // The true minimum order (minQuantity) can exceed the step
+                // granularity (minQtyStep) — never let the cart's own -/+
+                // controls decrement below it.
+                quantity: Math.max(
+                  validateQuantity(quantity, i.unitType, i.minQtyStep),
+                  i.minQuantity || 0
+                ),
               };
             }
             return i;

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Package, CheckCircle2, User, Phone, MapPin, Loader2, ArrowRight, ClipboardCheck, Layers, Handshake, Search } from 'lucide-react';
+import { isValidUzPhone, normalizeUzPhone } from '@/lib/utils/phone';
 
 interface SampleBoxProps {
   fabrics: any[];
@@ -32,7 +33,7 @@ export function SampleBoxClient({ fabrics, locale }: SampleBoxProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || phone.length < 9) return;
+    if (!name || !isValidUzPhone(phone)) return;
 
     setLoading(true);
     setError(false);
@@ -42,7 +43,7 @@ export function SampleBoxClient({ fabrics, locale }: SampleBoxProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
-          phone,
+          phone: normalizeUzPhone(phone),
           address,
           selectedFabrics: selectedFabricIds,
         }),

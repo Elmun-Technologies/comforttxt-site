@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import { ShoppingBag, Zap, Check } from 'lucide-react';
 import { formatPrice } from '@/lib/formatters';
 import { useCartStore } from '@/store/useCartStore';
 import { StorefrontProduct, StorefrontVariant } from '@/services/storefront/types';
+import { useTimedFlag } from '@/lib/hooks/useTimedFlag';
 
 interface StickyMobileBarProps {
   variant: StorefrontVariant;
@@ -23,7 +23,7 @@ export function StickyMobilePurchaseBar({
   locale,
   onOpenQuickOrder,
 }: StickyMobileBarProps) {
-  const [added, setAdded] = useState(false);
+  const [added, triggerAdded] = useTimedFlag(1500);
   const addItem = useCartStore((s) => s.addItem);
 
   const handleAdd = () => {
@@ -39,10 +39,10 @@ export function StickyMobilePurchaseBar({
       wholesalePrice: variant.wholesalePrice ?? variant.price,
       unitType: product.unitType,
       minQtyStep: variant.quantityStep || product.minQtyStep || 1,
+      minQuantity: variant.minQuantity,
       quantity,
     });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1500);
+    triggerAdded();
   };
 
   return (

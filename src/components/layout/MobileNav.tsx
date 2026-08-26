@@ -3,9 +3,9 @@
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Home, Grid, Search, Heart, ShoppingBag, X, Phone, Globe, ShieldCheck } from 'lucide-react';
-import { useEffect } from 'react';
 import { storefrontConfig } from '@/config/storefront';
 import { BrandLogo } from '@/components/layout/BrandLogo';
+import { useOverlay } from '@/lib/hooks/useOverlay';
 
 interface MobileNavProps {
   isOpen: boolean;
@@ -40,16 +40,7 @@ export function MobileNav({
     router.replace(`${pathname}${query}`, { locale: newLocale });
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
+  useOverlay(isOpen, onClose);
 
   const categories = [
     { labelUz: 'Mebel matolari', labelRu: 'Мебельные ткани', href: '/catalog/mebel-matolari' },
@@ -75,7 +66,11 @@ export function MobileNav({
               <div className="relative">
                 <BrandLogo locale={locale} size="footer" />
               </div>
-              <button onClick={onClose} className="relative p-1 text-surface/60 hover:text-surface transition">
+              <button
+                onClick={onClose}
+                aria-label={locale === 'ru' ? 'Закрыть меню' : 'Menyuni yopish'}
+                className="relative p-1 text-surface/60 hover:text-surface transition"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>

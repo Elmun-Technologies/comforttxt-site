@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { storefrontConfig } from '@/config/storefront';
+import { isValidUzPhone, normalizeUzPhone } from '@/lib/utils/phone';
 import {
   ShieldCheck,
   Building2,
@@ -42,7 +43,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!companyName || !contactPerson || phone.length < 9) return;
+    if (!companyName || !contactPerson || !isValidUzPhone(phone)) return;
 
     setLoading(true);
     setError(false);
@@ -52,7 +53,7 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: contactPerson,
-          phone,
+          phone: normalizeUzPhone(phone),
           companyName,
           region,
           monthlyPurchaseRange: monthlyVolume,
