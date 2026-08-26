@@ -67,9 +67,10 @@ export function Header({ locale }: HeaderProps) {
   };
 
   return (
+    <>
     <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-border shadow-brand-sm">
       {/* Top Utility Bar — shows only confirmed contact values */}
-      <div className="bg-ink-950 text-cream-200/80 text-xs py-1.5 px-4 border-b border-ink-800">
+      <div className="bg-charcoal-950 text-cream-200/80 text-xs py-1.5 px-4 border-b border-charcoal-900">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center gap-4">
             {storefrontConfig.phone && (
@@ -77,7 +78,7 @@ export function Header({ locale }: HeaderProps) {
                 href={`tel:${storefrontConfig.phoneRaw}`}
                 className="inline-flex items-center gap-1.5 hover:text-surface transition font-bold text-[11px]"
               >
-                <Phone className="w-3.5 h-3.5 text-copper-400" />
+                <Phone className="w-3.5 h-3.5 text-brand-300" />
                 <span>{storefrontConfig.phone}</span>
               </a>
             )}
@@ -111,7 +112,7 @@ export function Header({ locale }: HeaderProps) {
             ) : (
               <Link
                 href="/wholesale"
-                className="text-copper-300 hover:text-copper-200 font-black text-[11px] bg-copper-500/15 px-2.5 py-0.5 rounded-md border border-copper-500/40 transition"
+                className="text-brand-300 hover:text-brand-200 font-black text-[11px] bg-accent/15 px-2.5 py-0.5 rounded-md border border-accent/40 transition"
               >
                 {locale === 'ru' ? 'Опт B2B' : 'Ulgurji B2B'}
               </Link>
@@ -123,7 +124,7 @@ export function Header({ locale }: HeaderProps) {
               <button
                 onClick={() => switchLocale('uz')}
                 className={`px-1.5 py-0.5 rounded text-[10px] font-black transition ${
-                  locale === 'uz' ? 'bg-copper-500 text-surface' : 'text-cream-200/70 hover:text-surface'
+                  locale === 'uz' ? 'bg-accent text-surface' : 'text-cream-200/70 hover:text-surface'
                 }`}
               >
                 UZ
@@ -131,7 +132,7 @@ export function Header({ locale }: HeaderProps) {
               <button
                 onClick={() => switchLocale('ru')}
                 className={`px-1.5 py-0.5 rounded text-[10px] font-black transition ${
-                  locale === 'ru' ? 'bg-copper-500 text-surface' : 'text-cream-200/70 hover:text-surface'
+                  locale === 'ru' ? 'bg-accent text-surface' : 'text-cream-200/70 hover:text-surface'
                 }`}
               >
                 RU
@@ -276,8 +277,8 @@ export function Header({ locale }: HeaderProps) {
             ))}
           </nav>
 
-          <div className="text-xs text-ink font-bold inline-flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-copper-500 animate-pulse-dot" />
+          <div className="text-xs text-heading font-bold inline-flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-dot" />
             {locale === 'ru' ? 'Доставка по всему Узбекистану' : 'O‘zbekiston bo‘ylab yetkazib berish'}
           </div>
         </div>
@@ -286,7 +287,13 @@ export function Header({ locale }: HeaderProps) {
         {megaMenuOpen && <MegaMenu locale={locale} onClose={() => setMegaMenuOpen(false)} />}
       </div>
 
-      {/* Overlays */}
+    </header>
+
+      {/* Overlays — rendered OUTSIDE <header> on purpose. The header uses
+          `backdrop-blur-xl`, and a non-none backdrop-filter establishes a
+          containing block for fixed-position descendants. Rendering these
+          fixed overlays inside the header traps them against the header box
+          (search opens as a clipped, stuck strip) instead of the viewport. */}
       <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} locale={locale} />
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} locale={locale} />
       <MobileNav
@@ -299,6 +306,6 @@ export function Header({ locale }: HeaderProps) {
         locale={locale}
         switchLocale={switchLocale}
       />
-    </header>
+    </>
   );
 }

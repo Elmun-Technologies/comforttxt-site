@@ -266,7 +266,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
             </div>
 
             {/* Price Box */}
-            <div className="bg-ink-950 p-5 rounded-2xl border border-ink-800 relative overflow-hidden">
+            <div className="bg-charcoal-950 p-5 rounded-2xl border border-charcoal-900 relative overflow-hidden">
               <div aria-hidden="true" className="pattern-rings-dark pattern-fade absolute inset-0 pointer-events-none opacity-40" />
               <div className="relative flex items-baseline justify-between gap-4">
                 <div>
@@ -292,7 +292,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
                       / {unitLabel}
                     </span>
                     {discountPct > 0 && (
-                      <span className="inline-flex items-center gap-1.5 bg-copper-500 text-surface text-[11px] font-black px-2 py-0.5 rounded-md">
+                      <span className="inline-flex items-center gap-1.5 bg-accent text-surface text-[11px] font-black px-2 py-0.5 rounded-md">
                         −{discountPct}%
                         <span className="font-bold">
                           {locale === 'ru' ? 'выгода' : 'tejaysiz'} {formatPrice(savingsAmount, locale)}
@@ -304,10 +304,10 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
 
                 {!b2bActive && selectedVariant?.wholesalePrice && (
                   <div className="text-right shrink-0">
-                    <div className="text-[11px] text-copper-300 font-bold">
+                    <div className="text-[11px] text-brand-300 font-bold">
                       {locale === 'ru' ? 'Оптом B2B:' : 'Ulgurji B2B:'}
                     </div>
-                    <div className="text-base font-black text-copper-300">
+                    <div className="text-base font-black text-brand-300">
                       {formatPrice(selectedVariant.wholesalePrice, locale)}
                     </div>
                   </div>
@@ -450,9 +450,9 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
               <button
                 onClick={() => setQuickOrderOpen(true)}
                 disabled={!selectedVariant?.isAvailable}
-                className="py-4 px-6 bg-cream-200/70 hover:bg-cream-300 text-ink font-black text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 border border-border disabled:opacity-50 disabled:cursor-not-allowed active:scale-98"
+                className="py-4 px-6 bg-cream-200/70 hover:bg-cream-300 text-heading font-black text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 border border-border disabled:opacity-50 disabled:cursor-not-allowed active:scale-98"
               >
-                <Zap className="w-5 h-5 text-copper-600" />
+                <Zap className="w-5 h-5 text-accent" />
                 <span>{locale === 'ru' ? 'Купить в 1 клик' : '1-Klikda xarid qilish'}</span>
               </button>
             </div>
@@ -526,7 +526,7 @@ export function ProductDetailClient({ product, locale }: PDPClientProps) {
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-4 pb-3 text-sm font-bold border-b-2 whitespace-nowrap transition ${
                 activeTab === tab.id
-                  ? 'border-copper-500 text-ink'
+                  ? 'border-accent text-heading'
                   : 'border-transparent text-muted hover:text-heading'
               }`}
             >
