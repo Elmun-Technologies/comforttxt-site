@@ -181,7 +181,7 @@ export default async function HomePage({ params }: HomePageProps) {
                   <input
                     type="search"
                     name="search"
-                    placeholder={isRu ? 'Название или артикул (SKU), например F30D' : 'Nomi yoki artikul (SKU), masalan F30D'}
+                    placeholder={isRu ? 'Название или артикул (SKU), например 8016' : 'Nomi yoki artikul (SKU), masalan 8016'}
                     className="w-full text-xs sm:text-sm font-semibold text-heading placeholder:text-muted bg-transparent focus:outline-none"
                   />
                   <button

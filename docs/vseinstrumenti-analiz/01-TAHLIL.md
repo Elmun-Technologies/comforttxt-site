@@ -401,7 +401,7 @@ interface ProductReview {       // #39
 | **`product: any`** | `ProductCard.tsx:17` | Type xavfsizligi yo'q | Hali ochiq |
 | Sticky element yo'q (PDP tab, cart summary) | bir nechta | #32, #38, #46 | Hali ochiq |
 | Skeleton/loading holati yo'q | global | Sekin tarmoqda yomon UX | ✅ Qisman — `ui/Skeleton.tsx` + `ProductCardSkeleton`/`ProductDetailSkeleton`, `loading.tsx` (root va `/product/[slug]`) ulandi |
-| Kategoriya rasmi placeholder | `public/images/categories/` | Vizual sifat | Hali ochiq |
+| Kategoriya rasmi placeholder | `public/images/categories/` | Vizual sifat | ✅ Yopildi — `realCatalog.ts` va bosh sahifa endi `public/images/products/` dagi haqiqiy fotosuratlarni ishlatadi; eski placeholder fayllar va arxivlar olib tashlandi |
 | **`onHandQuantity` / `priceTiers` mock ma'lumotda to'ldirilmagan** | `MockStorefrontService.ts` | #20/#29/#36 UI hech narsa ko'rsatolmaydi | ✅ Tuzatildi — `mockEnrichment.ts` har bir variantga deterministik qiymat qo'shadi |
 
 ---

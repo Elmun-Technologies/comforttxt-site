@@ -98,31 +98,12 @@ export const specGlossary: Record<string, SpecGlossaryEntry> = {
 
   // ── Foam (paralon / PPU) ──────────────────────────────────────────────────
   foam_type: {
-    titleUz: 'Paralon markasi (ST / EL / HR)',
-    titleRu: 'Марка поролона (ST / EL / HR)',
+    titleUz: 'Paralon buyum turi',
+    titleRu: 'Тип поролонового изделия',
     bodyUz:
-      'ST — standart, kundalik o‘rtacha yuk uchun. EL — yuqori qattiqlik, o‘tirish qismi va katta yuk uchun. HR — yuqori elastik, shaklini uzoq saqlaydi, premium mebel uchun.',
+      'Korner — divan yostiqlari va kushandalar tayanchlari uchun burchak buyumlar. Taroq — qirqim va alohida detallar uchun g‘adir-budir shakldagi paralon. O‘lcham va zichlik menejer bilan tasdiqlanadi.',
     bodyRu:
-      'ST — стандартный, для повседневной средней нагрузки. EL — повышенная жёсткость, для сидений и большой нагрузки. HR — высокоэластичный, долго держит форму, для премиум-мебели.',
-  },
-
-  foam_density: {
-    titleUz: 'Paralon zichligi (kg/m³)',
-    titleRu: 'Плотность поролона (кг/м³)',
-    bodyUz:
-      'Belgidagi birinchi raqam (masalan ST2536 dagi 25) — zichlik. Yuqori zichlik = uzoq xizmat muddati va cho‘kib qolmaslik.',
-    bodyRu:
-      'Первое число в маркировке (например 25 в ST2536) — плотность. Выше плотность = дольше срок службы и меньше проседание.',
-    unit: 'kg/m³',
-  },
-
-  foam_hardness: {
-    titleUz: 'Paralon qattiqligi',
-    titleRu: 'Жёсткость поролона',
-    bodyUz:
-      'Belgidagi ikkinchi raqam (masalan ST2536 dagi 36) — qattiqlik. Qancha yuqori bo‘lsa, o‘tirganda shuncha kam botadi.',
-    bodyRu:
-      'Второе число в маркировке (например 36 в ST2536) — жёсткость. Чем выше, тем меньше продавливается при посадке.',
+      'Корнер — угловые элементы для подушек и опор спинок диванов. Гребенка — фигурный поролон для раскроя и отдельных деталей. Размеры и плотность уточняются у менеджера.',
   },
 
   thickness: {

@@ -194,7 +194,7 @@ export function CategoryFilterSidebar({
               })()}
             </label>
             <div className="flex flex-wrap gap-1.5">
-              {['Velyur', 'Bukle', 'Shenill', 'Rogojka', 'Eko-charm'].map((txt) => (
+              {['Velyur', 'Bukle', 'Shenill', 'Rogojka', 'Mikrofibra', 'Naqshli'].map((txt) => (
                 <button
                   key={txt}
                   onClick={() => updateParam('texture', selectedTexture === txt ? '' : txt)}
@@ -217,7 +217,7 @@ export function CategoryFilterSidebar({
         <div className="space-y-4 border-t border-border pt-4">
           <div className="space-y-2">
             <label className="text-xs font-bold text-heading flex items-center gap-1.5 uppercase tracking-wider">
-              {locale === 'ru' ? 'Марка поролона (Тип)' : 'Paralon markasi (Turi)'}
+              {locale === 'ru' ? 'Тип изделия' : 'Buyum turi'}
               {(() => {
                 const tip = getSpecTooltip('foam_type', locale);
                 return tip && <Tooltip title={tip.title} body={tip.body} />;
@@ -225,9 +225,8 @@ export function CategoryFilterSidebar({
             </label>
             <div className="flex flex-wrap gap-1.5">
               {[
-                { id: 'ST', label: 'ST (Standart)' },
-                { id: 'EL', label: 'EL (Yuqori qattiqlik)' },
-                { id: 'HR', label: 'HR (Yuqori elastik)' },
+                { id: 'Korner', label: locale === 'ru' ? 'Корнер (уголки)' : 'Korner (burchak)' },
+                { id: 'Taroq', label: locale === 'ru' ? 'Гребенки' : 'Taroq' },
               ].map((f) => (
                 <button
                   key={f.id}
@@ -251,14 +250,14 @@ export function CategoryFilterSidebar({
         <div className="space-y-4 border-t border-border pt-4">
           <div className="space-y-2">
             <label className="text-xs font-bold text-heading flex items-center gap-1.5 uppercase tracking-wider">
-              {locale === 'ru' ? 'Тип инструмента' : 'Instrument turi'}
+              {locale === 'ru' ? 'Тип товара' : 'Mahsulot guruhi'}
               {(() => {
                 const tip = getSpecTooltip('power_type', locale);
                 return tip && <Tooltip title={tip.title} body={tip.body} />;
               })()}
             </label>
             <div className="flex flex-wrap gap-1.5">
-              {['Pnevmatik', 'Yelim sprey', 'Skobalar'].map((p) => (
+              {['Pnevmatik', 'Skoba', 'Kley', 'Rezina', 'Metall'].map((p) => (
                 <button
                   key={p}
                   onClick={() => updateParam('power_type', selectedPowerType === p ? '' : p)}

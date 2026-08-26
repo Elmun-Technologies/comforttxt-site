@@ -36,9 +36,8 @@ export const storefrontConfig = {
   },
 
   // ── Hero visual ───────────────────────────────────────────────────────────
-  // Replace with approved Comfort Textile product/material photography when
-  // available. The layout does not change — only the asset path.
-  heroImage: '/images/hero-material.jpg',
+  // Real Comfort Textile showroom / finished-piece photography.
+  heroImage: '/images/products/showroom/yashash-xonasi-divani.jpg',
 
   // ── Decorative brand patterns ─────────────────────────────────────────────
   // The approved guidebook ring motif, rebuilt as seamless transparent SVG

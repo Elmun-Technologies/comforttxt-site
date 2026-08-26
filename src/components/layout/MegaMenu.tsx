@@ -26,19 +26,20 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
       title: locale === 'ru' ? 'ПРОИЗВОДСТВО МЕБЕЛИ' : 'MEBEL ISHLAB CHIQARISH',
       icon: Layers,
       items: [
-        { labelUz: 'Paralon ST / EL / HR', labelRu: 'Поролон ST / EL / HR', href: '/catalog/paralon' },
+        { labelUz: 'Paralon buyumlari (korner, taroq)', labelRu: 'Поролон (корнер, гребенки)', href: '/catalog/paralon' },
         { labelUz: 'Transformatsiya mexanizmlari', labelRu: 'Механизмы трансформации', href: '/catalog/mexanizmlar' },
-        { labelUz: 'Mebel oyoqlari va petlyalar', labelRu: 'Ножки и петли', href: '/catalog/furnitura-va-oyoqlar' },
-        { labelUz: 'Furnitura va Aksessuarlar', labelRu: 'Фурнитура и Аксессуары', href: '/catalog/furnitura-va-oyoqlar' },
+        { labelUz: 'Konus va piramida oyoqlar', labelRu: 'Конусные и пирамидальные ножки', href: '/catalog/furnitura-va-oyoqlar?sub=konus' },
+        { labelUz: 'X-oyoq va metall karkas oyoqlar', labelRu: 'X-образные и каркасные ножки', href: '/catalog/furnitura-va-oyoqlar?sub=x-shakl' },
       ],
     },
     {
       title: locale === 'ru' ? 'ИНСТРУМЕНТЫ И РАСХОДНИКИ' : 'INSTRUMENTLAR VA SARF',
       icon: Hammer,
       items: [
-        { labelUz: 'Pnevmatik steplerlar (F30D/8016)', labelRu: 'Пневмостеплеры (F30D/8016)', href: '/catalog/sarf-materiallar-va-instrumentlar?sub=pnevmatik' },
-        { labelUz: 'Akfix sprey yelimik', labelRu: 'Клей Akfix спрей', href: '/catalog/sarf-materiallar-va-instrumentlar?sub=yelim' },
-        { labelUz: 'Zımba skobalar', labelRu: 'Скобы забивные', href: '/catalog/sarf-materiallar-va-instrumentlar?sub=skoba' },
+        { labelUz: 'JIN JAN pnevmatik asboblar', labelRu: 'Пневмоинструменты JIN JAN', href: '/catalog/sarf-materiallar-va-instrumentlar?sub=pnevmatik' },
+        { labelUz: 'Skobalar (K416, FST-20, 80 seriya)', labelRu: 'Скобы (K416, FST-20, 80 серия)', href: '/catalog/sarf-materiallar-va-instrumentlar?sub=skoba' },
+        { labelUz: 'Kley stiklar va kontakt yelim', labelRu: 'Клеевые стики и контактный клей', href: '/catalog/sarf-materiallar-va-instrumentlar?sub=kley' },
+        { labelUz: 'Rezina tasma va burchak plastina', labelRu: 'Резиновые стяжки и уголки', href: '/catalog/sarf-materiallar-va-instrumentlar?sub=rezina' },
       ],
     },
   ];

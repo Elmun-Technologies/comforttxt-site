@@ -70,7 +70,7 @@ va rasmi yo‘q mahsulot kartalari (`MissingImage`).
 ## ✨ Asosiy Xususiyatlar va Imkoniyatlar
 
 ### 🛍️ B2C / Chakana va B2B Portali
-* **Katalog va Qidiruv:** PostgreSQL `ILIKE` asosida nom, SKU (`LUNA-01`, `ST2536`), kategoriya va kolleksiya bo'yicha tezkor qidiruv hamda filtratsiyalash.
+* **Katalog va Qidiruv:** PostgreSQL `ILIKE` asosida nom, SKU (`8016`, `K416`), kategoriya va kolleksiya bo'yicha tezkor qidiruv hamda filtratsiyalash.
 * **O'lchov Birligi va Zichlik:** Matolar uchun metr (`0.5m` qadam bilan), paralon va mexanizmlar uchun list hamda dona birliklari bo'yicha aniq miqdor hisobi.
 * **Valyuta va Narx Aniqligi:** Barcha monetary qiymatlar UZS butun sonlarida (integer) saqlanadi va floating-point xatolarining oldi olingan.
 * **B2B Ulgurji Tizim:** Mebel fabrikalari va sexlar uchun maxsus narxlar, shartnoma so'rovlari hamda chegirma tizimi (`B2B_CUSTOMER`).
@@ -166,9 +166,9 @@ ShopFlow-ga ulanish uchun `.env` da `NEXT_PUBLIC_DATA_SOURCE=shopflow` va `SHOPF
 ## 🧹 Kontent va Demo Ma'lumotlar (Phase 3.1)
 
 - Barcha mijozga ko'rinadigan kontakt ma'lumotlari bitta manbadan keladi: `src/config/storefront.ts` (`storefrontConfig`). Tasdiqlanmagan qiymatlar bo'sh — UI ularni avtomatik yashiradi. Ishlab chiqarishga chiqishdan oldin real ma'lumotlarni kiriting.
-- Mock mahsulotlar (`MockStorefrontService`) — faqat development uchun neytral fixture ma'lumotlar: soxta brendlar, kolleksiyalar, chegirmalar, mijozlar va buyurtmalar yo'q.
+- Katalog (`src/services/storefront/realCatalog.ts` + `MockStorefrontService`) — Comfort Textile'ning haqiqiy assortimenti: mebel oyoqlari, transformatsiya mexanizmlari, JIN JAN pnevmatik asboblar, skobalar, kley stiklar, paralon buyumlari va mato namunalari. Barcha mahsulot suratlari `public/images/products/` ichida arxivdan joylangan haqiqiy fotosuratlar. Narxlar demo qiymat (UZS) — ishga tushirishdan oldin joriy narxlar bilan almashtiring. Mijozlar, buyurtmalar va chegirmalar soxta emas — Ular ShopFlow/real ombor bilan ishlaydi.
+- Brend aktivlari (logo va halqa patternlari) tasdiqlangan va `public/images/brand/` hamda `public/images/patterns/` ichida. Hero surati (`storefrontConfig.heroImage`) ham haqiqiy foto bilan almashtirildi.
 - B2B sahifada demo-rejim/test akkaunt mavjud emas.
-- Brend aktivlari (logo va halqa patternlari) tasdiqlangan va `public/images/brand/` hamda `public/images/patterns/` ichida. Kategoriya teksturalari va hero surati (`storefrontConfig.heroImage`) hali vaqtinchalik — rasmiy fotosuratlar kelganda almashtiriladi.
 
 ## 🧬 Prisma enumlari
 
