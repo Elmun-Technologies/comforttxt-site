@@ -1,7 +1,8 @@
 # Comfort Textile — mahsulot fotosuratlari manbasi
 
 Barcha fotosuratlar `public/Archive 8.zip` va `public/Archive 9.zip` arxivlaridagi haqiqiy
-Comfort Textile suratlari. Ular veb uchun optimallashtirilib `public/images/products/` ichiga
+Comfort Textile suratlari (arxivlar ekstraksiyadan keyin `public/` dan olib tashlandi, nusxasi
+git tarixida saqlanadi). Ular veb uchun optimallashtirilib `public/images/products/` ichiga
 semantik nomlar bilan joylandi. Quyidagi jadval: arxiv fayl tartibi (imgNNN) → saytdagi foto yoli.
 
 | # | Arxivdagi original fayl | Saytdagi fayl |

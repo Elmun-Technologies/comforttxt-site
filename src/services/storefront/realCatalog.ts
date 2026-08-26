@@ -281,7 +281,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Мебельные ткани',
     'meter',
     img('fabric/fabric-samplers-rangli.jpg'),
-    [img('fabric/fabric-samplers-rangli.jpg'), img('fabric/fabric-samplers-bej.jpg'), img('fabric/fabric-samplers-devori.jpg'), img('fabric/mato-namunalar-divanda.jpg')],
+    [img('fabric/fabric-samplers-rangli.jpg'), img('fabric/fabric-samplers-bej.jpg'), img('fabric/fabric-samplers-devori.jpg'), img('fabric/mato-namunalar-divanda.jpg'), img('showroom/yashash-xonasi-divani.jpg')],
     [
       v('var-velyur-a', 'VEL-01', 'Namunalar palitrasi A (rangli)', 'Палитра образцов A (цветная)', 78000, [img('fabric/fabric-samplers-rangli.jpg')], {
         colorHex: '#9A8478', colorNameUz: 'Rangli palitra', colorNameRu: 'Цветная палитра', quantityStep: 0.5,
@@ -395,7 +395,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Мебельные ткани',
     'meter',
     img('fabric/zebra-mato.jpg'),
-    [img('fabric/zebra-mato.jpg'), img('showroom/koq-divan.jpg')],
+    [img('fabric/zebra-mato.jpg'), img('showroom/koq-divan.jpg'), img('showroom/kreslo-shouroom.jpg'), img('showroom/yashash-xonasi-divani.jpg')],
     [
       v('var-zebra', 'ZBR-01', 'Oq-qora zebra', 'Черно-белая зебра', 95000, [img('fabric/zebra-mato.jpg')], {
         colorHex: '#F2F2F2', colorNameUz: 'Oq-qora', colorNameRu: 'Черно-белый', quantityStep: 0.5,
@@ -576,7 +576,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Фурнитура и Ножки',
     'pcs',
     img('legs/konus-oyoq-qora-oltin-uqli.jpg'),
-    [img('legs/konus-oyoq-qora-oltin-uqli.jpg'), img('legs/konus-oyoq-oltin-chiziqli.jpg'), img('legs/konus-oyoq-jigarrang-chiziqli.jpg'), img('legs/konus-oyoq-kulrang-chiziqli.jpg'), img('legs/konus-oyoq-qora-oltin-uq-2.jpg'), img('legs/konus-oyoq-qora-oltin-uq-3.jpg')],
+    [img('legs/konus-oyoq-qora-oltin-uqli.jpg'), img('legs/konus-oyoq-oltin-chiziqli.jpg'), img('legs/konus-oyoq-jigarrang-chiziqli.jpg'), img('legs/konus-oyoq-kulrang-chiziqli.jpg'), img('legs/konus-oyoq-qora-oltin-uq-2.jpg'), img('legs/konus-oyoq-qora-oltin-uq-3.jpg'), img('legs/konus-oyoq-qora-oltin-chiziqli.jpg'), img('legs/konus-oyoq-kulrang-oltin-uq.jpg'), img('legs/konus-oyoq-jigarrang-baland.jpg'), img('legs/konus-oyoq-jigarrang-ingichka.jpg'), img('legs/konus-oyoq-qora-ingichka.jpg'), img('legs/konus-oyoq-krem-keng.jpg')],
     [
       v('var-konus-qora-oltin', 'KL-01', 'Qora + oltin uch', 'Черный + золотой наконечник', 28000, [img('legs/konus-oyoq-qora-oltin-uqli.jpg')], {
         colorHex: '#1F1F1F', colorNameUz: 'Qora / oltin', colorNameRu: 'Черный / золото',
@@ -613,7 +613,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Фурнитура и Ножки',
     'pcs',
     img('legs/piramida-oyoq-toq-jigarrang.jpg'),
-    [img('legs/piramida-oyoq-toq-jigarrang.jpg'), img('legs/piramida-oyoq-jigarrang.jpg'), img('legs/piramida-oyoq-bej.jpg'), img('legs/piramida-oyoq-kulrang.jpg'), img('legs/piramida-oyoq-bej-yumaloq.jpg')],
+    [img('legs/piramida-oyoq-toq-jigarrang.jpg'), img('legs/piramida-oyoq-jigarrang.jpg'), img('legs/piramida-oyoq-bej.jpg'), img('legs/piramida-oyoq-kulrang.jpg'), img('legs/piramida-oyoq-bej-yumaloq.jpg'), img('legs/piramida-oyoq-jigarrang-2.jpg')],
     [
       v('var-pir-jigarrang', 'PIR-01', 'Jigarrang', 'Коричневый', 22000, [img('legs/piramida-oyoq-toq-jigarrang.jpg')], {
         colorHex: '#4A3428', colorNameUz: 'Jigarrang', colorNameRu: 'Коричневый',
@@ -643,7 +643,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Фурнитура и Ножки',
     'pcs',
     img('legs/x-oyoq-qora.jpg'),
-    [img('legs/x-oyoq-qora.jpg'), img('legs/x-oyoq-oltin.jpg'), img('legs/x-oyoq-bej.jpg'), img('legs/x-oyoq-krem.jpg'), img('legs/x-oyoq-kulrang.jpg'), img('legs/x-oyoq-jigarrang.jpg'), img('legs/x-oyoq-ok.jpg')],
+    [img('legs/x-oyoq-qora.jpg'), img('legs/x-oyoq-oltin.jpg'), img('legs/x-oyoq-bej.jpg'), img('legs/x-oyoq-krem.jpg'), img('legs/x-oyoq-kulrang.jpg'), img('legs/x-oyoq-jigarrang.jpg'), img('legs/x-oyoq-ok.jpg'), img('legs/x-oyoq-toq-jigarrang.jpg'), img('legs/x-oyoq-oltin-baland.jpg')],
     [
       v('var-x-qora', 'X-01', 'Qora', 'Черный', 32000, [img('legs/x-oyoq-qora.jpg')], {
         colorHex: '#1B1B1B', colorNameUz: 'Qora', colorNameRu: 'Черный',
@@ -711,7 +711,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Фурнитура и Ножки',
     'pcs',
     img('legs/u-oyoq-oltin.jpg'),
-    [img('legs/u-oyoq-oltin.jpg'), img('legs/u-oyoq-kumush.jpg'), img('legs/karkas-oyoq-oltin.jpg'), img('legs/karkas-oyoq-kumush.jpg'), img('legs/karkas-oyoq-oltin-2.jpg'), img('legs/oltin-karkas-oyoq-01.jpg')],
+    [img('legs/u-oyoq-oltin.jpg'), img('legs/u-oyoq-kumush.jpg'), img('legs/karkas-oyoq-oltin.jpg'), img('legs/karkas-oyoq-kumush.jpg'), img('legs/karkas-oyoq-oltin-2.jpg'), img('legs/oltin-karkas-oyoq-01.jpg'), img('legs/karkas-oyoq-kumush-2.jpg'), img('legs/y-oyoq-kumush.jpg')],
     [
       v('var-karkas-u-oltin', 'KAR-01', 'U-shakl oltin', 'U-образная золото', 68000, [img('legs/u-oyoq-oltin.jpg')], {
         colorHex: '#C9A227', colorNameUz: 'Oltin', colorNameRu: 'Золото',
@@ -874,7 +874,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Инструменты и Расходники',
     'pcs',
     img('tools/stepler-8016-sariq.jpg'),
-    [img('tools/stepler-8016-sariq.jpg'), img('tools/pnevmatik-komplekt-01.jpg'), img('tools/pnevmatik-komplekt-02.jpg'), img('tools/stepler-sariq-yon.jpg')],
+    [img('tools/stepler-8016-sariq.jpg'), img('tools/pnevmatik-komplekt-01.jpg'), img('tools/pnevmatik-komplekt-02.jpg'), img('tools/stepler-sariq-yon.jpg'), img('tools/jinjan-stepler-quti.jpg')],
     [
       v('var-8016', '8016', 'Pnevmatik stepler 8016', 'Пневмостеплер 8016', 390000, [img('tools/stepler-8016-sariq.jpg')], {
         onHandQuantity: 46,
@@ -1017,7 +1017,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Инструменты и Расходники',
     'pack',
     img('consumables/skoba-orange-quti-01.jpg'),
-    [img('consumables/skoba-orange-quti-01.jpg'), img('consumables/skoba-orange-quti-02.jpg'), img('consumables/skoba-orange-quti-03.jpg'), img('consumables/skoba-fst20-01.jpg')],
+    [img('consumables/skoba-orange-quti-01.jpg'), img('consumables/skoba-orange-quti-02.jpg'), img('consumables/skoba-orange-quti-03.jpg'), img('consumables/skoba-fst20-01.jpg'), img('consumables/skoba-fst20-02.jpg')],
     [
       v('var-skoba-16', 'SK-16', '16 mm (1000 dona)', '16 мм (1000 шт.)', 25000, [img('consumables/skoba-orange-quti-01.jpg')], {
         onHandQuantity: 180,
@@ -1047,7 +1047,7 @@ export const REAL_PRODUCTS: StorefrontProduct[] = [
     'Инструменты и Расходники',
     'pack',
     img('consumables/skoba-k416.jpg'),
-    [img('consumables/skoba-k416.jpg'), img('consumables/skoba-qutilar-tarozi.jpg')],
+    [img('consumables/skoba-k416.jpg'), img('consumables/skoba-qutilar-tarozi.jpg'), img('consumables/skoba-qutilar-01.jpg')],
     [
       v('var-k416', 'SK-K416', 'K416 (1000 dona)', 'K416 (1000 шт.)', 35000, [img('consumables/skoba-k416.jpg')], {
         onHandQuantity: 110,
