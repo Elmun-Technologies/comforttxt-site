@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation';
 import {
@@ -47,6 +47,18 @@ export function Header({ locale }: HeaderProps) {
   const compareCount = useCompareStore((s) => s.items.length);
   const { user, isB2B } = useAuthStore();
   const b2bActive = isB2B();
+
+  // Global ⌘K / Ctrl+K keyboard shortcut to open search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const switchLocale = (newLocale: string) => {
     const search = searchParams.toString();
