@@ -108,15 +108,21 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
   return (
     <div className="space-y-12">
       {/* Header Banner */}
-      <div className="relative bg-charcoal-900 text-surface rounded-3xl p-8 lg:p-12 shadow-xl border border-charcoal-800 overflow-hidden">
+      <div className="relative bg-ink-950 text-surface rounded-3xl p-8 lg:p-12 shadow-brand border border-ink-800 overflow-hidden">
         {/* Decorative weave overlay */}
-        <div aria-hidden="true" className="pattern-rings-dark pattern-fade absolute inset-0 pointer-events-none" />
+        <div aria-hidden="true" className="pattern-rings-dark pattern-fade absolute inset-0 pointer-events-none opacity-60" />
+        <div
+          aria-hidden="true"
+          className="absolute -top-32 -right-32 w-96 h-96 rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(199,127,58,0.2), transparent 65%)' }}
+        />
         <div className="relative space-y-4 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 bg-brand-400/10 text-cream-400 border border-brand-400/50 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-            <ShieldCheck className="w-4 h-4" />
+          <span className="inline-flex items-center gap-2.5 text-[11px] font-medium uppercase tracking-[0.3em] text-cream-200/70">
+            <span className="h-px w-10 bg-copper-400" />
+            <ShieldCheck className="w-4 h-4 text-copper-400" />
             {storefrontConfig.name} B2B
           </span>
-          <h1 className="text-3xl lg:text-4xl font-black leading-tight">
+          <h1 className="text-3xl lg:text-4xl font-black leading-tight text-balance">
             {locale === 'ru'
               ? 'Оптовые поставки для мебельных производств'
               : 'Mebel ishlab chiqaruvchilar uchun ulgurji ta’minot'}
@@ -127,6 +133,8 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
               : 'Doimiy xaridlar uchun mato, paralon, mexanizmlar va sarf materiallari. Ariza qoldiring — menejer bog‘lanib, hajmingizga mos shartlarni aniqlashtiradi.'}
           </p>
         </div>
+        <span aria-hidden="true" className="corner-tick corner-tick-tr text-copper-400/70" />
+        <span aria-hidden="true" className="corner-tick corner-tick-bl text-copper-400/70" />
       </div>
 
       {/* Customer Segments */}
@@ -134,11 +142,16 @@ export function WholesalePortalClient({ locale }: WholesaleProps) {
         {segments.map((seg, idx) => {
           const Icon = seg.icon;
           return (
-            <div key={idx} className="bg-surface p-5 rounded-2xl border border-border shadow-xs space-y-2.5">
-              <div className="p-2.5 bg-accent-light text-accent rounded-xl w-fit">
-                <Icon className="w-5 h-5" />
+            <div key={idx} className="group bg-surface p-5 rounded-2xl border border-border/70 shadow-xs space-y-2.5 hover:border-copper-500/50 hover:shadow-brand-sm transition">
+              <div className="flex items-center justify-between">
+                <div className="p-2.5 bg-cream-200/70 text-copper-600 rounded-xl w-fit">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <span className="font-mono text-[11px] font-bold tracking-[0.2em] text-copper-600/60 group-hover:text-copper-600 transition">
+                  {String(idx + 1).padStart(2, '0')}
+                </span>
               </div>
-              <h3 className="text-sm font-black text-heading">
+              <h3 className="text-sm font-black text-ink">
                 {locale === 'ru' ? seg.titleRu : seg.titleUz}
               </h3>
               <p className="text-[11px] text-muted leading-relaxed">
