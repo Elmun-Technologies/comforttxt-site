@@ -13,8 +13,8 @@
   }
 
   ::selection {
-    background: rgba(40, 53, 147, 0.16);
-    color: #202A78;
+    background: rgba(199, 127, 58, 0.28);
+    color: #141A33;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -25,21 +25,92 @@
     outline: 2px solid #283593;
     outline-offset: 3px;
   }
+
+  /* Thin warm scrollbar — part of the atelier feel */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F9F5EC;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #C9C4B4;
+    border-radius: 8px;
+    border: 2px solid #F9F5EC;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #A99F8A;
+  }
 }
 
 @layer components {
+  /* Editorial kicker: thin, widely spaced, with a copper rule — replaces the
+     generic uppercase pill that made pages read as template output. */
   .brand-kicker {
-    @apply inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-accent;
+    @apply inline-flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-muted;
   }
 
   .brand-rule {
-    @apply h-px w-10 bg-accent/60;
+    @apply h-px w-10 bg-copper-500;
+  }
+
+  /* Section index number — "01" style editorial numbering. */
+  .section-index {
+    @apply font-mono text-[11px] font-bold tracking-[0.2em] text-copper-600;
+  }
+
+  /* Dashed workshop "cut here" hairline. */
+  .rule-dashed {
+    background-image: linear-gradient(to right, currentColor 40%, transparent 0%);
+    background-size: 8px 1px;
+    background-repeat: repeat-x;
+    height: 1px;
+  }
+
+  /* Corner ticks — fabric cutting-guide marks. Place a positioned div with
+     this class in each corner of a frame. */
+  .corner-tick {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+  }
+  .corner-tick::before,
+  .corner-tick::after {
+    content: "";
+    position: absolute;
+    background: currentColor;
+  }
+  .corner-tick::before {
+    width: 14px;
+    height: 1px;
+  }
+  .corner-tick::after {
+    width: 1px;
+    height: 14px;
+  }
+  .corner-tick-tl { top: 12px; left: 12px; }
+  .corner-tick-tr { top: 12px; right: 12px; transform: scaleX(-1); }
+  .corner-tick-bl { bottom: 12px; left: 12px; transform: scaleY(-1); }
+  .corner-tick-br { bottom: 12px; right: 12px; transform: scale(-1, -1); }
+
+  /* Stitched edge — upholstery seam detail for panels and cards. */
+  .stitch-border {
+    border: 1px dashed rgba(40, 53, 147, 0.35);
+    outline: 4px solid #F9F5EC;
+    outline-offset: -8px;
+  }
+  .stitch-border-dark {
+    border: 1px dashed rgba(226, 178, 123, 0.45);
+    outline: 4px solid rgba(255, 255, 255, 0.04);
+    outline-offset: -8px;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-surface/75 backdrop-blur-lg border border-surface shadow-brand-sm;
+    @apply bg-surface/75 backdrop-blur-lg border border-white/60 shadow-brand-sm;
   }
 
   .glass-card {
@@ -54,6 +125,66 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Paper grain — extremely subtle noise so flat cream surfaces feel like
+     printed catalogue paper instead of blank CSS. */
+  .paper-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  }
+
+  /* Marquee ticker — the running strip of categories / SKUs under the hero. */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: ct-marquee 36s linear infinite;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+  @keyframes ct-marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── Fabric texture swatches ─────────────────────────────────────────────
+     Hand-drawn CSS weaves for the texture section — no external images, and
+     every one reads as "cloth" rather than a flat colour chip. */
+  .tex-velvet {
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.35), transparent 55%),
+      linear-gradient(135deg, #2C3E8F 0%, #1B2A6B 55%, #101A4A 100%);
+  }
+  .tex-boucle {
+    background-color: #D8C9AC;
+    background-image:
+      radial-gradient(circle at 40% 45%, rgba(255, 255, 255, 0.5) 1.5px, transparent 2.5px),
+      radial-gradient(circle at 60% 60%, rgba(122, 96, 62, 0.35) 1.5px, transparent 2.5px);
+    background-size: 7px 7px, 9px 9px;
+  }
+  .tex-chenille {
+    background:
+      repeating-linear-gradient(
+        100deg,
+        #7A5C44 0px,
+        #6B4F38 2px,
+        #8A6A4F 4px,
+        #6B4F38 6px,
+        #7A5C44 8px
+      );
+  }
+  .tex-rogojka {
+    background-color: #B9A98B;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.18) 0 2px, transparent 2px 6px),
+      repeating-linear-gradient(90deg, rgba(90, 72, 45, 0.22) 0 2px, transparent 2px 6px);
+  }
+  .tex-foam {
+    background:
+      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.9) 2px, rgba(255, 255, 255, 0) 3px),
+      radial-gradient(circle at 55% 60%, rgba(0, 0, 0, 0.12) 2px, rgba(0, 0, 0, 0) 3px),
+      linear-gradient(160deg, #F4EAD8 0%, #E8D9BC 100%);
+    background-size: 9px 9px, 11px 11px, 100% 100%;
   }
 
   /* ── Brand ring motif ────────────────────────────────────────────────────
@@ -118,29 +249,44 @@
   .swatch-no-color {
     background-image: repeating-linear-gradient(
       45deg,
-      #E8EAF6,
-      #E8EAF6 3px,
-      #FFFFFF 3px,
-      #FFFFFF 6px
+      transparent,
+      transparent 3px,
+      rgba(102, 112, 169, 0.45) 3px,
+      rgba(102, 112, 169, 0.45) 4px
     );
+    background-color: #F2F3FA;
   }
-}
 
-/* Brand-aligned, unobtrusive scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+  /* Fabric-like variant swatch — ring highlight, soft cloth shadow. */
+  .swatch-fabric {
+    position: relative;
+  }
+  .swatch-fabric::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 9999px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.45), transparent 55%);
+    pointer-events: none;
+  }
 
-::-webkit-scrollbar-track {
-  background: #F9F5EC;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #A9AED3;
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #283593;
+  /* Diagonal sheen that sweeps across primary buttons on hover. */
+  .btn-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-sheen::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -70%;
+    width: 50%;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-sheen:hover::after {
+    left: 130%;
+  }
 }

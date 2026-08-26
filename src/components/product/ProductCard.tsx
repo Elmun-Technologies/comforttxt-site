@@ -95,9 +95,9 @@ export function ProductCard({ product, locale }: ProductCardProps) {
 
   return (
     <>
-      <div className="group bg-surface rounded-2xl border border-border hover:border-accent/50 hover:shadow-xl transition-all duration-250 flex flex-col justify-between overflow-hidden relative">
-        {/* Visual Zone */}
-        <div className="relative aspect-square bg-secondary/50 overflow-hidden">
+      <div className="group relative bg-surface rounded-2xl border border-border/70 hover:border-accent/40 hover:shadow-card-hover transition-all duration-300 flex flex-col justify-between overflow-hidden">
+        {/* ── Visual zone ── */}
+        <div className="relative aspect-square bg-cream-100 overflow-hidden">
           <Link href={`/${locale}/product/${product.slug}`} className="block w-full h-full">
             <ProductImage
               src={mainImage}
@@ -105,12 +105,16 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               fit={resolveImageFit(product)}
               locale={locale}
               className="w-full h-full"
-              imgClassName={`transition-transform duration-500 group-hover:scale-105 ${isFabric ? '' : 'p-3'}`}
+              imgClassName={`transition-transform duration-700 group-hover:scale-[1.06] ${isFabric ? '' : 'p-4'}`}
             />
           </Link>
 
+          {/* Corner ticks — cutting-guide marks */}
+          <span aria-hidden="true" className="corner-tick corner-tick-tl text-accent/40 opacity-0 group-hover:opacity-100 transition" />
+          <span aria-hidden="true" className="corner-tick corner-tick-br text-accent/40 opacity-0 group-hover:opacity-100 transition" />
+
           {/* Badges */}
-          <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
+          <div className="absolute top-3 left-3 flex flex-col gap-1 z-10 pointer-events-none">
             <StockIndicator
               stockStatus={selectedVariant?.stockStatus || 'IN_STOCK'}
               onHandQuantity={selectedVariant?.onHandQuantity}
@@ -119,29 +123,29 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               className="backdrop-blur-md"
             />
             {discountPct > 0 && (
-              <span className="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
+              <span className="bg-copper-500 text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs w-fit">
                 −{discountPct}%
               </span>
             )}
             {b2bActive && (
-              <span className="bg-brand-700/90 text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
+              <span className="bg-brand-700/90 text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs w-fit">
                 B2B {locale === 'ru' ? 'Опт' : 'Ulgurji'}
               </span>
             )}
             {product.isNew && (
-              <span className="bg-accent text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
+              <span className="bg-accent text-surface text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs w-fit">
                 {locale === 'ru' ? 'Новинка' : 'Yangi'}
               </span>
             )}
             {product.isPopular && (
-              <span className="bg-amber-500 text-charcoal-900 text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs">
-                {locale === 'ru' ? 'Хит' : 'Ommabop'}
+              <span className="bg-ink text-cream-200 text-[10px] font-black px-2 py-0.5 rounded-md shadow-xs w-fit">
+                ★ {locale === 'ru' ? 'Хит' : 'Ommabop'}
               </span>
             )}
           </div>
 
-          {/* Floating Actions */}
-          <div className="absolute top-2.5 right-2.5 flex flex-col gap-1.5 z-10">
+          {/* Floating actions — slide in on hover */}
+          <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10 sm:opacity-0 sm:translate-x-2 sm:group-hover:opacity-100 sm:group-hover:translate-x-0 transition-all duration-300">
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -150,7 +154,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               className={`p-2 rounded-xl backdrop-blur-md shadow-xs transition ${
                 favorite
                   ? 'bg-accent/20 text-accent border border-accent/40'
-                  : 'bg-surface/85 text-muted hover:text-accent hover:bg-surface border border-border/60'
+                  : 'bg-surface/90 text-muted hover:text-accent hover:bg-surface border border-border/60'
               }`}
               title={locale === 'ru' ? 'В избранное' : 'Tanlanganlarga qo‘shish'}
             >
@@ -179,7 +183,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               className={`p-2 rounded-xl backdrop-blur-md shadow-xs transition ${
                 inCompare
                   ? 'bg-accent-light text-accent border border-accent/40'
-                  : 'bg-surface/85 text-muted hover:text-accent hover:bg-surface border border-border/60'
+                  : 'bg-surface/90 text-muted hover:text-accent hover:bg-surface border border-border/60'
               }`}
               title={locale === 'ru' ? 'Сравнить' : 'Taqqoslash'}
             >
@@ -188,25 +192,25 @@ export function ProductCard({ product, locale }: ProductCardProps) {
           </div>
         </div>
 
-        {/* Content Body */}
+        {/* ── Content body ── */}
         <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
           <div>
-            {/* Category / Collection Tag & SKU */}
-            <div className="flex items-center justify-between text-[11px] text-muted mb-1.5">
+            {/* Category + SKU */}
+            <div className="flex items-center justify-between text-[11px] text-muted mb-1.5 gap-2">
               <span className="truncate font-semibold uppercase tracking-wider text-[10px]">
                 {product.collectionName || (locale === 'ru' ? product.categoryNameRu : product.categoryNameUz)}
               </span>
               {selectedVariant?.sku && (
-                <span className="inline-flex items-center gap-1 font-mono bg-secondary border border-border/80 px-1.5 py-0.5 rounded text-heading font-bold text-[10px]">
+                <span className="inline-flex items-center gap-1 font-mono bg-ink text-cream-200 px-1.5 py-0.5 rounded font-bold text-[10px] shrink-0">
                   {selectedVariant.sku}
-                  <CopyButton value={selectedVariant.sku} locale={locale} />
+                  <CopyButton value={selectedVariant.sku} locale={locale} className="!text-cream-200/70 hover:!text-cream-200" />
                 </span>
               )}
             </div>
 
             {/* Product Title */}
             <Link href={`/${locale}/product/${product.slug}`}>
-              <h3 className="text-xs sm:text-sm font-black text-heading line-clamp-2 hover:text-accent transition leading-snug">
+              <h3 className="text-xs sm:text-sm font-black text-ink line-clamp-2 hover:text-accent transition leading-snug">
                 {locale === 'ru' ? product.titleRu : product.titleUz}
               </h3>
             </Link>
@@ -218,9 +222,9 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                   <button
                     key={v.id || v.sku}
                     onClick={() => setSelectedVariantIdx(idx)}
-                    className={`w-4 h-4 rounded-full border border-border transition-all ${
+                    className={`swatch-fabric w-4 h-4 rounded-full border border-ink/15 transition-all ${
                       selectedVariantIdx === idx
-                        ? 'ring-2 ring-accent ring-offset-1 scale-110 shadow-xs'
+                        ? 'ring-2 ring-copper-500 ring-offset-1 scale-110 shadow-xs'
                         : 'hover:scale-105 opacity-85 hover:opacity-100'
                     } ${v.colorHex ? '' : 'swatch-no-color'}`}
                     style={v.colorHex ? { backgroundColor: v.colorHex } : undefined}
@@ -239,11 +243,11 @@ export function ProductCard({ product, locale }: ProductCardProps) {
             )}
           </div>
 
-          {/* Pricing & Actions */}
-          <div className="pt-2.5 border-t border-border/80 space-y-2.5">
-            <div className="flex items-baseline justify-between">
+          {/* ── Pricing & actions ── */}
+          <div className="pt-3 border-t border-dashed border-border space-y-3">
+            <div className="flex items-baseline justify-between gap-2">
               <div className="flex items-baseline flex-wrap">
-                <span className="text-base font-black text-heading">
+                <span className="text-base font-black text-ink">
                   {formatPrice(currentPrice, locale)}
                 </span>
                 {discountPct > 0 && (
@@ -256,15 +260,13 @@ export function ProductCard({ product, locale }: ProductCardProps) {
                 </span>
               </div>
               {selectedVariant?.wholesalePrice && !b2bActive && (
-                <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded border border-brand-200" title="Ulgurji mijozlar uchun">
+                <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded border border-brand-200 shrink-0" title="Ulgurji mijozlar uchun">
                   B2B {formatPrice(selectedVariant.wholesalePrice, locale)}
                 </span>
               )}
             </div>
 
-            {/* Quantity stepper — visible on the card itself (pattern #25): a
-                workshop buyer needs 45 m, not "one", so the control belongs
-                here rather than only on the product page. */}
+            {/* Quantity + subtotal — the workshop needs 45 m, not "one" */}
             <div className="flex items-center justify-between gap-2">
               <QuantityStepper
                 value={quantity}
@@ -276,23 +278,23 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               />
               <span className="text-[11px] font-bold text-muted">
                 {locale === 'ru' ? 'Итого' : 'Jami'}{' '}
-                <strong className="text-heading">{formatPrice(calculateSubtotal(currentPrice, quantity), locale)}</strong>
+                <strong className="text-ink">{formatPrice(calculateSubtotal(currentPrice, quantity), locale)}</strong>
               </span>
             </div>
 
-            {/* CTA Buttons — primary: Savatchaga, secondary: 1-Klik (icon on mobile) */}
+            {/* CTA Buttons */}
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleQuickOrder}
-                className="inline-flex items-center justify-center gap-1 py-2 px-2 bg-secondary hover:bg-border text-heading text-xs font-bold rounded-xl transition active:scale-98"
+                className="inline-flex items-center justify-center gap-1 py-2.5 px-2 bg-cream-200/70 hover:bg-cream-300 text-ink text-xs font-bold rounded-xl transition active:scale-98 border border-border/50"
               >
-                <Zap className="w-3.5 h-3.5 text-accent" />
+                <Zap className="w-3.5 h-3.5 text-copper-600" />
                 <span className="hidden sm:inline">{locale === 'ru' ? '1-Клик' : '1-Klik'}</span>
               </button>
 
               <button
                 onClick={handleAddToCart}
-                className={`inline-flex items-center justify-center gap-1.5 py-2 px-2 text-surface text-xs font-black rounded-xl transition shadow-xs active:scale-98 ${
+                className={`btn-sheen inline-flex items-center justify-center gap-1.5 py-2.5 px-2 text-surface text-xs font-black rounded-xl transition shadow-xs active:scale-98 ${
                   addedToast ? 'bg-emerald-700' : 'bg-accent hover:bg-accent-hover'
                 }`}
               >

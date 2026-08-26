@@ -3,8 +3,12 @@ import type { Config } from "tailwindcss";
 /**
  * Comfort Textile brand system
  *
- * Primary corporate colour: #283593
- * Primary warm neutral:    #F9F5EC
+ * Primary corporate colour: #283593 (blue)
+ * Primary warm neutral:    #F9F5EC (cream)
+ * Material accent:         copper/bronze — the colour of wood, leather and
+ *                          workshop light. Used sparingly for editorial
+ *                          numbering, highlights and "craft" details so the
+ *                          UI reads as an atelier catalogue, not a SaaS.
  *
  * The blue scale follows the approved 100 / 80 / 60 / 40 / 20% guidebook
  * tints. Semantic aliases keep the visual identity consistent throughout the
@@ -32,6 +36,29 @@ const config: Config = {
           DEFAULT: "#283593",
           hover: "#202A78",
           light: "#E8EAF6",
+        },
+
+        // Deep ink-navy for dark editorial surfaces and strong text on cream.
+        ink: {
+          DEFAULT: "#141A33",
+          700: "#1C2567",
+          800: "#151D52",
+          900: "#10163C",
+          950: "#0B102C",
+        },
+
+        // Warm material accent — wood, leather, brass, workshop light.
+        copper: {
+          50: "#FBF4EC",
+          100: "#F6E6D4",
+          200: "#EDCEA8",
+          300: "#E2B27B",
+          400: "#D69754",
+          500: "#C77F3A",
+          600: "#A9642B",
+          700: "#8A4E24",
+          800: "#6E3E20",
+          900: "#59331D",
         },
 
         // Approved corporate-blue tint scale
@@ -69,13 +96,13 @@ const config: Config = {
         },
       },
       borderRadius: {
-        lg: "12px",
-        xl: "16px",
-        "2xl": "20px",
-        "3xl": "24px",
+        lg: "10px",
+        xl: "14px",
+        "2xl": "18px",
+        "3xl": "26px",
       },
       fontFamily: {
-        // Brand typeface — Exo 2, loaded via `next/font/google` in
+        // Brand typeface — Exo 2, loaded via `next/font/local` in
         // `src/lib/fonts.ts` and exposed as the `--font-exo2` CSS variable on
         // `<html>`. Both roles point at the same font: Exo 2's own weight
         // range (100–900) already covers the body/display contrast this
@@ -103,13 +130,23 @@ const config: Config = {
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
       },
       boxShadow: {
-        brand: "0 12px 28px rgba(40, 53, 147, 0.16)",
-        "brand-sm": "0 4px 14px rgba(40, 53, 147, 0.14)",
+        brand: "0 24px 48px -16px rgba(13, 18, 52, 0.35)",
+        "brand-sm": "0 8px 24px -8px rgba(40, 53, 147, 0.25)",
+        "card-hover": "0 24px 48px -20px rgba(13, 18, 52, 0.4)",
+        "copper-glow": "0 10px 30px -10px rgba(199, 127, 58, 0.5)",
+      },
+      backgroundImage: {
+        "hero-grain":
+          "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E\")",
       },
       animation: {
-        "fade-in-up": "fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "fade-in-up": "fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "fade-in": "fadeIn 0.5s ease-out forwards",
         "zoom-in": "zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "marquee": "marquee 32s linear infinite",
+        "marquee-slow": "marquee 48s linear infinite",
+        "float-slow": "floatSlow 7s ease-in-out infinite",
+        "pulse-dot": "pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       keyframes: {
         fadeInUp: {
@@ -124,6 +161,21 @@ const config: Config = {
           "0%": { opacity: "0", transform: "scale(0.95)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        floatSlow: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        pulseDot: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.35" },
+        },
+      },
+      letterSpacing: {
+        widest2: "0.28em",
       },
     },
   },

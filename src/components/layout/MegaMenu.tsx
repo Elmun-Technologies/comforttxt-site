@@ -59,15 +59,21 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
                   <IconComp className="w-4 h-4 text-accent" />
                   <span>{section.title}</span>
                 </div>
-                <ul className="space-y-1.5 text-xs">
+                <ul className="space-y-1 text-xs">
                   {section.items.map((item, itemIdx) => (
                     <li key={itemIdx}>
                       <Link
                         href={item.href}
                         onClick={onClose}
-                        className="text-body hover:text-accent font-semibold transition py-1 block"
+                        className="group/item text-body hover:text-accent font-semibold transition py-1 flex items-center justify-between gap-2 border-b border-dashed border-transparent hover:border-border/60"
                       >
-                        {locale === 'ru' ? item.labelRu : item.labelUz}
+                        <span className="inline-flex items-center gap-2">
+                          <span className="font-mono text-[9px] text-copper-600/0 group-hover/item:text-copper-600 transition">
+                            {String(itemIdx + 1).padStart(2, '0')}
+                          </span>
+                          {locale === 'ru' ? item.labelRu : item.labelUz}
+                        </span>
+                        <ArrowRight className="w-3 h-3 opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition" />
                       </Link>
                     </li>
                   ))}
@@ -77,17 +83,18 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
           })}
         </div>
 
-        {/* Tactical Editorial Promo Card */}
-        <div className="bg-secondary p-5 rounded-xl border border-border flex flex-col justify-between space-y-3">
-          <div className="space-y-2">
-            <span className="inline-flex items-center gap-1 bg-accent-light text-accent text-[10px] font-black uppercase px-2 py-0.5 rounded-md">
+        {/* Sample Box promo card */}
+        <div className="bg-ink-950 p-5 rounded-xl border border-ink-800 flex flex-col justify-between space-y-3 relative overflow-hidden">
+          <div aria-hidden="true" className="pattern-rings-dark pattern-fade absolute inset-0 pointer-events-none opacity-30" />
+          <div className="relative space-y-2">
+            <span className="inline-flex items-center gap-1 bg-copper-500/20 text-copper-300 text-[10px] font-black uppercase px-2 py-0.5 rounded-md border border-copper-500/40">
               <Package className="w-3 h-3" />
-              Sample Swatch Kit
+              Sample Box
             </span>
-            <h4 className="text-xs font-black text-heading leading-snug">
+            <h4 className="text-sm font-black text-surface leading-snug">
               {locale === 'ru' ? 'Закажите образцы тканей' : 'Matoni ko\'rmasdan tanlamang'}
             </h4>
-            <p className="text-[11px] text-muted leading-relaxed font-medium">
+            <p className="text-[11px] text-cream-200/60 leading-relaxed font-medium">
               {locale === 'ru'
                 ? 'Соберём подборку образцов — условия передачи согласует менеджер.'
                 : 'Namunalar to‘plamini tayyorlaymiz — berish shartlarini menejer kelishadi.'}
@@ -97,7 +104,7 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
           <Link
             href="/sample-box"
             onClick={onClose}
-            className="inline-flex items-center justify-between text-xs font-bold text-accent hover:text-accent-hover pt-2 border-t border-border"
+            className="relative inline-flex items-center justify-between text-xs font-bold text-copper-300 hover:text-copper-200 pt-2 border-t border-surface/15"
           >
             <span>{locale === 'ru' ? 'Заказать Sample Box' : 'Sample Box so\'rash'}</span>
             <ArrowRight className="w-3.5 h-3.5" />
