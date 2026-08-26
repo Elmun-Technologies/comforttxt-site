@@ -13,8 +13,8 @@
   }
 
   ::selection {
-    background: rgba(199, 127, 58, 0.28);
-    color: #141A33;
+    background: rgba(40, 53, 147, 0.28);
+    color: #283593;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -26,7 +26,7 @@
     outline-offset: 3px;
   }
 
-  /* Thin warm scrollbar — part of the atelier feel */
+  /* Thin scrollbar, tinted with the corporate blue */
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -35,29 +35,29 @@
     background: #F9F5EC;
   }
   ::-webkit-scrollbar-thumb {
-    background: #C9C4B4;
+    background: #A9AED3;
     border-radius: 8px;
     border: 2px solid #F9F5EC;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #A99F8A;
+    background: #7E86BE;
   }
 }
 
 @layer components {
-  /* Editorial kicker: thin, widely spaced, with a copper rule — replaces the
+  /* Editorial kicker: thin, widely spaced, with a brand-blue rule — replaces the
      generic uppercase pill that made pages read as template output. */
   .brand-kicker {
     @apply inline-flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.3em] text-muted;
   }
 
   .brand-rule {
-    @apply h-px w-10 bg-copper-500;
+    @apply h-px w-10 bg-accent;
   }
 
   /* Section index number — "01" style editorial numbering. */
   .section-index {
-    @apply font-mono text-[11px] font-bold tracking-[0.2em] text-copper-600;
+    @apply font-mono text-[11px] font-bold tracking-[0.2em] text-accent;
   }
 
   /* Dashed workshop "cut here" hairline. */
@@ -102,7 +102,7 @@
     outline-offset: -8px;
   }
   .stitch-border-dark {
-    border: 1px dashed rgba(226, 178, 123, 0.45);
+    border: 1px dashed rgba(169, 174, 211, 0.45);
     outline: 4px solid rgba(255, 255, 255, 0.04);
     outline-offset: -8px;
   }

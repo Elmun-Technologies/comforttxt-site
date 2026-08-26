@@ -5,14 +5,16 @@ import type { Config } from "tailwindcss";
  *
  * Primary corporate colour: #283593 (blue)
  * Primary warm neutral:    #F9F5EC (cream)
- * Material accent:         copper/bronze — the colour of wood, leather and
- *                          workshop light. Used sparingly for editorial
- *                          numbering, highlights and "craft" details so the
- *                          UI reads as an atelier catalogue, not a SaaS.
  *
  * The blue scale follows the approved 100 / 80 / 60 / 40 / 20% guidebook
  * tints. Semantic aliases keep the visual identity consistent throughout the
  * storefront and back-office without tying components to a raw colour value.
+ *
+ * Note: an earlier "atelier" pass introduced a copper/bronze accent and a
+ * desaturated "ink" navy that were NOT part of the supplied brand guidebook.
+ * Those have been removed; everything now stays strictly within the
+ * corporate blue + cream palette. The "charcoal" dark-surface aliases are
+ * darkened tints of the same corporate blue, not a new hue.
  */
 const config: Config = {
   darkMode: ["class"],
@@ -36,29 +38,6 @@ const config: Config = {
           DEFAULT: "#283593",
           hover: "#202A78",
           light: "#E8EAF6",
-        },
-
-        // Deep ink-navy for dark editorial surfaces and strong text on cream.
-        ink: {
-          DEFAULT: "#141A33",
-          700: "#1C2567",
-          800: "#151D52",
-          900: "#10163C",
-          950: "#0B102C",
-        },
-
-        // Warm material accent — wood, leather, brass, workshop light.
-        copper: {
-          50: "#FBF4EC",
-          100: "#F6E6D4",
-          200: "#EDCEA8",
-          300: "#E2B27B",
-          400: "#D69754",
-          500: "#C77F3A",
-          600: "#A9642B",
-          700: "#8A4E24",
-          800: "#6E3E20",
-          900: "#59331D",
         },
 
         // Approved corporate-blue tint scale
@@ -133,7 +112,7 @@ const config: Config = {
         brand: "0 24px 48px -16px rgba(13, 18, 52, 0.35)",
         "brand-sm": "0 8px 24px -8px rgba(40, 53, 147, 0.25)",
         "card-hover": "0 24px 48px -20px rgba(13, 18, 52, 0.4)",
-        "copper-glow": "0 10px 30px -10px rgba(199, 127, 58, 0.5)",
+        "accent-glow": "0 10px 30px -10px rgba(40, 53, 147, 0.5)",
       },
       backgroundImage: {
         "hero-grain":

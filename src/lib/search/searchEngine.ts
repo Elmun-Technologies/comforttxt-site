@@ -737,10 +737,17 @@ export function highlightMatch(text: string, query: string): Array<{ text: strin
   try {
     const regex = new RegExp(`(${escaped})`, 'gi');
     const parts = text.split(regex);
-    return parts.filter(Boolean).map((part) => ({
-      text: part,
-      match: regex.test(part),
-    }));
+    // NB: do NOT use `regex.test(part)` here — a `g`-flagged regex keeps
+    // `lastIndex` between calls, which would flip matches on/off across the
+    // parts. Compare against the lowercase patterns instead.
+    const lowerPatterns = allPatterns.map((p) => p.toLowerCase());
+    return parts.filter(Boolean).map((part) => {
+      const lower = part.toLowerCase();
+      return {
+        text: part,
+        match: lowerPatterns.some((p) => p && lower.includes(p)),
+      };
+    });
   } catch {
     return [{ text, match: false }];
   }

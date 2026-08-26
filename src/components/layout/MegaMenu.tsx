@@ -68,7 +68,7 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
                         className="group/item text-body hover:text-accent font-semibold transition py-1 flex items-center justify-between gap-2 border-b border-dashed border-transparent hover:border-border/60"
                       >
                         <span className="inline-flex items-center gap-2">
-                          <span className="font-mono text-[9px] text-copper-600/0 group-hover/item:text-copper-600 transition">
+                          <span className="font-mono text-[9px] text-accent/0 group-hover/item:text-accent transition">
                             {String(itemIdx + 1).padStart(2, '0')}
                           </span>
                           {locale === 'ru' ? item.labelRu : item.labelUz}
@@ -84,10 +84,10 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
         </div>
 
         {/* Sample Box promo card */}
-        <div className="bg-ink-950 p-5 rounded-xl border border-ink-800 flex flex-col justify-between space-y-3 relative overflow-hidden">
+        <div className="bg-charcoal-950 p-5 rounded-xl border border-charcoal-900 flex flex-col justify-between space-y-3 relative overflow-hidden">
           <div aria-hidden="true" className="pattern-rings-dark pattern-fade absolute inset-0 pointer-events-none opacity-30" />
           <div className="relative space-y-2">
-            <span className="inline-flex items-center gap-1 bg-copper-500/20 text-copper-300 text-[10px] font-black uppercase px-2 py-0.5 rounded-md border border-copper-500/40">
+            <span className="inline-flex items-center gap-1 bg-accent/20 text-brand-300 text-[10px] font-black uppercase px-2 py-0.5 rounded-md border border-accent/40">
               <Package className="w-3 h-3" />
               Sample Box
             </span>
@@ -104,7 +104,7 @@ export function MegaMenu({ locale, onClose }: MegaMenuProps) {
           <Link
             href="/sample-box"
             onClick={onClose}
-            className="relative inline-flex items-center justify-between text-xs font-bold text-copper-300 hover:text-copper-200 pt-2 border-t border-surface/15"
+            className="relative inline-flex items-center justify-between text-xs font-bold text-brand-300 hover:text-brand-200 pt-2 border-t border-surface/15"
           >
             <span>{locale === 'ru' ? 'Заказать Sample Box' : 'Sample Box so\'rash'}</span>
             <ArrowRight className="w-3.5 h-3.5" />

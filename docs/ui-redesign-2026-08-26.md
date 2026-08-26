@@ -81,3 +81,25 @@ ularning ishlatilishi qayta ko'rib chiqildi.
 - `npx next build` — muvaffaqiyatli (barcha route'lar).
 - Qo'lda: `/uz`, `/ru`, `/uz/catalog`, kategoriya sahifalari, PDP, savatcha
   drawer'i, ulgurji va Sample Box sahifalari tekshirildi.
+
+---
+
+## 6. Brend identikasiga qaytarish (2026-08-26, keyingi bosqich)
+
+Yuqoridagi `copper` (mis/bronza) va `ink` (to'q ko'k) ranglari rasmiy
+brandbook'da **yo'q** ekani aniqlangach, ular butunlay olib tashlandi va sayt
+qat'iy korporativ palitraga — **ko'k `#283593` + krem `#F9F5EC`** (va ularning
+tasdiqlangan tintlari) — qaytarildi.
+
+- `copper-*` → ko'k aksent/tintlar: `copper-500/600` → `accent`/`accent-hover`,
+  `copper-300/400` → `brand-300`, `copper-100/200` → `brand-100/200`.
+- `ink-*` → ko'k oilasidagi to'q sirtlar: `ink-950/900/800` → `charcoal-950/900`,
+  `text-ink` → `text-heading`, `bg-ink` → `bg-charcoal-900`.
+- `shadow-copper-glow` → `shadow-accent-glow` (ko'k glow).
+- Hardcoded mis rangli radial "nur"lar, `::selection`, scrollbar va
+  `.stitch-border-dark` ham ko'k oilasiga o'tkazildi.
+- `tailwind.config.ts`dan `copper` va `ink` shkalalari o'chirildi.
+
+Mato fakturalari (`tex-velvet`/`tex-boucle`/`tex-chenille`/`tex-rogojka`/`tex-foam`)
+materiallarning haqiqiy ko'rinishini ko'rsatuvchi "mahsulot" svatchlari bo'lgani
+uchun o'zgarishsiz qoldirildi — ular UI aksenti emas, mato tasviridir.

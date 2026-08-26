@@ -38,7 +38,7 @@ export function PageHero({
     <section
       className={`relative overflow-hidden rounded-3xl border ${
         isDark
-          ? 'bg-ink-950 border-ink-800 text-surface shadow-brand'
+          ? 'bg-charcoal-950 border-charcoal-900 text-surface shadow-brand'
           : 'bg-surface border-border shadow-xs'
       } px-6 py-10 sm:px-10 sm:py-14 ${className}`}
     >
@@ -50,12 +50,12 @@ export function PageHero({
         } pattern-fade`}
       />
 
-      {/* Warm corner light on dark tone */}
+      {/* Corner light on dark tone */}
       {isDark && (
         <div
           aria-hidden="true"
           className="absolute -top-32 -right-32 w-96 h-96 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(199,127,58,0.18), transparent 65%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(40,53,147,0.18), transparent 65%)' }}
         />
       )}
 
@@ -67,15 +67,15 @@ export function PageHero({
                 isDark ? 'text-cream-200/70' : 'text-muted'
               }`}
             >
-              <span className={`h-px w-10 ${isDark ? 'bg-copper-400' : 'bg-copper-500'}`} />
-              {Icon && <Icon className="h-3.5 w-3.5 text-copper-500" />}
+              <span className={`h-px w-10 ${isDark ? 'bg-brand-300' : 'bg-accent'}`} />
+              {Icon && <Icon className="h-3.5 w-3.5 text-accent" />}
               <span>{kicker}</span>
             </span>
           )}
 
           <h1
             className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.06] text-balance ${
-              isDark ? 'text-surface' : 'text-ink'
+              isDark ? 'text-surface' : 'text-heading'
             }`}
           >
             {title}
@@ -96,8 +96,8 @@ export function PageHero({
       </div>
 
       {/* Cutting-guide ticks */}
-      <span aria-hidden="true" className={`corner-tick corner-tick-tr ${isDark ? 'text-copper-400/70' : 'text-accent/40'}`} />
-      <span aria-hidden="true" className={`corner-tick corner-tick-bl ${isDark ? 'text-copper-400/70' : 'text-accent/40'}`} />
+      <span aria-hidden="true" className={`corner-tick corner-tick-tr ${isDark ? 'text-brand-300/70' : 'text-accent/40'}`} />
+      <span aria-hidden="true" className={`corner-tick corner-tick-bl ${isDark ? 'text-brand-300/70' : 'text-accent/40'}`} />
     </section>
   );
 }
